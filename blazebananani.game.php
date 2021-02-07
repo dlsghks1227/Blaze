@@ -16,9 +16,29 @@
   *
   */
 
+$swdNamespaceAutoLoad = function($class)
+{
+    $classPaths = explode('\\', $class);
+    if ($classPaths[0] == 'blaze')
+    {
+        array_shift($classPaths);
+        $file = dirname(__FILE__)."/modules/php/".implode(DIRECTORY_SEPARATOR, $classPaths).".php";
+        if (file_exists($file))
+        {
+            require_once($file);
+        }
+        else
+        {
+            var_dump("Impossible to load blaze class : $class");
+        }
+    }
+};
+
+spl_autoload_register($swdNamespaceAutoLoad, true, true);
 
 require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 
+use blaze\Cards\Cards;
 
 class BlazeBananani extends Table
 {
@@ -78,7 +98,9 @@ class BlazeBananani extends Table
         self::reloadPlayersBasicInfos();
         
         /************ Start the game initialization *****/
-
+        Cards::SetupNewGame();
+        $count = Cards::GetDeckCount();
+        
         // Init global values with their initial values
         //self::setGameStateInitialValue( 'my_first_global_variable', 0 );
         
@@ -110,11 +132,15 @@ class BlazeBananani extends Table
         $result = array();
     
         $current_player_id = self::getCurrentPlayerId();    // !! We must only return informations visible by this player !!
-    
+
         // Get information about players
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
         $sql = "SELECT player_id id, player_score score FROM player ";
-        $result['players'] = self::getCollectionFromDb( $sql );
+        $result = array(
+            'players' => self::getCollectionFromDb( $sql ),
+            'deckCount' => Cards::GetDeckCount(),
+            'decks' => Cards::GetAllCardsInDeck(),
+        );
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
   

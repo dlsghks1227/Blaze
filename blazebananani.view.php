@@ -39,6 +39,8 @@
 
         /*********** Place your code below:  ************/
 
+        // My Hand 텍스트를 번역할 수 있다.
+        $this->tpl['MY_HAND'] = self::_("My hand");
 
         /*
         

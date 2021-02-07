@@ -25,12 +25,16 @@
     Please REMOVE this comment before publishing your game on BGA
 -->
 
-
-This is your game interface. You can edit this HTML in your ".tpl" file.
-
+<div id="board"></div>
 
 <script type="text/javascript">
-
+var jstpl_table = `
+<div id="table">
+    <div id="table-container">
+        <div id="deck">\${deck}</div>
+    </div>
+</div>
+`
 // Javascript HTML templates
 
 /*
@@ -38,7 +42,11 @@ This is your game interface. You can edit this HTML in your ".tpl" file.
 var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_ID}"></div>';
 
 */
+</script>
 
-</script>  
+<div class="whiteblock">
+    <h3> {MY_HAND} </h3>
+    <div id="Decks"></div>
+</div>
 
 {OVERALL_GAME_FOOTER}

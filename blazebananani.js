@@ -18,7 +18,10 @@
 define([
     "dojo","dojo/_base/declare",
     "ebg/core/gamegui",
-    "ebg/counter"
+    "ebg/counter",
+    "ebg/stock",
+
+    g_gamethemeurl + "modules/js/Game/game.js",
 ],
 function (dojo, declare) {
     return declare("bgagame.blazebananani", ebg.core.gamegui, {
@@ -29,6 +32,9 @@ function (dojo, declare) {
             // Example:
             // this.myGlobalValue = 0;
 
+            // 카드 크기 지정
+            this.cardWidth = 72;
+            this.cardHeight = 96;
         },
         
         /*
@@ -57,8 +63,60 @@ function (dojo, declare) {
             }
             
             // TODO: Set up your game interface here, according to "gamedatas"
-            
- 
+            this.decks = new ebg.stock();
+            this.decks.create(this, $('Decks'), this.cardWidth, this.cardHeight);
+            this.decks.image_items_per_row = 10;
+
+            for (var color = 0; color < 3; color++)
+            {
+                for (var value = 1; value <= 10; value++)
+                {
+                    var card_type_id = this.getCardUniqueId(color, value);
+                    this.decks.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
+                }
+            }
+
+            // Adding deck / discard
+            dojo.place(this.format_block('jstpl_table', {
+                deck : this.gamedatas.deckCount
+            }), 'board');
+
+            console.log(this.gamedatas.decks)
+
+            for (var i in this.gamedatas.decks)
+            {
+                var card = this.gamedatas.decks[i];
+                var color = card.type;
+                var value = card.type_arg;
+                this.decks.addToStockWithId(this.getCardUniqueId(color, value), card.location_arg);
+            }
+
+            // // stock 객체를 사용
+            // this.playerHand = new ebg.stock();
+            // // .tpl 파일의 div id 컨테이너를 지정 (id = "myHand")
+            // this.playerHand.create(this, $('myHand'), this.cardWidth, this.cardHeight);
+
+            // // 행당 이미지 지정
+            // // 스프라이트 이미지의 한 행당 카드의 개수
+            // this.playerHand.image_items_per_row = 13;
+
+            // for (var color = 1; color <= 4; color++)
+            // {
+            //     for (var value = 2; value <= 14; value++)
+            //     {
+            //         var cardTypeId = this.getCardUniqueId(color, value);
+            //         this.playerHand.addItemType(
+            //             cardTypeId,                 // ID
+            //             cardTypeId,                 // Weight
+            //             g_gamethemeurl + 'img/cards.jpg',// Image
+            //             cardTypeId                  // 
+            //         )
+            //     }
+            // }
+
+            // this.playerHand.addToStockWithId(this.getCardUniqueId(2, 5), 42);
+
+
             // Setup game notifications to handle (see "setupNotifications" method below)
             this.setupNotifications();
 
@@ -157,6 +215,12 @@ function (dojo, declare) {
             script.
         
         */
+
+        getCardUniqueId: function(color, value)
+        {
+            // 행 + 열 = 위치값
+            return (color * 10) + (value - 1);
+        },
 
 
         ///////////////////////////////////////////////////
