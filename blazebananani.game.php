@@ -38,11 +38,14 @@ spl_autoload_register($swdNamespaceAutoLoad, true, true);
 
 require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 
+// PHP Class
 use blaze\Cards\Cards;
+use blaze\Game\Players;
 
 class BlazeBananani extends Table
 {
-	function __construct( )
+    public static $instance = null;
+	public function __construct( )
 	{
         // Your global variables labels:
         //  Here, you can assign labels to global variables you are using for this game.
@@ -51,8 +54,10 @@ class BlazeBananani extends Table
         //  the corresponding ID in gameoptions.inc.php.
         // Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
         parent::__construct();
+        self::$instance = $this;
         
         self::initGameStateLabels( array( 
+            "trumpSuit" => 10,
             //    "my_first_global_variable" => 10,
             //    "my_second_global_variable" => 11,
             //      ...
@@ -61,6 +66,10 @@ class BlazeBananani extends Table
             //      ...
         ) );        
 	}
+    public static function get()
+    {
+        return self::$instance;
+    }
 	
     protected function getGameName( )
     {
@@ -77,29 +86,9 @@ class BlazeBananani extends Table
     */
     protected function setupNewGame( $players, $options = array() )
     {    
-        // Set the colors of the players with HTML color code
-        // The default below is red/green/blue/orange/brown
-        // The number of colors defined here must correspond to the maximum number of players allowed for the gams
-        $gameinfos = self::getGameinfos();
-        $default_colors = $gameinfos['player_colors'];
- 
-        // Create players
-        // Note: if you added some extra field on "player" table in the database (dbmodel.sql), you can initialize it there.
-        $sql = "INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ";
-        $values = array();
-        foreach( $players as $player_id => $player )
-        {
-            $color = array_shift( $default_colors );
-            $values[] = "('".$player_id."','$color','".$player['player_canal']."','".addslashes( $player['player_name'] )."','".addslashes( $player['player_avatar'] )."')";
-        }
-        $sql .= implode( $values, ',' );
-        self::DbQuery( $sql );
-        self::reattributeColorsBasedOnPreferences( $players, $gameinfos['player_colors'] );
-        self::reloadPlayersBasicInfos();
-        
         /************ Start the game initialization *****/
         Cards::SetupNewGame();
-        $count = Cards::GetDeckCount();
+        Players::setupNewGame($players);
         
         // Init global values with their initial values
         //self::setGameStateInitialValue( 'my_first_global_variable', 0 );
@@ -138,6 +127,7 @@ class BlazeBananani extends Table
         $sql = "SELECT player_id id, player_score score FROM player ";
         $result = array(
             'players' => self::getCollectionFromDb( $sql ),
+            'playersNumber' => self::getPlayersNumber(),
             'deckCount' => Cards::GetDeckCount(),
             'decks' => Cards::GetAllCardsInDeck(),
         );

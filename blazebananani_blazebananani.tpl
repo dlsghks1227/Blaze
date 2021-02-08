@@ -25,14 +25,29 @@
     Please REMOVE this comment before publishing your game on BGA
 -->
 
-<div id="board"></div>
+<div id="board">
+    <div id="hand">
+        <div id="hand-cards"></div>
+    </div>
+</div>
 
 <script type="text/javascript">
+
 var jstpl_table = `
 <div id="table">
     <div id="table-container">
         <div id="deck">\${deck}</div>
     </div>
+</div>
+`
+
+var jstpl_card = `
+<div class=""
+`
+
+var jstpl_players = `
+<div class="blaze-player" data-pos="\${playerPos}">
+    <div class="blaze-player-name" style="color:#\${playerColor}">\${playerName}</div>
 </div>
 `
 // Javascript HTML templates
@@ -43,10 +58,5 @@ var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_I
 
 */
 </script>
-
-<div class="whiteblock">
-    <h3> {MY_HAND} </h3>
-    <div id="Decks"></div>
-</div>
 
 {OVERALL_GAME_FOOTER}
