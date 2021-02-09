@@ -2,6 +2,7 @@
 
 namespace Blaze\Cards;
 
+use Blaze\Cards\Card;
 use Blaze\Game\Log;
 
 class Cards extends \APP_GameClass
@@ -47,39 +48,32 @@ class Cards extends \APP_GameClass
         return array_values(array_map(['Blaze\Cards\Cards', 'FormatCard'], $cards));
     }
 
-    // public static function GetCard($id)
-    // {
-    //     return self::resToObject(self::GetDeck()->getCard($id));
-    // }
+    private static function ResToObject($row)
+    {
+        $card = new Card($row['id'], $row['type'], $row['type_arg']);
+        return $card;
+    }
 
-    // public static function GetCurrentCard()
-    // {
-    //     return self::GetCard(Log::GetCurrentCard());
-    // }
+    public static function ToObjects($array)
+    {
+        $cards = array();
+        foreach ($array as $row) $cards[] = self::resToObject($row);
+        return $cards;
+    }
 
-    // private static function resToObject($row)
-    // {
-    //     $card_id = $row['type'];
-    //     $name = "Blarz"
-    // }
+    public static function GetCard($id)
+    {
+        return self::ResToObject(self::GetDeck()->GetCard($id));
+    }
 
-    // public static function toObjects($array)
-    // {
-    //     $cards = array();
-    //     foreach ($array as $row) {
-    //         $cards[] = self::resToObject($row);
-    //     }
-    //     return $cards;
-    // }
-
-    public static function Draw($nbr, $playerId)
+    
+    public static function Draw($nbr, $player_id)
     {
         // 덱에 남아있는 카드가 있을 경우 드로우
         if (self::GetDeckCount() == 0) {
-            // 2페이즈 전환
             return null;
         } else {
-            $cards = self::GetDeck()->pickCards($nbr, 'deck', $playerId);
+            $cards = self::GetDeck()->pickCards($nbr, 'deck', $player_id);
             return $cards;
         }
     }
@@ -87,6 +81,16 @@ class Cards extends \APP_GameClass
     public static function GetAllCardsInDeck()
     {
         return self::GetDeck()->getCardsInLocation('deck');
+    }
+
+    public static function GetAllCardsInCurrentPlayer($current_player_id)
+    {
+        return self::GetDeck()->getCardsInLocation('hand', $current_player_id);
+    }
+
+    public static function GetCountCardsByLocationInPlayers()
+    {
+        return self::GetDeck()->countCardsByLocationArgs('hand');
     }
 
 
@@ -107,9 +111,9 @@ class Cards extends \APP_GameClass
     }
 
 
-    public static function GetHand($playerId, $formatted = false)
+    public static function GetHand($player_id, $formatted = false)
     {
-        $cards = self::GetDeck()->getCardsInLocation('hand', $playerId);
-        return $cards;
+        $cards = self::ToObjects(self::GetDeck()->getCardsInLocation('hand', $player_id));
+        return $formatted ? self::FormatCards($cards) : $cards;
     }
 }

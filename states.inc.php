@@ -53,23 +53,34 @@
 $machinestates = array(
 
     // The initial state. Please do not modify.
-    1 => array(
+    STATE_GAME_SETUP => array(
         "name" => "gameSetup",
         "description" => "",
         "type" => "manager",
         "action" => "stGameSetup",
-        "transitions" => array( "" => 2 )
+        "transitions" => array( 
+            "" => STATE_START_OF_TURN 
+        )
     ),
     
     // Note: ID=2 => your first state
 
-    2 => array(
-    		"name" => "playerTurn",
-    		"description" => clienttranslate('${actplayer} must play a card or pass'),
-    		"descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
-    		"type" => "activeplayer",
-    		"possibleactions" => array( "playCard", "pass" ),
-    		"transitions" => array( "playCard" => 2, "pass" => 2 )
+    STATE_START_OF_TURN => array(
+        "name" => "startOfTurn",
+        "description" => '',
+        "type" => "game",
+        'action' => 'stStartOfTurn',
+        "transitions" => array(
+        )
+    ),
+
+    STATE_DRAW_CARDS => array(
+        "name" => "drawCards",
+        "description" => '',
+        'type' => 'game',
+        'action' => 'stDrawCards',
+        'transitions' => array(
+        )
     ),
     
 /*

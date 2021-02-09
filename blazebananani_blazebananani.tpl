@@ -48,6 +48,7 @@ var jstpl_card = `
 var jstpl_players = `
 <div class="blaze-player" data-pos="\${playerPos}">
     <div class="blaze-player-name" style="color:#\${playerColor}">\${playerName}</div>
+    <div></div>
 </div>
 `
 // Javascript HTML templates

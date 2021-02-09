@@ -75,13 +75,14 @@ define([
                         this.playerHand.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
                     }
                 }
-
-                this.playerHand.addToStockWithId(this.getCardUniqueId(0, 1), 1);
-                this.playerHand.addToStockWithId(this.getCardUniqueId(1, 2), 2);
-                this.playerHand.addToStockWithId(this.getCardUniqueId(2, 3), 3);
-                this.playerHand.addToStockWithId(this.getCardUniqueId(0, 4), 4);
-                this.playerHand.addToStockWithId(this.getCardUniqueId(1, 5), 5);
-                this.playerHand.addToStockWithId(this.getCardUniqueId(2, 6), 6);
+                
+                // for (var i in this.gamedatas.hand)
+                // {
+                //     var card = this.gamedatas.hand[i];
+                //     var color = card.type;
+                //     var value = card.type_arg;
+                //     this.playerHand.addToStockWithId(this.getCardUniqueId(color, value), card.id);
+                // }
 
                 // this.decks = new ebg.stock();
                 // this.decks.create(this, $('Decks'), this.cardWidth, this.cardHeight);
@@ -95,8 +96,6 @@ define([
                 //         this.decks.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
                 //     }
                 // }
-
-                dojo.attr("board", "data-players", gamedatas.playersNumber);
 
                 // Adding deck / discard
                 dojo.place(this.format_block('jstpl_table', {
@@ -113,6 +112,8 @@ define([
                     }), 'board');
                     count += 1;
                 }
+
+                dojo.attr("board", "data-players", gamedatas.playersNumber);
                 // dojo.place(this.format_block('jstpl_player', {
                 // }))
 

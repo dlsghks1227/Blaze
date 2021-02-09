@@ -40,7 +40,11 @@
   	} 
   	
   	// TODO: defines your action entry points there
-
+	public function playCard()
+	{
+		self::setAjaxMode();
+		self::ajaxResponse();
+	}
   }
   
 

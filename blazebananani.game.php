@@ -19,7 +19,7 @@
 $swdNamespaceAutoLoad = function($class)
 {
     $classPaths = explode('\\', $class);
-    if ($classPaths[0] == 'blaze')
+    if ($classPaths[0] == 'Blaze')
     {
         array_shift($classPaths);
         $file = dirname(__FILE__)."/modules/php/".implode(DIRECTORY_SEPARATOR, $classPaths).".php";
@@ -39,11 +39,13 @@ spl_autoload_register($swdNamespaceAutoLoad, true, true);
 require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 
 // PHP Class
-use blaze\Cards\Cards;
-use blaze\Game\Players;
+use Blaze\Cards\Cards;
+use Blaze\Players\Players;
 
 class BlazeBananani extends Table
 {
+    use Blaze\States\TurnTrait;
+
     public static $instance = null;
 	public function __construct( )
 	{
@@ -56,15 +58,9 @@ class BlazeBananani extends Table
         parent::__construct();
         self::$instance = $this;
         
-        self::initGameStateLabels( array( 
+        self::initGameStateLabels(array( 
             "trumpSuit" => 10,
-            //    "my_first_global_variable" => 10,
-            //    "my_second_global_variable" => 11,
-            //      ...
-            //    "my_first_game_variant" => 100,
-            //    "my_second_game_variant" => 101,
-            //      ...
-        ) );        
+        ));        
 	}
     public static function get()
     {
@@ -129,7 +125,8 @@ class BlazeBananani extends Table
             'players' => self::getCollectionFromDb( $sql ),
             'playersNumber' => self::getPlayersNumber(),
             'deckCount' => Cards::GetDeckCount(),
-            'decks' => Cards::GetAllCardsInDeck(),
+            'hand' => Cards::GetHand($current_player_id, true),
+            'countCards' => Cards::GetCountCardsByLocationInPlayers(),
         );
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
