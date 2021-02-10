@@ -37,6 +37,7 @@ var jstpl_table = `
 <div id="table">
     <div id="table-container">
         <div id="deck">\${deck}</div>
+        <div id="testButton"></div>
     </div>
 </div>
 `
@@ -48,7 +49,7 @@ var jstpl_card = `
 var jstpl_players = `
 <div class="blaze-player" data-pos="\${playerPos}">
     <div class="blaze-player-name" style="color:#\${playerColor}">\${playerName}</div>
-    <div></div>
+    <div>\${playerCardsCount}</div>
 </div>
 `
 // Javascript HTML templates

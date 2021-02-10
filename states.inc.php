@@ -59,18 +59,29 @@ $machinestates = array(
         "type" => "manager",
         "action" => "stGameSetup",
         "transitions" => array( 
-            "" => STATE_START_OF_TURN 
+            "" => STATE_START_OF_ROUND_ONE 
         )
     ),
     
     // Note: ID=2 => your first state
 
-    STATE_START_OF_TURN => array(
-        "name" => "startOfTurn",
+    STATE_START_OF_ROUND_ONE => array(
+        "name" => "startOfRoundOne",
         "description" => '',
         "type" => "game",
-        'action' => 'stStartOfTurn',
+        'action' => 'stStartOfRoundOne',
         "transitions" => array(
+            'attack' => STATE_ATTACK
+        )
+    ),
+
+    STATE_START_OF_ROUND_TWO => array(
+        "name" => "startOfRoundTwo",
+        "description" => '',
+        "type" => "game",
+        'action' => 'stStartOfRoundTwo',
+        "transitions" => array(
+            'attack' => STATE_ATTACK
         )
     ),
 

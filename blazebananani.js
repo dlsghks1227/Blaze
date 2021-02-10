@@ -101,6 +101,7 @@ define([
                 dojo.place(this.format_block('jstpl_table', {
                     deck: this.gamedatas.deckCount
                 }), 'board');
+                dojo.connect($('testButton'), "onclick", () => this.onClickButton());
 
                 var count = 1;
                 for (var i in this.gamedatas.players) {
@@ -109,6 +110,7 @@ define([
                         playerPos: count,
                         playerName: player.name,
                         playerColor: player.color,
+                        playerCardsCount: this.gamedatas.countCards[player.id],
                     }), 'board');
                     count += 1;
                 }
@@ -240,6 +242,10 @@ define([
             getCardUniqueId: function (color, value) {
                 // 행 + 열 = 위치값
                 return (color * 10) + (value - 1);
+            },
+
+            onClickButton() {
+                console.log("Test Button");
             },
 
 

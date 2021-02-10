@@ -36,7 +36,7 @@
   	    {
             $this->view = "blazebananani_blazebananani";
             self::trace( "Complete reinitialization of board game" );
-      }
+      	}
   	} 
   	
   	// TODO: defines your action entry points there

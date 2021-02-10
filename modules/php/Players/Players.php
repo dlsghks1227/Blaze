@@ -9,26 +9,25 @@ class Players extends \APP_GameClass
 {
     public static function setupNewGame($players)
     {
+        // 플레이어 데이터베이스 구성
         self::DbQuery('DELETE FROM player');
         $gameInfos = BlazeBananani::get()->getGameinfos();
         $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUE';
         
         $default_colors = $gameInfos['player_colors'];
         foreach ($players as $player_id => $player) {
-            $color      = array_shift( $default_colors );
+            $color      = array_shift( $default_colors );           // 색상
             $canal      = $player['player_canal'];
-            $name       = addslashes($player['player_name']);
-            $avatar     = addslashes($player['player_avatar']);
+            $name       = addslashes($player['player_name']);       // 이름
+            $avatar     = addslashes($player['player_avatar']);     // 아바타
             $values[]   = "($player_id, '$color', '$canal', '$name', '$avatar')";
         }
         self::DbQuery($sql.implode($values, ','));
         
+        // reattributeColorsBasedOnPreferences
+        // 플레이어의 색상 기본 설정과 사용 가능한 색상을 고려해 모든 색상을 다시 지정
         BlazeBananani::get()->reattributeColorsBasedOnPreferences($players, $gameInfos['player_colors']);
         BlazeBananani::get()->reloadPlayersBasicInfos();
-
-        foreach ($players as $player_id => $player) {
-            Cards::Draw(4, $player_id);
-        }
     }
 
     public static function GetActivePlayer() {

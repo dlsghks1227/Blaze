@@ -86,12 +86,17 @@ div#board
         flex-flow: row;
     }
     
-    div#board #table
+    div#board div#table
     {
         margin: 20px;
         grid-row: 2 / span 3;
-        grid-column: 5 / span 6;
-    }
+        grid-column: 5 / span 6; }
+
+        div#board div#table div#testButton {
+            position: absolute;
+            width: 72px;
+            height: 96px;
+            background-image: url('img/cards.jpg'); }
 
     div#board div#hand
     {

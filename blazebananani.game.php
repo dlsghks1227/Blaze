@@ -58,8 +58,8 @@ class BlazeBananani extends Table
         parent::__construct();
         self::$instance = $this;
         
-        self::initGameStateLabels(array( 
-            "trumpSuit" => 10,
+        self::initGameStateLabels(array(
+            "trumpSuit" => 0,
         ));        
 	}
     public static function get()
@@ -83,8 +83,8 @@ class BlazeBananani extends Table
     protected function setupNewGame( $players, $options = array() )
     {    
         /************ Start the game initialization *****/
-        Cards::SetupNewGame();
         Players::setupNewGame($players);
+        Cards::SetupNewGame(self::getPlayersNumber());
         
         // Init global values with their initial values
         //self::setGameStateInitialValue( 'my_first_global_variable', 0 );
