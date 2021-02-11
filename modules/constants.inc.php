@@ -9,8 +9,8 @@ define('STATE_START_OF_ROUND_ONE', 2);
 define('STATE_START_OF_ROUND_TWO', 3);
 
 define('STATE_ATTACK', 4);
-define('STATE_ATTACK_AND_SUPPORT', 6);
-define('STATE_DEFENSE', 5);
+define('STATE_ATTACK_AND_SUPPORT', 5);
+define('STATE_DEFENSE', 6);
 define('STATE_DEFENSE_SUCCESS', 7);
 define('STATE_DEFENSE_FAILURE', 8);
 

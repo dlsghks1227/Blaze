@@ -14,10 +14,5 @@ class Notifications {
     }
 
     public static function DrawCards($player, $card) {
-        // $data = array(
-        //     'i18n' => array(''),
-        //     'player_name' => BlazeBananani::get()->getActivePlayerName(),
-        //     'value' => 
-        // )
     }
 }

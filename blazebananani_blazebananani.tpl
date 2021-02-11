@@ -29,16 +29,29 @@
     <div id="hand">
         <div id="hand-cards"></div>
     </div>
+    <div id="table">
+        <div id="table-container"></div>
+    </div>
 </div>
 
 <script type="text/javascript">
 
 var jstpl_table = `
 <div id="table">
-    <div id="table-container">
-        <div id="deck">\${deck}</div>
-        <div id="testButton"></div>
-    </div>
+    <div id="table-container"></div>
+</div>
+`
+
+        // <div class="cards" id="decks">
+        //     <div class="card" id="testButton"></div>
+        // </div>
+        // <div id="cards">
+        //     <div class="card" id="trumpSuitCard"></div>
+        // </div>
+
+var jstpl_cardOnTable = `
+<div id="cards" style="grid-column:\${posX}; grid-row:\${posY}"">
+    <div class='card' style="background-position:\${x}px \${y}px"></div>
 </div>
 `
 

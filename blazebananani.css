@@ -88,19 +88,36 @@ div#board
     
     div#board div#table
     {
-        margin: 20px;
+        margin: 50px 3px;
         grid-row: 2 / span 3;
         grid-column: 5 / span 6; }
 
-        div#board div#table div#testButton {
-            position: absolute;
-            width: 72px;
-            height: 96px;
-            background-image: url('img/cards.jpg'); }
+        
+        div#board div#table div#table-container {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(2, 1fr); }
+
+			div#board div#table div#table-container #cards {
+				width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center; }
+
+				div#board div#table div#table-container #cards .card {
+					position: absolute;
+					width: 72px;
+					height: 96px;
+					background-image: url('img/cards.jpg'); }
+                
 
     div#board div#hand
     {
-        justify-content: center;
         grid-row: 6;
         grid-column: 4 / span 8;
     }

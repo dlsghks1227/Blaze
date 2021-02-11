@@ -21,11 +21,14 @@ define([
     "ebg/counter",
     "ebg/stock",
 
-    g_gamethemeurl + "modules/js/Game/game.js",
+    g_gamethemeurl + "modules/js/Game/Game.js",
+
+    g_gamethemeurl + "modules/js/Trait/CardTrait.js",
 ],
     function (dojo, declare) {
         return declare("bgagame.blazebananani", [
             customgame.game,
+            blaze.cardTrait,
         ], {
             constructor: function () {
                 console.log('blazebananani constructor');
@@ -75,33 +78,19 @@ define([
                         this.playerHand.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
                     }
                 }
-                
-                // for (var i in this.gamedatas.hand)
-                // {
-                //     var card = this.gamedatas.hand[i];
-                //     var color = card.type;
-                //     var value = card.type_arg;
-                //     this.playerHand.addToStockWithId(this.getCardUniqueId(color, value), card.id);
-                // }
-
-                // this.decks = new ebg.stock();
-                // this.decks.create(this, $('Decks'), this.cardWidth, this.cardHeight);
-                // this.decks.image_items_per_row = 10;
-
-                // for (var color = 0; color < 3; color++)
-                // {
-                //     for (var value = 1; value <= 10; value++)
-                //     {
-                //         var card_type_id = this.getCardUniqueId(color, value);
-                //         this.decks.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
-                //     }
-                // }
 
                 // Adding deck / discard
-                dojo.place(this.format_block('jstpl_table', {
-                    deck: this.gamedatas.deckCount
-                }), 'board');
-                dojo.connect($('testButton'), "onclick", () => this.onClickButton());
+                for (var x = 1; x <= 6; x++) {
+                    for (var y = 1; y <= 2; y++) {
+                        dojo.place(this.format_block('jstpl_cardOnTable', {
+                            posX: x,
+                            posY: y,
+                            x: 0,
+                            y: 0,
+                        }), 'table-container');
+                    }
+                }
+                // dojo.connect($('testButton'), "onclick", () => this.onClickButton());
 
                 var count = 1;
                 for (var i in this.gamedatas.players) {
@@ -148,9 +137,10 @@ define([
 
 
                 // Setup game notifications to handle (see "setupNotifications" method below)
-                this.setupNotifications();
-
+                //this.setupNotifications();
+                
                 console.log("Ending game setup");
+                this.inherited(arguments);
             },
 
 
@@ -310,21 +300,21 @@ define([
                       your blazebananani.game.php file.
             
             */
-            setupNotifications: function () {
-                console.log('notifications subscriptions setup');
+            // setupNotifications: function () {
+            //     console.log('notifications subscriptions setup');
 
-                // TODO: here, associate your game notifications with local methods
+            //     // TODO: here, associate your game notifications with local methods
 
-                // Example 1: standard notification handling
-                // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
+            //     // Example 1: standard notification handling
+            //     // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
 
-                // Example 2: standard notification handling + tell the user interface to wait
-                //            during 3 seconds after calling the method in order to let the players
-                //            see what is happening in the game.
-                // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
-                // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
-                // 
-            },
+            //     // Example 2: standard notification handling + tell the user interface to wait
+            //     //            during 3 seconds after calling the method in order to let the players
+            //     //            see what is happening in the game.
+            //     // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
+            //     // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
+            //     // 
+            // },
 
             // TODO: from this point and below, you can write your game notifications handling methods
 
