@@ -41,10 +41,13 @@ require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 // PHP Class
 use Blaze\Cards\Cards;
 use Blaze\Players\Players;
+use Blaze\Game\Notifications;
 
 class BlazeBananani extends Table
 {
     use Blaze\States\TurnTrait;
+    use Blaze\States\PlayCardTrait;
+    use Blaze\States\DrawCardsTrait;
 
     public static $instance = null;
 	public function __construct( )
@@ -124,8 +127,8 @@ class BlazeBananani extends Table
         $result = array(
             'players' => self::getCollectionFromDb( $sql ),
             'playersNumber' => self::getPlayersNumber(),
-            'deckCount' => Cards::GetDeckCount(),
             'hand' => Cards::GetHand($current_player_id, true),
+            'deckCount' => Cards::GetDeckCount(),
             'countCards' => Cards::GetCountCardsByLocationInPlayers(),
         );
   

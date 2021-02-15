@@ -40,9 +40,11 @@
   	} 
   	
   	// TODO: defines your action entry points there
-	public function playCard()
+	public function placeCard()
 	{
 		self::setAjaxMode();
+		$card_id = self::getArg("id", AT_posint, true);
+		$this->game->placeCard($card_id);
 		self::ajaxResponse();
 	}
   }

@@ -101,7 +101,7 @@ div#board
             grid-template-columns: repeat(6, 1fr);
             grid-template-rows: repeat(2, 1fr); }
 
-			div#board div#table div#table-container #cards {
+			div#board div#table div#table-container .cardOnTable {
 				width: 100%;
                 height: 100%;
                 display: flex;
@@ -109,7 +109,7 @@ div#board
                 justify-content: center;
                 align-items: center; }
 
-				div#board div#table div#table-container #cards .card {
+				div#board div#table div#table-container .cardOnTable .card {
 					position: absolute;
 					width: 72px;
 					height: 96px;

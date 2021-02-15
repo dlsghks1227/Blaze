@@ -37,9 +37,7 @@
 <script type="text/javascript">
 
 var jstpl_table = `
-<div id="table">
-    <div id="table-container"></div>
-</div>
+<div id="deckCount">\${deckCount}</div>
 `
 
         // <div class="cards" id="decks">
@@ -50,7 +48,7 @@ var jstpl_table = `
         // </div>
 
 var jstpl_cardOnTable = `
-<div id="cards" style="grid-column:\${posX}; grid-row:\${posY}"">
+<div class="cardOnTable" id="cardOnTable-\${posX}-\${posY}" style="grid-column:\${posX}; grid-row:\${posY}"">
     <div class='card' style="background-position:\${x}px \${y}px"></div>
 </div>
 `

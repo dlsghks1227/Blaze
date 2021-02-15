@@ -4,6 +4,7 @@ namespace Blaze\Cards;
 
 use Blaze\Cards\Card;
 use Blaze\Game\Log;
+use Blaze\Game\Notifications;
 
 class Cards extends \APP_GameClass
 {
@@ -57,7 +58,7 @@ class Cards extends \APP_GameClass
     public static function ToObjects($array)
     {
         $cards = array();
-        foreach ($array as $row) $cards[] = self::resToObject($row);
+        foreach ($array as $row) $cards[] = self::ResToObject($row);
         return $cards;
     }
 
@@ -104,6 +105,7 @@ class Cards extends \APP_GameClass
             return null;
         } else {
             $cards = self::GetDeck()->pickCards($nbr, 'deck', $player_id);
+            Notifications::DrawCards($player_id, $cards);
             return $cards;
         }
     }

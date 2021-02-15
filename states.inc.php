@@ -69,9 +69,10 @@ $machinestates = array(
         "name" => "startOfRoundOne",
         "description" => '',
         "type" => "game",
-        'action' => 'stStartOfRoundOne',
+        "action" => 'stStartOfRoundOne',
+        "updateGameProgression" => true,
         "transitions" => array(
-            'attack' => STATE_ATTACK
+            "" => STATE_ATTACK
         )
     ),
 
@@ -79,17 +80,113 @@ $machinestates = array(
         "name" => "startOfRoundTwo",
         "description" => '',
         "type" => "game",
-        'action' => 'stStartOfRoundTwo',
+        "action" => 'stStartOfRoundTwo',
+        "updateGameProgression" => true,
         "transitions" => array(
-            'attack' => STATE_ATTACK
+            "" => STATE_ATTACK
         )
     ),
 
     STATE_DRAW_CARDS => array(
         "name" => "drawCards",
         "description" => '',
-        'type' => 'game',
-        'action' => 'stDrawCards',
+        "type" => 'game',
+        "action" => 'stDrawCards',
+        "transitions" => array(
+        )
+    ),
+
+    STATE_ATTACK => array(
+        "name" => "attack",
+        "description" => '',
+        "descriptionmyturn" => '',
+        "type" => 'activeplayer',
+        "action" => 'stAttack',
+        "possibleactions" => array( "placeCard" ),
+        "transitions" => array(
+            "defense" => STATE_DEFENSE,
+            "support" => STATE_SUPPORT
+        )
+    ),
+
+    STATE_SUPPORT => array(
+        "name" => "support",
+        "description" => '',
+        "descriptionmyturn" => '',
+        "type" => 'activeplayer',
+        "action" => 'stSupport',
+        'transitions' => array(
+        )
+    ),
+    
+    STATE_DEFENSE => array(
+        "name" => "defense",
+        "description" => '',
+        "descriptionmyturn" => '',
+        "type" => 'activeplayer',
+        "action" => 'stDefense',
+        "transitions" => array(
+            'success' => STATE_DEFENSE_SUCCESS,
+            'failure' => STATE_DEFENSE_FAILURE,
+        )
+    ),
+
+    STATE_DEFENSE_SUCCESS => array(
+        "name" => "defenseSuccess",
+        "description" => '',
+        "type" => 'game',
+        "action" => 'stDefenseSuccess',
+        'transitions' => array(
+            'endTurn' => STATE_DEFENSE_FAILURE,
+        )
+    ),
+
+    STATE_DEFENSE_FAILURE => array(
+        "name" => "defenseFailure",
+        "description" => '',
+        "type" => 'game',
+        "action" => 'stDefenseFailure',
+        'transitions' => array(
+            'endTurn' => STATE_DEFENSE_FAILURE,
+        )
+    ),
+
+    STATE_END_OF_TURN => array(
+        "name" => "nextPlayer",
+        "description" => '',
+        "type" => 'game',
+        "action" => '',
+        'transitions' => array(
+            'next' => STATE_NEXT_PLAYER
+        )
+    ),
+
+    STATE_NEXT_PLAYER => array(
+        "name" => "nextPlayer",
+        "description" => '',
+        "type" => 'game',
+        "action" => 'stNextPlayer',
+        'transitions' => array(
+            'endRound' => STATE_END_ROUND
+        )
+    ),
+
+    STATE_END_ROUND => array(
+        "name" => "endRound",
+        "description" => '',
+        "type" => 'game',
+        "action" => '',
+        'transitions' => array(
+            'batting' => STATE_BATTING
+        )
+    ),
+
+    STATE_BATTING => array(
+        "name" => "batting",
+        "description" => '',
+        'descriptionmyturn' => '',
+        "type" => 'multipleactiveplayer',
+        "action" => '',
         'transitions' => array(
         )
     ),
@@ -119,7 +216,7 @@ $machinestates = array(
    
     // Final state.
     // Please do not modify (and do not overload action/args methods).
-    99 => array(
+    STATE_END_GAME => array(
         "name" => "gameEnd",
         "description" => clienttranslate("End of game"),
         "type" => "manager",
