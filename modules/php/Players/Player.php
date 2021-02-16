@@ -1,6 +1,7 @@
 <?php
 namespace Blaze\Players;
 
+use Blaze\Cards\Cards;
 use Blaze\Game\Notifications;
 
 class Player extends \APP_GameClass
@@ -28,5 +29,6 @@ class Player extends \APP_GameClass
     public function IsZombie()  { return $this->zombie; }
 
     public function DrawCards($amount) {
+        $cards = Cards::Draw($amount, $this->id);
     }
 }

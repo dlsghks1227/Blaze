@@ -24,4 +24,8 @@ class Card extends \APP_GameClass
             "value" => $this->value
         );
     }
+
+    public function GetId()     { return $this->id; }
+    public function GetType()   { return $this->type; }
+    public function GetValue()  { return $this->value; }
 }

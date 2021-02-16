@@ -20,15 +20,15 @@
 
 -- Example 1: create a standard "card" table to be used with the "Deck" tools (see example game "hearts"):
 
--- CREATE TABLE IF NOT EXISTS 'log' (
---   'log_id' int(10) unsigned NOT NULL AUTO_INCREMENT,
---   'turn' int(11) NOT NULL,
---   'player_id' int(11) NOT NULL,
---   'card_id' int(11),
---   'action' varchar(16) NOT NULL,
---   'action_arg' json,
---   PRIMARY KEY ('log_id')
---  )ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+CREATE TABLE IF NOT EXISTS `log` (
+  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `turn` int(11) NOT NULL,
+  `player_id` int(11) NOT NULL,
+  `card_id` int(11),
+  `action` varchar(16) NOT NULL,
+  `action_arg` json,
+  PRIMARY KEY (`log_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS `card` (
   `card_id` int(10) unsigned NOT NULL AUTO_INCREMENT,

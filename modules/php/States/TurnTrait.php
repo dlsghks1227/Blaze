@@ -1,6 +1,7 @@
 <?php
 namespace Blaze\States;
 
+use Blaze\Game\Log;
 use Blaze\Cards\Cards;
 use Blaze\Game\Notifications;
 
@@ -8,13 +9,13 @@ use BlazeBananani;
 
 trait TurnTrait
 {
-    public function stStartOfRoundOne() {
+    public function stStartOfRound() {
         // 플레이어 기본 정보 불러오기
         $players = BlazeBananani::get()->loadPlayersBasicInfos();
 
         // 플레이어 당 5장의 카드 배분
         foreach ($players as $player_id => $player) {
-            $cards = Cards::Draw(5, $player_id);
+            Cards::Draw(5, $player_id);
         }
 
         // 카드 배분 후 반으로 나누어 1라운드 진행
@@ -25,9 +26,9 @@ trait TurnTrait
 
         $this->gamestate->nextState("");
     }
-
-    public function stStartOfRoundTwo() {
-        
+    
+    public function stStartOfTurn() {
+        Log::startTurn();
     }
 
     public function stDefenseSuccess() {

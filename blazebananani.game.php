@@ -63,6 +63,7 @@ class BlazeBananani extends Table
         
         self::initGameStateLabels(array(
             "trumpSuit" => 0,
+            "playRound" => 1,
         ));        
 	}
     public static function get()
@@ -127,6 +128,7 @@ class BlazeBananani extends Table
         $result = array(
             'players' => self::getCollectionFromDb( $sql ),
             'playersNumber' => self::getPlayersNumber(),
+            'playerTurn' => Players::
             'hand' => Cards::GetHand($current_player_id, true),
             'deckCount' => Cards::GetDeckCount(),
             'countCards' => Cards::GetCountCardsByLocationInPlayers(),

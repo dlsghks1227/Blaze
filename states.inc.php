@@ -59,31 +59,60 @@ $machinestates = array(
         "type" => "manager",
         "action" => "stGameSetup",
         "transitions" => array( 
-            "" => STATE_START_OF_ROUND_ONE 
+            "" => STATE_START_OF_ROUND 
         )
     ),
-    
-    // Note: ID=2 => your first state
 
-    STATE_START_OF_ROUND_ONE => array(
+    STATE_START_OF_ROUND => array(
         "name" => "startOfRoundOne",
         "description" => '',
         "type" => "game",
-        "action" => 'stStartOfRoundOne',
-        "updateGameProgression" => true,
+        "action" => 'stStartOfRound',
         "transitions" => array(
-            "" => STATE_ATTACK
+            '' => STATE_START_OF_TURN
         )
     ),
 
-    STATE_START_OF_ROUND_TWO => array(
-        "name" => "startOfRoundTwo",
+    STATE_END_OF_ROUND => array(
+        "name" => "endOfRound",
+        "description" => '',
+        "type" => 'game',
+        "action" => '',
+		'updateGameProgression' => true,
+        'transitions' => array(
+            'batting' => STATE_BATTING
+        )
+    ),
+
+    STATE_START_OF_TURN => array(
+        "name" => "startOfTurn",
         "description" => '',
         "type" => "game",
-        "action" => 'stStartOfRoundTwo',
-        "updateGameProgression" => true,
+        "action" => 'stStartOfTurn',
         "transitions" => array(
-            "" => STATE_ATTACK
+            'attack' => STATE_ATTACK
+        )
+    ),
+
+    STATE_END_OF_TURN => array(
+        "name" => "nextPlayer",
+        "description" => '',
+        "type" => 'game',
+        "action" => 'stEndOfTurn',
+        'transitions' => array(
+            'draw' => STATE_DRAW_CARDS
+        )
+    ),
+
+    STATE_NEXT_PLAYER => array(
+        "name" => "nextPlayer",
+        "description" => '',
+        "type" => 'game',
+        "action" => 'stNextPlayer',
+		'updateGameProgression' => true,
+        'transitions' => array(
+            'start' => STATE_START_OF_TURN,
+            'end' => STATE_END_OF_ROUND
         )
     ),
 
@@ -93,6 +122,7 @@ $machinestates = array(
         "type" => 'game',
         "action" => 'stDrawCards',
         "transitions" => array(
+            'next' => STATE_NEXT_PLAYER
         )
     ),
 
@@ -137,7 +167,7 @@ $machinestates = array(
         "type" => 'game',
         "action" => 'stDefenseSuccess',
         'transitions' => array(
-            'endTurn' => STATE_DEFENSE_FAILURE,
+            'end' => STATE_END_OF_TURN,
         )
     ),
 
@@ -147,37 +177,7 @@ $machinestates = array(
         "type" => 'game',
         "action" => 'stDefenseFailure',
         'transitions' => array(
-            'endTurn' => STATE_DEFENSE_FAILURE,
-        )
-    ),
-
-    STATE_END_OF_TURN => array(
-        "name" => "nextPlayer",
-        "description" => '',
-        "type" => 'game',
-        "action" => '',
-        'transitions' => array(
-            'next' => STATE_NEXT_PLAYER
-        )
-    ),
-
-    STATE_NEXT_PLAYER => array(
-        "name" => "nextPlayer",
-        "description" => '',
-        "type" => 'game',
-        "action" => 'stNextPlayer',
-        'transitions' => array(
-            'endRound' => STATE_END_ROUND
-        )
-    ),
-
-    STATE_END_ROUND => array(
-        "name" => "endRound",
-        "description" => '',
-        "type" => 'game',
-        "action" => '',
-        'transitions' => array(
-            'batting' => STATE_BATTING
+            'end' => STATE_END_OF_TURN,
         )
     ),
 
@@ -188,6 +188,17 @@ $machinestates = array(
         "type" => 'multipleactiveplayer',
         "action" => '',
         'transitions' => array(
+        )
+    ),
+
+    STATE_END_OF_BATTING => array(
+        "name" => "endOfBatting",
+        "description" => '',
+        'descriptionmyturn' => '',
+        "type" => 'multipleactiveplayer',
+        "action" => '',
+        'transitions' => array(
+            'start' => STATE_START_OF_ROUND,
         )
     ),
     

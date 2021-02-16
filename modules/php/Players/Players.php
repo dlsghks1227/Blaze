@@ -2,6 +2,7 @@
 namespace Blaze\Players;
 
 use BlazeBananani;
+use Blaze\Game\Log;
 use Blaze\Players\Player;
 use Blaze\Cards\Cards;
 
@@ -28,6 +29,11 @@ class Players extends \APP_GameClass
         // 플레이어의 색상 기본 설정과 사용 가능한 색상을 고려해 모든 색상을 다시 지정
         BlazeBananani::get()->reattributeColorsBasedOnPreferences($players, $gameInfos['player_colors']);
         BlazeBananani::get()->reloadPlayersBasicInfos();
+    }
+
+    public static function GetCurrentTurn($as_object = false) {
+        $player_id = Log::getPlayerTurn();
+        return $as_object ? self::GetPlayer($player_id) : $player_id;
     }
 
     public static function GetActivePlayer() {
