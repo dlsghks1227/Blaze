@@ -42,6 +42,13 @@ define([
                 // Here, you can init the global variables of your user interface
                 // Example:
                 // this.myGlobalValue = 0;
+                this._cardWidth = 72;
+                this._cardHeight = 96;
+    
+                this._playerHand = new ebg.stock();
+                this._playerHand.create(this, $('hand'), this._cardWidth, this._cardHeight);
+                this._playerHand.image_items_per_row = 10;
+                this._playerHand.centerItems = true;
             },
 
             /*
@@ -60,39 +67,48 @@ define([
             setup: function (gamedatas) {
                 console.log("Starting game setup");
 
-                // Setting up player boards
-                for (var player_id in gamedatas.players) {
-                    var player = gamedatas.players[player_id];
-
-                    // TODO: Setting up players boards if needed
+                // 플레이어 스톡 추가 및 핸드 초기화
+                for (var color = 0; color < 3; color++)
+                {
+                    for (var value = 1; value <= 10; value++)
+                    {
+                        var card_type_id = this.getCardUniqueId(color, value);
+                        this._playerHand.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
+                    }
                 }
 
-                // TODO: Set up your game interface here, according to "gamedatas"
-
-                // 보드 위 플레이어 설정
-                var count = 1;
-                for (var i in this.gamedatas.players) {
-                    var player = gamedatas.players[i];
+                // 플레이어 설정
+                this.gamedatas.playersInfo.forEach(player => {
+                    let isCurrent = player.id == this.player_id;
+                    player.handCount = isCurrent ? player.hand.length : player.hand;
                     dojo.place(this.format_block('jstpl_players', {
-                        playerPos: count,
+                        playerPos: player.no,
                         playerName: player.name,
                         playerColor: player.color,
-                        playerCardsCount: this.gamedatas.countCards[player.id],
+                        playerCardsCount: player.handCount,
                     }), 'board');
-                    count += 1;
-                }
+                    if (isCurrent) {
+                        player.hand.forEach(card => this._playerHand.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id));
+                    }
+                });
+                dojo.connect(this._playerHand, "onChangeSelection", this, 'onPlayerHandSelectionChanged');
 
                 // 덱 설정
-                // dojo.place(this.format_block('jstpl_cardOnTable', {
-                //     posX: 1,
-                //     posY: 1,
-                //     x: this.cardWidth,
-                //     y: this.cardHeight,
-                // }), 'table-container');
-                // dojo.connect($('cardOnTable-0-0'), "onclick", (e) => {this.onClickButton()});
-                // dojo.connect(this.playerHand, "onChangeSelection", this, 'onPlayerHandSelectionChanged');
+                dojo.place(this.format_block('jstpl_cardOnTable', {
+                    posX: 1,
+                    posY: 1,
+                    x: this._cardWidth,
+                    y: this._cardHeight,
+                }), 'table-container');
+                
+                dojo.place(this.format_block('jstpl_table', {
+                    deckCount: this.gamedatas.deckCount,
+                }), 'cardOnTable-1-1');
 
-                dojo.attr("board", "data-players", gamedatas.playersNumber);
+                // 플레이어 수 설정
+                dojo.attr("board", "data-players", this.gamedatas.playersInfo.length);
+
+                console.log(this.gamedatas);
 
                 // Setup game notifications to handle (see "setupNotifications" method below)
                 //this.setupNotifications();
@@ -121,6 +137,11 @@ define([
 
                 if (this.isCurrentPlayerActive()) {
                     switch (stateName) {
+                        case 'attack':
+                            // 공격 버튼 및 패스버튼 추가
+                            this.addActionButton('Attack', _('Attack'), () => this.onClickAttackButton(), null, false, 'blue');
+                            this.addActionButton('Pass', _('Pass'), () => this.onClickPassButton(), null, false, 'red');
+                            break;
                         /*               
                                          Example:
                          
@@ -146,17 +167,6 @@ define([
                 script.
             
             */
-
-            getCardUniqueId: function (color, value) {
-                // 행 + 열 = 위치값
-                return (color * 10) + (value - 1);
-            },
-
-            onClickButton: function() {
-                if (this.checkAction('attack', true)) {
-                }
-            },
-
 
             ///////////////////////////////////////////////////
             //// Player's action

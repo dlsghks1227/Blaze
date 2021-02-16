@@ -64,7 +64,7 @@ $machinestates = array(
     ),
 
     STATE_START_OF_ROUND => array(
-        "name" => "startOfRoundOne",
+        "name" => "startOfRound",
         "description" => '',
         "type" => "game",
         "action" => 'stStartOfRound',
@@ -132,7 +132,7 @@ $machinestates = array(
         "descriptionmyturn" => '',
         "type" => 'activeplayer',
         "action" => 'stAttack',
-        "possibleactions" => array( "placeCard" ),
+        "possibleactions" => array( "attackCards" ),
         "transitions" => array(
             "defense" => STATE_DEFENSE,
             "support" => STATE_SUPPORT

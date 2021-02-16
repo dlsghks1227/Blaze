@@ -124,14 +124,11 @@ class BlazeBananani extends Table
 
         // Get information about players
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
-        $sql = "SELECT player_id id, player_score score FROM player ";
         $result = array(
-            'players' => self::getCollectionFromDb( $sql ),
-            'playersNumber' => self::getPlayersNumber(),
-            'playerTurn' => Players::
-            'hand' => Cards::GetHand($current_player_id, true),
-            'deckCount' => Cards::GetDeckCount(),
-            'countCards' => Cards::GetCountCardsByLocationInPlayers(),
+            'playersInfo' => Players::getData(self::getCurrentPlayerId()),
+            'playerCount' => self::getPlayersNumber(),
+            'playerTurn' => Players::getCurrentTurn(),
+            'deckCount' => Cards::getDeckCount(),
         );
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).

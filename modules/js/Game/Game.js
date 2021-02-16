@@ -6,13 +6,6 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
         constructor: function() {
             this._notifications = [];
             this._activeStates = [];
-
-            this._cardWidth = 72;
-            this._cardHeight = 96;
-
-            this._playerHand = new ebg.stock();
-            this._playerHand.create(this, $('hand'), this._cardWidth, this._cardHeight);
-            this._playerHand.image_items_per_row = 10;
         },
 
         setLoader: function(value, max) {
@@ -28,24 +21,6 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
         },
 
         setup: function(gamedatas) {
-            // 플레이어 스톡 추가 및 핸드 초기화
-            
-            for (var color = 0; color < 3; color++)
-            {
-                for (var value = 1; value <= 10; value++)
-                {
-                    var card_type_id = this.getCardUniqueId(color, value);
-                    this._playerHand.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
-                }
-            }
-
-            for (var i in this.gamedatas.hand) {
-                var card = this.gamedatas.hand[i];
-                this._playerHand.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id);
-            }
-
-            dojo.connect( this._playerHand, 'onChangeSelection', this, 'onPlayerHandSelectionChanged' );
-
             this.setupNotifications();
         },
 
@@ -128,11 +103,6 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
         },
 
         onPreferenceChange(pref, newValue){
-        },
-
-        getCardUniqueId: function (color, value) {
-            // 행 + 열 = 위치값
-            return (color * 10) + (value - 1);
         },
     });
 });

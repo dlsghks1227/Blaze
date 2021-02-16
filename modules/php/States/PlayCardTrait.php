@@ -26,4 +26,13 @@ trait PlayCardTrait
     public function stBatting() {
 
     }
+
+    public function attackCards($card_ids) {
+        self::checkAction('attackCards');
+        $cards = array_map(function($id){
+            return Cards::getCard($id);
+        }, $card_ids);
+        $player = Players::getPlayer(self::getActivePlayerId());
+        Notifications::attackCards($player, $cards);
+    }
 }

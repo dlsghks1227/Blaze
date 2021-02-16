@@ -31,23 +31,23 @@ class Players extends \APP_GameClass
         BlazeBananani::get()->reloadPlayersBasicInfos();
     }
 
-    public static function GetCurrentTurn($as_object = false) {
+    public static function getCurrentTurn($as_object = false) {
         $player_id = Log::getPlayerTurn();
-        return $as_object ? self::GetPlayer($player_id) : $player_id;
+        return $as_object ? self::getPlayer($player_id) : $player_id;
     }
 
-    public static function GetActivePlayer() {
-        return self::GetPlayers(BlazeBananani::get()->getActivePlayerId());
+    public static function getActivePlayer() {
+        return self::getPlayers(BlazeBananani::get()->getActivePlayerId());
     }
 
-    public static function GetPlayer($player_id) {
-        $players = self::GetPlayers([$player_id]);
+    public static function getPlayer($player_id) {
+        $players = self::getPlayers([$player_id]);
         return $players[0];
     }
 
-    public static function GetPlayers($players_id = null, $as_array_collection = false)
+    public static function getPlayers($players_id = null, $as_array_collection = false)
     {
-        $columns = array("id", "no", "name", "color", "score");
+        $columns = array("id", "no", "name", "eliminated", "color", "score", "zombie");
         $sql_columns = array();
         foreach($columns as $col) $sql_columns[] = "player_$col";
         $sql = "SELECT " . implode(", ", $sql_columns) . " FROM player";
@@ -66,5 +66,11 @@ class Players extends \APP_GameClass
         }
 
         return $players;
+    }
+
+    public static function getData($current_player) {
+        return array_map(function($player) use ($current_player){
+            return $player->getData($current_player);
+        }, self::getPlayers());
     }
 }

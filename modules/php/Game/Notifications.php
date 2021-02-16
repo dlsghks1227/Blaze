@@ -2,6 +2,7 @@
 namespace Blaze\Game;
 
 use BlazeBananani;
+use Blaze\Cards\Cards;
 use Blaze\Players\Players;
 
 class Notifications {
@@ -19,5 +20,18 @@ class Notifications {
             "cards" => $cards
         );
         self::notify($player_id, 'drawCard', $msg, $data);
+    }
+
+    public static function attackCards($player, $cards) {
+        $msg = clienttranslate('${player_name} attacks with ${amount} cards');
+        $cardsData = array_map(function($card){ return $card->getData(); }, $cards);
+        self::notifyAll("attackCards", $msg, [
+            'i18n' => array(),
+            'player_name' => $player->getName(),
+            'player_id' => $player->getId(),
+            'amount' => count($cards),
+            'cards' => $cardsData,
+            'deckCount' => Cards::getDeckCount(),
+        ]);
     }
 }

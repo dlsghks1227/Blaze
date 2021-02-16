@@ -47,6 +47,14 @@
 		$this->game->placeCard($card_id);
 		self::ajaxResponse();
 	}
+
+	public function attackCards()
+	{
+		self::setAjaxMode();
+		$cards = explode(";", self::getArg("cards", AT_numberlist, false));
+		$result = $this->game->attackCards($cards);
+		self::ajaxResponse();
+	}
   }
   
 

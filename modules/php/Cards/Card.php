@@ -16,7 +16,7 @@ class Card extends \APP_GameClass
         $this->value = $value;
     }
 
-    public function format()
+    public function getData()
     {
         return array(
             "id" => $this->id,
@@ -25,7 +25,7 @@ class Card extends \APP_GameClass
         );
     }
 
-    public function GetId()     { return $this->id; }
-    public function GetType()   { return $this->type; }
-    public function GetValue()  { return $this->value; }
+    public function getId()     { return $this->id; }
+    public function getType()   { return $this->type; }
+    public function getValue()  { return $this->value; }
 }

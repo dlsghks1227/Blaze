@@ -30,7 +30,8 @@
         <div id="hand-cards"></div>
     </div>
     <div id="table">
-        <div id="table-container"></div>
+        <div id="table-container">
+        </div>
     </div>
 </div>
 

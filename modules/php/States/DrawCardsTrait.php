@@ -16,6 +16,5 @@ trait DrawCardsTrait
         BlazeBananani::get()->notifyAllPlayers('placeCard', 'asdasd', array(
             'card_id' => $card_id
         ));
-        $this->gamestate->nextState('defense');
     }
 }

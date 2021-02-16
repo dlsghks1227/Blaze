@@ -20,6 +20,11 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             }), 'table-container');
         },
 
+        getCardUniqueId: function (color, value) {
+            // 행 + 열 = 위치값
+            return (color * 10) + (value - 1);
+        },
+
         notif_placeCard: function(notif) {
             console.log(notif);
         },
