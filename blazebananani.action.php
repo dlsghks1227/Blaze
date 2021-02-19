@@ -1,4 +1,5 @@
 <?php
+
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
@@ -20,41 +21,51 @@
  * this.ajaxcall( "/blazebananani/blazebananani/myAction.html", ...)
  *
  */
-  
-  
-  class action_blazebananani extends APP_GameAction
-  { 
-    // Constructor: please do not modify
-   	public function __default()
-  	{
-  	    if( self::isArg( 'notifwindow') )
-  	    {
-            $this->view = "common_notifwindow";
-  	        $this->viewArgs['table'] = self::getArg( "table", AT_posint, true );
-  	    }
-  	    else
-  	    {
-            $this->view = "blazebananani_blazebananani";
-            self::trace( "Complete reinitialization of board game" );
-      	}
-  	} 
-  	
-  	// TODO: defines your action entry points there
-	public function placeCard()
+
+
+class action_blazebananani extends APP_GameAction
+{
+	// Constructor: please do not modify
+	public function __default()
 	{
-		self::setAjaxMode();
-		$card_id = self::getArg("id", AT_posint, true);
-		$this->game->placeCard($card_id);
-		self::ajaxResponse();
+		if (self::isArg('notifwindow')) {
+			$this->view = "common_notifwindow";
+			$this->viewArgs['table'] = self::getArg("table", AT_posint, true);
+		} else {
+			$this->view = "blazebananani_blazebananani";
+			self::trace("Complete reinitialization of board game");
+		}
 	}
 
-	public function attackCards()
+	// TODO: defines your action entry points there
+	public function attack()
 	{
 		self::setAjaxMode();
 		$cards = explode(";", self::getArg("cards", AT_numberlist, false));
-		$result = $this->game->attackCards($cards);
+		$result = $this->game->attack($cards);
 		self::ajaxResponse();
 	}
-  }
-  
 
+	public function defense()
+	{
+		self::setAjaxMode();
+		$cards = explode(";", self::getArg("cards", AT_numberlist, false));
+		$result = $this->game->defense($cards);
+		self::ajaxResponse();
+	}
+
+	public function support()
+	{
+		self::setAjaxMode();
+		$cards = explode(";", self::getArg("cards", AT_numberlist, false));
+		$result = $this->game->support($cards);
+		self::ajaxResponse();
+	}
+
+	public function pass()
+	{
+		self::setAjaxMode();
+		$result = $this->game->pass();
+		self::ajaxResponse();
+	}
+}

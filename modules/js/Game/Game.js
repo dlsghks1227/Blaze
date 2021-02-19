@@ -16,8 +16,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
             }
         },
 
-        onLoadingComplete: function() {
-            console.log('Loading complete');
+        onLoadingComplete: function () {
         },
 
         setup: function(gamedatas) {
@@ -46,42 +45,16 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
         },
 
         onEnteringState: function (stateName, args) {
-            console.log('Entering state: ' + stateName);
-
             switch (stateName) {
-
-                /* Example:
-                
-                case 'myGameState':
-                
-                    // Show some HTML block at this game state
-                    dojo.style( 'my_html_block_id', 'display', 'block' );
-                    
+                case 'playerTurn':
                     break;
-               */
-
-
                 case 'dummmy':
                     break;
             }
         },
 
         onLeavingState: function (stateName) {
-            console.log('Leaving state: ' + stateName);
-
             switch (stateName) {
-
-                /* Example:
-                
-                case 'myGameState':
-                
-                    // Hide the HTML block we are displaying only during this game state
-                    dojo.style( 'my_html_block_id', 'display', 'none' );
-                    
-                    break;
-               */
-
-
                 case 'dummmy':
                     break;
             }
@@ -100,9 +73,6 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
                     this.notifqueue.setSynchronous(notif[0] + 'Instant', 10);
                 }
             });
-        },
-
-        onPreferenceChange(pref, newValue){
         },
     });
 });

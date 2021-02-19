@@ -31,6 +31,16 @@
     </div>
     <div id="table">
         <div id="table-container">
+            <div class="textOnTable" id="textOnTable-2-2" style="grid-column:2 / span 5; grid-row:2">
+                <div class="text">Attack Cards</div>
+            </div>
+            <div class="textOnTable" id="textOnTable-2-4" style="grid-column:2 / span 5; grid-row:4">
+                <div class="text">Defense Cards</div>
+            </div>
+            <div class="cardOnTable" id="attackCardOnTable" style="grid-column:2 / span 5; grid-row:1">
+            </div>
+            <div class="cardOnTable" id="defenseCardOnTable" style="grid-column:2 / span 5; grid-row:3">
+            </div>
         </div>
     </div>
 </div>
@@ -50,16 +60,18 @@ var jstpl_table = `
 
 var jstpl_cardOnTable = `
 <div class="cardOnTable" id="cardOnTable-\${posX}-\${posY}" style="grid-column:\${posX}; grid-row:\${posY}"">
-    <div class='card' style="background-position:\${x}px \${y}px"></div>
+    <div class='card' data-filp='\${filp}' style="background-position:-\${x}px -\${y}px"></div>
 </div>
 `
 
-var jstpl_card = `
-<div class=""
+var jstpl_textOnTable = `
+<div class="textOnTable" id="textOnTable-\${posX}-\${posY}" style="grid-column:\${posX} / span \${size}; grid-row:\${posY}"">
+    <div class="text">\${text}</div>
+</div>
 `
 
 var jstpl_players = `
-<div class="blaze-player" data-pos="\${playerPos}">
+<div class="blaze-player" id="blaze-player-\${playerId}" data-pos="\${playerPos}">
     <div class="blaze-player-name" style="color:#\${playerColor}">\${playerName}</div>
     <div>\${playerCardsCount}</div>
 </div>

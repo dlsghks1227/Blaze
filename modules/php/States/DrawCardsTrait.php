@@ -8,13 +8,7 @@ use Blaze\Game\Notifications;
 
 trait DrawCardsTrait
 {
-    public function stDrawCards() {
-    }
-
-    public function placeCard($card_id) {
-        self::checkAction('placeCard');
-        BlazeBananani::get()->notifyAllPlayers('placeCard', 'asdasd', array(
-            'card_id' => $card_id
-        ));
+    public function stDrawCard() {
+        // 공격자 및 수비자 플레이어의 카드 5장이 안될경우
     }
 }

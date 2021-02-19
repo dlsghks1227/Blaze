@@ -41,5 +41,6 @@ CREATE TABLE IF NOT EXISTS `card` (
 
 
 -- Example 2: add a custom field to the standard "player" table
+ALTER TABLE `player` ADD `player_role` INT(1) UNSIGNED NOT NULL;
 -- ALTER TABLE `player` ADD `player_my_custom_field` INT UNSIGNED NOT NULL DEFAULT '0';
 

@@ -44,11 +44,28 @@ define([
                 // this.myGlobalValue = 0;
                 this._cardWidth = 72;
                 this._cardHeight = 96;
+
+                this._tokenWidth = 72;
+                this._tokenHeight = 96;
     
                 this._playerHand = new ebg.stock();
                 this._playerHand.create(this, $('hand'), this._cardWidth, this._cardHeight);
                 this._playerHand.image_items_per_row = 10;
                 this._playerHand.centerItems = true;
+
+                this._attackCardPlace = new ebg.stock();
+                this._attackCardPlace.create(this, $('attackCardOnTable'), this._cardWidth, this._cardHeight);
+                this._attackCardPlace.image_items_per_row = 10;
+                this._attackCardPlace.centerItems = true;
+                this._attackCardPlace.setSelectionMode(0);
+
+                this._defenseCardPlace = new ebg.stock();
+                this._defenseCardPlace.create(this, $('defenseCardOnTable'), this._cardWidth, this._cardHeight);
+                this._defenseCardPlace.image_items_per_row = 10;
+                this._defenseCardPlace.centerItems = true;
+                this._defenseCardPlace.setSelectionMode(0);
+                
+                // ---- 토큰 Stock 추가 예정 -----
             },
 
             /*
@@ -67,21 +84,28 @@ define([
             setup: function (gamedatas) {
                 console.log("Starting game setup");
 
-                // 플레이어 스톡 추가 및 핸드 초기화
+                // 플레이어 핸드 및 공격, 방어 스톡 이미지 설정 및 초기화
                 for (var color = 0; color < 3; color++)
                 {
                     for (var value = 1; value <= 10; value++)
                     {
                         var card_type_id = this.getCardUniqueId(color, value);
                         this._playerHand.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
+                        this._attackCardPlace.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
+                        this._defenseCardPlace.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
                     }
                 }
+
+                // 플레이어 토큰 설정 및 초기화
+                console.log(this.gamedatas);
+
 
                 // 플레이어 설정
                 this.gamedatas.playersInfo.forEach(player => {
                     let isCurrent = player.id == this.player_id;
                     player.handCount = isCurrent ? player.hand.length : player.hand;
                     dojo.place(this.format_block('jstpl_players', {
+                        playerId: player.id,
                         playerPos: player.no,
                         playerName: player.name,
                         playerColor: player.color,
@@ -94,21 +118,37 @@ define([
                 dojo.connect(this._playerHand, "onChangeSelection", this, 'onPlayerHandSelectionChanged');
 
                 // 덱 설정
-                dojo.place(this.format_block('jstpl_cardOnTable', {
+                this.placeCard(1, 1, 0, 1);
+                dojo.place(this.format_block('jstpl_textOnTable', {
                     posX: 1,
-                    posY: 1,
-                    x: this._cardWidth,
-                    y: this._cardHeight,
+                    posY: 2,
+                    size: 1,
+                    text: this.gamedatas.deckCount,
+                }), 'table-container');
+                console.log(this.gamedatas.deckCount);
+
+                // 트럼프 슈트 카드 설정
+                this.placeCard(1, 3, this.gamedatas.trumpSuitCard.type, this.gamedatas.trumpSuitCard.value);
+                dojo.place(this.format_block('jstpl_textOnTable', {
+                    posX: 1,
+                    posY: 4,
+                    size: 1,
+                    text: "Trump suit",
                 }), 'table-container');
                 
-                dojo.place(this.format_block('jstpl_table', {
-                    deckCount: this.gamedatas.deckCount,
-                }), 'cardOnTable-1-1');
+                // 공격 및 방어 카드 설정
+                this._attackCardPlace.removeAll();
+                this.gamedatas.attackCards.forEach(card => {
+                    this._attackCardPlace.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id);
+                });
+
+                this._defenseCardPlace.removeAll();
+                this.gamedatas.defenseCards.forEach(card => {
+                    this._defenseCardPlace.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id);
+                });
 
                 // 플레이어 수 설정
                 dojo.attr("board", "data-players", this.gamedatas.playersInfo.length);
-
-                console.log(this.gamedatas);
 
                 // Setup game notifications to handle (see "setupNotifications" method below)
                 //this.setupNotifications();
@@ -137,23 +177,22 @@ define([
 
                 if (this.isCurrentPlayerActive()) {
                     switch (stateName) {
-                        case 'attack':
-                            // 공격 버튼 및 패스버튼 추가
-                            this.addActionButton('Attack', _('Attack'), () => this.onClickAttackButton(), null, false, 'blue');
-                            this.addActionButton('Pass', _('Pass'), () => this.onClickPassButton(), null, false, 'red');
+                        case 'playerTurn':
+                            if (args.activePlayerRole == '1') {
+                                this.addActionButton('Attack', _('Attack'), () => this.onClickAttackButton(), null, false, 'blue');
+                                if (args.tableOnAttackCards != 0) {
+                                    this.addActionButton('Pass', _('Pass'), () => this.onClickPassButton(), null, false, 'red');
+                                }
+                            } else if (args.activePlayerRole == '2') {
+                                this.addActionButton('Defense', _('Defense'), () => this.onClickDefenseButton(), null, false, 'blue');
+                                this.addActionButton('Retreat', _('Retreat'), () => this.onClickPassButton(), null, false, 'red');
+                            } else if (args.activePlayerRole == '3') {
+                                this.addActionButton('Support', _('Support'), () => this.onClickAttackButton(), null, false, 'blue');
+                                this.addActionButton('Pass', _('Pass'),     () => this.onClickPassButton(), null, false, 'red');
+                            }
                             break;
-                        /*               
-                                         Example:
-                         
-                                         case 'myGameState':
-                                            
-                                            // Add 3 action buttons in the action status bar:
-                                            
-                                            this.addActionButton( 'button_1_id', _('Button 1 label'), 'onMyMethodToCall1' ); 
-                                            this.addActionButton( 'button_2_id', _('Button 2 label'), 'onMyMethodToCall2' ); 
-                                            this.addActionButton( 'button_3_id', _('Button 3 label'), 'onMyMethodToCall3' ); 
-                                            break;
-                        */
+                        case 'dummmy':
+                            break;
                     }
                 }
             },
@@ -179,86 +218,6 @@ define([
                 Most of the time, these methods:
                 _ check the action is possible at this game state.
                 _ make a call to the game server
-            
-            */
-
-            /* Example:
-            
-            onMyMethodToCall1: function( evt )
-            {
-                console.log( 'onMyMethodToCall1' );
-                
-                // Preventing default browser reaction
-                dojo.stopEvent( evt );
-    
-                // Check that this action is possible (see "possibleactions" in states.inc.php)
-                if( ! this.checkAction( 'myAction' ) )
-                {   return; }
-    
-                this.ajaxcall( "/blazebananani/blazebananani/myAction.html", { 
-                                                                        lock: true, 
-                                                                        myArgument1: arg1, 
-                                                                        myArgument2: arg2,
-                                                                        ...
-                                                                     }, 
-                             this, function( result ) {
-                                
-                                // What to do after the server call if it succeeded
-                                // (most of the time: nothing)
-                                
-                             }, function( is_error) {
-    
-                                // What to do after the server call in anyway (success or failure)
-                                // (most of the time: nothing)
-    
-                             } );        
-            },        
-            
-            */
-
-
-            ///////////////////////////////////////////////////
-            //// Reaction to cometD notifications
-
-            /*
-                setupNotifications:
-                
-                In this method, you associate each of your game notifications with your local method to handle it.
-                
-                Note: game notification names correspond to "notifyAllPlayers" and "notifyPlayer" calls in
-                      your blazebananani.game.php file.
-            
-            */
-            // setupNotifications: function () {
-            //     console.log('notifications subscriptions setup');
-
-            //     // TODO: here, associate your game notifications with local methods
-
-            //     // Example 1: standard notification handling
-            //     // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
-
-            //     // Example 2: standard notification handling + tell the user interface to wait
-            //     //            during 3 seconds after calling the method in order to let the players
-            //     //            see what is happening in the game.
-            //     // dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
-            //     // this.notifqueue.setSynchronous( 'cardPlayed', 3000 );
-            //     // 
-            // },
-
-            // TODO: from this point and below, you can write your game notifications handling methods
-
-            /*
-            Example:
-            
-            notif_cardPlayed: function( notif )
-            {
-                console.log( 'notif_cardPlayed' );
-                console.log( notif );
-                
-                // Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call
-                
-                // TODO: play the card in the user interface.
-            },    
             
             */
         });

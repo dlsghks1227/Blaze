@@ -79,6 +79,20 @@ class Cards extends \APP_GameClass
         return self::getDeck()->countCardsByLocationArgs('hand');
     }
 
+    public static function moveCard($mixed, $location, $arg = 0) {
+        $id = ($mixed instanceof Card) ? $mixed->getId() : $mixed;
+        self::getDeck()->moveCard($id, $location, $arg);
+    }
+
+    public static function moveAttackCards($cards) {
+        foreach ($cards as $card) self::moveCard($card, 'attackCards');
+    }
+
+    public static function moveDefenseCards($cards) {
+        foreach ($cards as $card) self::moveCard($card, 'defenseCards');
+    }
+
+
     // 위치에 있는 카드의 숫자 반환
     public static function countCards($location, $player = null) {
         if (is_null($player)) {
@@ -94,9 +108,24 @@ class Cards extends \APP_GameClass
     }
 
     // $player_id의 hand에 있는 카드들(cards) 정보 반환
-    public static function getHand($player_id, $formatted = false) {
+    public static function getHand($player_id) {
         $cards = self::toObjects(self::getDeck()->getCardsInLocation('hand', $player_id));
-        return $formatted ? self::formatCards($cards) : $cards;
+        return self::formatCards($cards);
+    }
+
+    public static function getTrumpSuitCard() {
+        $card = self::toObjects(self::getDeck()->getCardsInLocation('trumpSuitCard'));
+        return self::formatCards($card)[0];
+    }
+
+    public static function getAttackCards() {
+        $cards = self::toObjects(self::getDeck()->getCardsInLocation('attackCards'));
+        return self::formatCards($cards);
+    }
+
+    public static function getDefenseCards() {
+        $cards = self::toObjects(self::getDeck()->getCardsInLocation('defenseCards'));
+        return self::formatCards($cards);
     }
 
     public static function draw($nbr, $player_id) {
@@ -107,6 +136,12 @@ class Cards extends \APP_GameClass
             $cards = self::toObjects(self::getDeck()->pickCards($nbr, 'deck', $player_id));
             return $cards;
         }
+    }
+
+    public static function drawTrumpSuitCard() {
+        $card = self::resToObject(self::getDeck()->getCardOnTop('deck'));
+        self::getDeck()->moveCard($card->getId(), 'trumpSuitCard');
+        return $card;
     }
 
     public static function moveToTemplateDeck($nbr) {

@@ -53,181 +53,135 @@
 $machinestates = array(
 
     // The initial state. Please do not modify.
-    STATE_GAME_SETUP => array(
+    ST_GAME_SETUP => array(
         "name" => "gameSetup",
         "description" => "",
         "type" => "manager",
         "action" => "stGameSetup",
         "transitions" => array( 
-            "" => STATE_START_OF_ROUND 
+            "" => ST_START_OF_ROUND 
         )
     ),
 
-    STATE_START_OF_ROUND => array(
+    ST_START_OF_ROUND => array(
         "name" => "startOfRound",
-        "description" => '',
+        "description" => "",
         "type" => "game",
-        "action" => 'stStartOfRound',
+        "action" => "stStartOfRound",
+        "updateGameProgression" => true,
         "transitions" => array(
-            '' => STATE_START_OF_TURN
+            "" => ST_START_OF_MAIN_TURN,
         )
     ),
 
-    STATE_END_OF_ROUND => array(
+    ST_END_OF_ROUND => array(
         "name" => "endOfRound",
-        "description" => '',
-        "type" => 'game',
-        "action" => '',
-		'updateGameProgression' => true,
-        'transitions' => array(
-            'batting' => STATE_BATTING
-        )
-    ),
-
-    STATE_START_OF_TURN => array(
-        "name" => "startOfTurn",
-        "description" => '',
+        "description" => "",
         "type" => "game",
-        "action" => 'stStartOfTurn',
+        "action" => "stEndOfRound",
         "transitions" => array(
-            'attack' => STATE_ATTACK
+            "" => ST_BATTING,
         )
     ),
 
-    STATE_END_OF_TURN => array(
+    ST_START_OF_MAIN_TURN => array(
+        "name" => "startOfMainTurn",
+        "description" => "",
+        "type" => "game",
+        "action" => "stStartOfMainTurn",
+        "transitions" => array(
+            "" => ST_START_OF_SUB_TURN,
+        )
+    ),
+
+    ST_END_OF_MAIN_TURN => array(
+        "name" => "endOfMainTurn",
+        "description" => "",
+        "type" => "game",
+        "action" => "stEndOfMainTurn",
+        "transitions" => array(
+            "start" => ST_START_OF_MAIN_TURN,
+            "end" => ST_END_OF_ROUND,
+        )
+    ),
+
+    ST_START_OF_SUB_TURN => array(
+        "name" => "startOfSubTurn",
+        "description" => "",
+        "type" => "game",
+        "action" => "stStartOfSubTurn",
+        "transitions" => array(
+            "" => ST_PLAYER_TURN,
+        )
+    ),
+
+    ST_END_OF_SUB_TURN => array(
+        "name" => "endOfSubTurn",
+        "description" => "",
+        "type" => "game",
+        "action" => "stEndOfSubTurn",
+        "transitions" => array(
+            "start" => ST_START_OF_SUB_TURN,
+            "end" => ST_DRAW_CARD,
+        )
+    ),
+
+    ST_PLAYER_TURN => array(
+        "name" => "playerTurn",
+        "description" => clienttranslate('${actplayer} can play a card'),
+        "descriptionmyturn" => clienttranslate('${you} can play a card'),
+        "type" => "activeplayer",
+        "args" => "argPlayerTurn",
+        "possibleactions" => array("attack", "defense", "support", "pass"),
+        "transitions" => array(
+            "next" => ST_NEXT_PLAYER,
+        )
+    ),
+
+    ST_NEXT_PLAYER => array(
         "name" => "nextPlayer",
-        "description" => '',
-        "type" => 'game',
-        "action" => 'stEndOfTurn',
-        'transitions' => array(
-            'draw' => STATE_DRAW_CARDS
-        )
-    ),
-
-    STATE_NEXT_PLAYER => array(
-        "name" => "nextPlayer",
-        "description" => '',
-        "type" => 'game',
-        "action" => 'stNextPlayer',
-		'updateGameProgression' => true,
-        'transitions' => array(
-            'start' => STATE_START_OF_TURN,
-            'end' => STATE_END_OF_ROUND
-        )
-    ),
-
-    STATE_DRAW_CARDS => array(
-        "name" => "drawCards",
-        "description" => '',
-        "type" => 'game',
-        "action" => 'stDrawCards',
-        "transitions" => array(
-            'next' => STATE_NEXT_PLAYER
-        )
-    ),
-
-    STATE_ATTACK => array(
-        "name" => "attack",
-        "description" => '',
-        "descriptionmyturn" => '',
-        "type" => 'activeplayer',
-        "action" => 'stAttack',
-        "possibleactions" => array( "attackCards" ),
-        "transitions" => array(
-            "defense" => STATE_DEFENSE,
-            "support" => STATE_SUPPORT
-        )
-    ),
-
-    STATE_SUPPORT => array(
-        "name" => "support",
-        "description" => '',
-        "descriptionmyturn" => '',
-        "type" => 'activeplayer',
-        "action" => 'stSupport',
-        'transitions' => array(
-        )
-    ),
-    
-    STATE_DEFENSE => array(
-        "name" => "defense",
-        "description" => '',
-        "descriptionmyturn" => '',
-        "type" => 'activeplayer',
-        "action" => 'stDefense',
-        "transitions" => array(
-            'success' => STATE_DEFENSE_SUCCESS,
-            'failure' => STATE_DEFENSE_FAILURE,
-        )
-    ),
-
-    STATE_DEFENSE_SUCCESS => array(
-        "name" => "defenseSuccess",
-        "description" => '',
-        "type" => 'game',
-        "action" => 'stDefenseSuccess',
-        'transitions' => array(
-            'end' => STATE_END_OF_TURN,
-        )
-    ),
-
-    STATE_DEFENSE_FAILURE => array(
-        "name" => "defenseFailure",
-        "description" => '',
-        "type" => 'game',
-        "action" => 'stDefenseFailure',
-        'transitions' => array(
-            'end' => STATE_END_OF_TURN,
-        )
-    ),
-
-    STATE_BATTING => array(
-        "name" => "batting",
-        "description" => '',
-        'descriptionmyturn' => '',
-        "type" => 'multipleactiveplayer',
-        "action" => '',
-        'transitions' => array(
-        )
-    ),
-
-    STATE_END_OF_BATTING => array(
-        "name" => "endOfBatting",
-        "description" => '',
-        'descriptionmyturn' => '',
-        "type" => 'multipleactiveplayer',
-        "action" => '',
-        'transitions' => array(
-            'start' => STATE_START_OF_ROUND,
-        )
-    ),
-    
-/*
-    Examples:
-    
-    2 => array(
-        "name" => "nextPlayer",
-        "description" => '',
+        "description" => "",
         "type" => "game",
         "action" => "stNextPlayer",
-        "updateGameProgression" => true,   
-        "transitions" => array( "endGame" => 99, "nextPlayer" => 10 )
+        "transitions" => array(
+            "next" => ST_END_OF_SUB_TURN,
+        )
     ),
-    
-    10 => array(
-        "name" => "playerTurn",
-        "description" => clienttranslate('${actplayer} must play a card or pass'),
-        "descriptionmyturn" => clienttranslate('${you} must play a card or pass'),
-        "type" => "activeplayer",
-        "possibleactions" => array( "playCard", "pass" ),
-        "transitions" => array( "playCard" => 2, "pass" => 2 )
-    ), 
 
-*/    
+    ST_DRAW_CARD => array(
+        "name" => "drawCard",
+        "description" => "",
+        "type" => "game",
+        "action" => "stDrawCard",
+        "transitions" => array(
+            "" => ST_END_OF_MAIN_TURN,
+        ),
+    ),
+
+    ST_BATTING => array(
+        "name" => "batting",
+        "description" => "",
+        "type" => "multipleactiveplayer",
+        "possibleactions" => array( "batting" ),
+        "transitions" => array(
+            "" => ST_END_OF_BATTING
+        )
+    ),
+
+    ST_END_OF_BATTING => array(
+        "name" => "endOfBatting",
+        "description" => "",
+        "type" => "game",
+        "action" => "stEndOfBatting",
+        "transitions" => array(
+            "start" => ST_START_OF_ROUND,
+            "end" => ST_END_GAME,
+        )
+    ),
    
     // Final state.
     // Please do not modify (and do not overload action/args methods).
-    STATE_END_GAME => array(
+    ST_END_GAME => array(
         "name" => "gameEnd",
         "description" => clienttranslate("End of game"),
         "type" => "manager",
@@ -236,6 +190,3 @@ $machinestates = array(
     )
 
 );
-
-
-
