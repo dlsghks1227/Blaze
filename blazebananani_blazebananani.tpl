@@ -37,10 +37,9 @@
             <div class="textOnTable" id="textOnTable-2-4" style="grid-column:2 / span 5; grid-row:4">
                 <div class="text">Defense Cards</div>
             </div>
-            <div class="cardOnTable" id="attackCardOnTable" style="grid-column:2 / span 5; grid-row:1">
-            </div>
-            <div class="cardOnTable" id="defenseCardOnTable" style="grid-column:2 / span 5; grid-row:3">
-            </div>
+            <div class="cardOnTable" id="deckOnTable" style="margin-left: 10px; grid-column:1 / span 6; grid-row:1"></div>
+            <div class="cardOnTable" id="attackCardOnTable" style="grid-column:2 / span 5; grid-row:1"></div>
+            <div class="cardOnTable" id="defenseCardOnTable" style="grid-column:2 / span 5; grid-row:3"></div>
         </div>
     </div>
 </div>
@@ -73,7 +72,6 @@ var jstpl_textOnTable = `
 var jstpl_players = `
 <div class="blaze-player" id="blaze-player-\${playerId}" data-pos="\${playerPos}">
     <div class="blaze-player-name" style="color:#\${playerColor}">\${playerName}</div>
-    <div>\${playerCardsCount}</div>
 </div>
 `
 // Javascript HTML templates

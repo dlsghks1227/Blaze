@@ -3,6 +3,7 @@
 namespace Blaze\Cards;
 
 use Blaze\Cards\Card;
+use Blaze\Players\Players;
 use Blaze\Game\Log;
 use Blaze\Game\Notifications;
 
@@ -37,6 +38,7 @@ class Cards extends \APP_GameClass
 
         self::GetDeck()->CreateCards($cards, 'deck');
         self::GetDeck()->shuffle('deck');
+        self::GetDeck()->autoreshuffle = false;
     }
 
     public static function formatCard($card)
@@ -68,7 +70,8 @@ class Cards extends \APP_GameClass
     }
 
     public static function getAllCardsInDeck() {
-        return self::getDeck()->getCardsInLocation('deck');
+        $cards = self::toObjects(self::getDeck()->getCardsInLocation('deck'));
+        return $cards;
     }
 
     public static function getAllCardsInCurrentPlayer($current_player_id) {
@@ -92,6 +95,15 @@ class Cards extends \APP_GameClass
         foreach ($cards as $card) self::moveCard($card, 'defenseCards');
     }
 
+    public static function moveAttackAndDefenseCards($player_id) {
+        self::getDeck()->moveAllCardsInLocation('attackCards', 'hand', null, $player_id);
+        self::getDeck()->moveAllCardsInLocation('defenseCards', 'hand', null, $player_id);
+    }
+
+    public static function discardAttackAndDefenseCards() {
+        self::getDeck()->moveAllCardsInLocation('attackCards', 'discard');
+        self::getDeck()->moveAllCardsInLocation('defenseCards', 'discard');
+    }
 
     // 위치에 있는 카드의 숫자 반환
     public static function countCards($location, $player = null) {
@@ -130,11 +142,11 @@ class Cards extends \APP_GameClass
 
     public static function draw($nbr, $player_id) {
         // 덱에 남아있는 카드가 있을 경우 드로우
-        if (self::getDeckCount() == 0) {
+        if (self::getDeckCount() < 0) {
             return null;
         } else {
             $cards = self::toObjects(self::getDeck()->pickCards($nbr, 'deck', $player_id));
-            return $cards;
+            return self::formatCards($cards);
         }
     }
 

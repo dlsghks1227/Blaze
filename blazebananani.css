@@ -66,20 +66,30 @@
         background-repeat: none;
     }
 */
+
+.stockitem_selected {
+	border: 2px solid white ! important;
+    top: -30px ! important;
+}
+
 div#board
 {
     width: 100%;
-    max-width: 1200px;
-    min-height: 800px;
+    min-width: 1500px;
+    min-height: 950px;
     margin: auto;
     position: relative;
     display: grid;
     grid-template-columns: repeat(14, 1fr);
-    grid-template-rows: repeat(6, 1fr); }
+    grid-template-rows: repeat(6, 1fr); 
+    background-image: url("img/Blaze-Background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;}
 
     div#board #table, div#board .button, div#board div#hand, div#board .blaze-player
     {
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(0, 0, 0, 0.65);
         border-radius: 5px;
         margin: 10px;
         display: flex;
@@ -111,15 +121,15 @@ div#board
 
 				div#board div#table div#table-container .cardOnTable .card[data-filp="front"] {
 					position: absolute;
-					width: 72px;
-					height: 96px;
-					background-image: url('img/cards.jpg'); }
+					width: 108px;
+					height: 168px;
+					background-image: url('img/cards.png'); }
 
                 div#board div#table div#table-container .cardOnTable .card[data-filp="back"] {
                     position: absolute;
-					width: 72px;
-					height: 96px;
-					background-image: url('img/game_box.png'); }
+					width: 108px;
+					height: 168px;
+					background-image: url('img/card-back.png'); }
             
             div#board div#table div#table-container .textOnTable {
                 width: 100%;
@@ -148,8 +158,11 @@ div#board
     div#board div#hand
     {
         grid-row: 6;
-        grid-column: 3 / span 10;
-    }
+        grid-column: 3 / span 10; }
+
+        div#board div#hand div#hand-cards {
+            margin: 10px;
+            width: 100%;}
 
     div#board .blaze-player .blaze-player-name
     {
@@ -167,6 +180,7 @@ div#board
         grid-column: 1 / span 4; }
     
 
+
     div#board[data-players="4"] .blaze-player[data-pos="1"] {
         grid-row: 1;
         grid-column: 6 / span 4; }
@@ -179,6 +193,7 @@ div#board
     div#board[data-players="4"] .blaze-player[data-pos="4"] {
         grid-row: 3;
         grid-column: 1 / span 4; }
+        
 
     div#board[data-players="5"] .blaze-player[data-pos="1"] {
         grid-row: 1;

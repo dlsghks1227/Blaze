@@ -63,10 +63,16 @@ class Player extends \APP_GameClass
     public function updateRole($role) {
         $this->role = $role;
         $this->save();
+        if ($role != 0) {
+            Notifications::changeRole($this);
+        }
     }
 
     public function drawCards($amount) {
-        $cards = Cards::draw($amount, $this->id);
+        if ($amount > 0) {
+            $cards = Cards::draw($amount, $this->id);
+            Notifications::drawCards($this, $cards);
+        }
     }
 
     public function attack($cards) {

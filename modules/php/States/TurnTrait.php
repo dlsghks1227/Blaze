@@ -37,55 +37,61 @@ trait TurnTrait
 
     public function stEndOfRound() {
 
+        // 라운드가 끝나면 2라운드로 설정
+        BlazeBananani::get()->setGameStateValue("round", 2);
+
     }
 
     public function stStartOfMainTurn() {
         // 공격자 및 수비자, 지원자 지정
         // 공격자 = 1, 수비자 = 2, 지원자 = 3
         $player = Players::getActivePlayer();
-        if ($player->getRole() == 0) {
-            Players::updatePlayersRole($player->getId());
-        } else {
-            
-        }
+        Players::updatePlayersRole($player->getId());
 
-        // 공격 및 방어 상태 초기화
+        // 순서 및 수비 성공 여부 초기화
         BlazeBananani::get()->setGameStateValue("nextOrder", 0);
+        BlazeBananani::get()->setGameStateValue('isAttacked', 0 );
+        BlazeBananani::get()->setGameStateValue('isDefensed', 0 );
 
         // stStartOfSubTurn
         $this->gamestate->nextState("");
     }
 
     public function stEndOfMainTurn() {
-
-    }
-
-    public function stStartOfSubTurn() {
-        // 공격 카드에 카드가 없으면 공격자 턴 시작
         $players = Players::getPlayers();
-        $next_order = BlazeBananani::get()->getGameStateValue("nextOrder");
-        $order = $next_order == 0 ? ATTACKER : $next_order;
+        $is_defensed = BlazeBananani::get()->getGameStateValue("isDefensed");
 
+        // 수비 성공시 수비자 -> 공격자
+        // 수비 실패시 지원자 -> 공격자
+        $role = $is_defensed == DEFENSE_SUCCESS ? DEFENDER : VOLUNTEER;
         foreach ($players as $player) {
-            if ($player->getRole() == $order) {
+            if ($player->getRole() == $role) {
                 $this->gamestate->changeActivePlayer($player->getId());
                 break;
             }
         }
 
-        BlazeBananani::get()->setGameStateValue("nextOrder", Players::getNextRole($next_order));
-        
+        // 역할 초기화
+        foreach ($players as $player) {
+            $player->updateRole(0);
+        }
+
+        $this->gamestate->nextState("start");
+    }
+
+    public function stStartOfSubTurn() {
+
         // stPlayerTurn
         $this->gamestate->nextState("");
     }
 
     public function stEndOfSubTurn() {
-        $attack_cards_count = Cards::countCards('attackCards');
+        $is_defensed = BlazeBananani::get()->getGameStateValue("isDefensed");
 
-        if ($attack_cards_count == 5) {
+        if ($is_defensed == DEFENSE_FAILURE || $is_defensed == DEFENSE_SUCCESS) {
             $this->gamestate->nextState("end");
+            return;
         }
-
         // stStartOfSubTurn
         $this->gamestate->nextState("start");
     }

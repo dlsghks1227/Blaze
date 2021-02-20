@@ -42,16 +42,18 @@ define([
                 // Here, you can init the global variables of your user interface
                 // Example:
                 // this.myGlobalValue = 0;
-                this._cardWidth = 72;
-                this._cardHeight = 96;
+                this._cardWidth = 108;
+                this._cardHeight = 168;
 
                 this._tokenWidth = 72;
                 this._tokenHeight = 96;
     
                 this._playerHand = new ebg.stock();
-                this._playerHand.create(this, $('hand'), this._cardWidth, this._cardHeight);
+                this._playerHand.create(this, $('hand-cards'), this._cardWidth, this._cardHeight);
                 this._playerHand.image_items_per_row = 10;
                 this._playerHand.centerItems = true;
+                this._playerHand.setOverlap(60, 0);
+                this._playerHand.setSelectionAppearance('class');
 
                 this._attackCardPlace = new ebg.stock();
                 this._attackCardPlace.create(this, $('attackCardOnTable'), this._cardWidth, this._cardHeight);
@@ -64,6 +66,14 @@ define([
                 this._defenseCardPlace.image_items_per_row = 10;
                 this._defenseCardPlace.centerItems = true;
                 this._defenseCardPlace.setSelectionMode(0);
+
+                this._deck = new ebg.stock();
+                this._deck.create(this, $('deckOnTable'), this._cardWidth, this._cardHeight);
+                this._deck.image_items_per_row = 1;
+                this._deck.setSelectionMode(0);
+                this._deck.setOverlap(1, 0);
+
+                this._otherPlayerHand = new Map();
                 
                 // ---- 토큰 Stock 추가 예정 -----
             },
@@ -90,15 +100,15 @@ define([
                     for (var value = 1; value <= 10; value++)
                     {
                         var card_type_id = this.getCardUniqueId(color, value);
-                        this._playerHand.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
-                        this._attackCardPlace.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
-                        this._defenseCardPlace.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.jpg', card_type_id);
+                        this._playerHand.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.png', card_type_id);
+                        this._attackCardPlace.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.png', card_type_id);
+                        this._defenseCardPlace.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.png', card_type_id);
+                        this._deck.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/card-back.png', 0);
                     }
                 }
 
                 // 플레이어 토큰 설정 및 초기화
                 console.log(this.gamedatas);
-
 
                 // 플레이어 설정
                 this.gamedatas.playersInfo.forEach(player => {
@@ -109,23 +119,39 @@ define([
                         playerPos: player.no,
                         playerName: player.name,
                         playerColor: player.color,
-                        playerCardsCount: player.handCount,
                     }), 'board');
+                    
                     if (isCurrent) {
                         player.hand.forEach(card => this._playerHand.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id));
                     }
+
+                    this._otherPlayerHand.set(player.id, new ebg.stock());
+                    let playerHand = this._otherPlayerHand.get(player.id);
+                    playerHand.create(this, $('blaze-player-' + player.id), this._cardWidth, this._cardHeight);
+                    playerHand.image_items_per_row = 1;
+                    playerHand.setSelectionMode(0);
+                    playerHand.setOverlap(10, 0);
+                    for (var color = 0; color < 3; color++)
+                    {
+                        for (var value = 1; value <= 10; value++)
+                        {
+                            var card_type_id = this.getCardUniqueId(color, value);
+                            playerHand.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/card-back.png', 0);
+                        }
+                    }
+                    for (var i = 0; i < player.handCount; i++) {
+                        playerHand.addToStock(0);
+                    }
                 });
+
                 dojo.connect(this._playerHand, "onChangeSelection", this, 'onPlayerHandSelectionChanged');
 
                 // 덱 설정
-                this.placeCard(1, 1, 0, 1);
-                dojo.place(this.format_block('jstpl_textOnTable', {
-                    posX: 1,
-                    posY: 2,
-                    size: 1,
-                    text: this.gamedatas.deckCount,
-                }), 'table-container');
-                console.log(this.gamedatas.deckCount);
+                this._deck.removeAll();
+                for (var i = 0; i < (this.gamedatas.deckCards.length / 3); i++) {
+                    this._deck.addToStock(0);
+                }
+                console.log(this.gamedatas.deckCards.length);
 
                 // 트럼프 슈트 카드 설정
                 this.placeCard(1, 3, this.gamedatas.trumpSuitCard.type, this.gamedatas.trumpSuitCard.value);

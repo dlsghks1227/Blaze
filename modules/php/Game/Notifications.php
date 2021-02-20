@@ -14,12 +14,28 @@ class Notifications {
         BlazeBananani::get()->notifyPlayer($pID, $name, $message, $data);
     }
 
-    public static function DrawCards($player_id, $cards) {
-        $msg = clienttranslate("aa");
+    public static function drawCards($player, $cards) {
+        $msg = clienttranslate('${player_name} draws ${amount} cards');
         $data = array(
-            "cards" => $cards
+            'i18n' => array(),
+            'player_name' => $player->getName(),
+            'player_id' => $player->getId(),
+            "amount" => count($cards),
+            "cards" => $cards,
         );
-        self::notify($player_id, 'drawCard', $msg, $data);
+        self::notify($player->getId(), 'drawCard', $msg, $data);
+    }
+
+    public static function defenseFailed($player, $attack_cards, $defense_cards) {
+        $msg = clienttranslate('${player_name} defensed failed');
+        $data = array(
+            'i18n' => array(),
+            'player_name' => $player->getName(),
+            'player_id' => $player->getId(),
+            'attackCards' => $attack_cards,
+            'defenseCards' => $defense_cards,
+        );
+        self::notifyAll("defenseFailed", $msg, $data);
     }
 
     public static function attack($player, $cards) {

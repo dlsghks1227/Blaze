@@ -65,7 +65,8 @@ class BlazeBananani extends Table
             "trumpSuit" => 10,
             "round" => 11,
             "nextOrder" => 12,
-            ""
+            "isAttacked" => 13,
+            "isDefensed" => 14,
         ));        
 	}
     public static function get()
@@ -95,8 +96,9 @@ class BlazeBananani extends Table
         // Init global values with their initial values
         self::setGameStateInitialValue('trumpSuit', BLUE );
         self::setGameStateInitialValue('round', 1 );
-
         self::setGameStateInitialValue('nextOrder', 0 );
+        self::setGameStateInitialValue('isAttacked', 0 );
+        self::setGameStateInitialValue('isDefensed', 0 );
         
         // Init game statistics
         // (note: statistics used in this file must be defined in your stats.inc.php file)
@@ -133,7 +135,7 @@ class BlazeBananani extends Table
             'playersInfo'   => Players::getData(self::getCurrentPlayerId()),
             'playerCount'   => self::getPlayersNumber(),
             'playerTurn'    => Players::getCurrentTurn(),
-            'deckCount'     => Cards::getDeckCount(),
+            'deckCards'     => Cards::getAllCardsInDeck(),
             'attackCards'   => Cards::getAttackCards(),
             'defenseCards'  => Cards::getDefenseCards(),
             'trumpSuitCard' => Cards::getTrumpSuitCard(),

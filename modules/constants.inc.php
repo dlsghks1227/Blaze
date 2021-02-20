@@ -39,6 +39,5 @@ define('VOLUNTEER', 3);
 /*
  *  Defense state
  */
-define('DEFENSE_DEFAULT',  0);
 define('DEFENSE_SUCCESS',  1);
 define('DEFENSE_FAILURE',  2);

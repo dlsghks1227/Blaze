@@ -12,6 +12,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
 
         notif_attack: function(notif) {
+            console.log("attack " + notif.args.cards);
             this.placeAttackCards(notif.args.player_id, notif.args.cards);
         },
 
