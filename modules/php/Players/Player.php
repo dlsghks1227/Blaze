@@ -2,6 +2,7 @@
 namespace Blaze\Players;
 
 use Blaze\Cards\Cards;
+use Blaze\Cards\BattingCards;
 use Blaze\Game\Notifications;
 
 class Player extends \APP_GameClass
@@ -44,6 +45,7 @@ class Player extends \APP_GameClass
             'role'          => $this->role,
             'eliminated'    => $this->eliminated,
             'hand'          => ($current) ? array_values(Cards::getHand($this->id)) : Cards::countCards('hand', $this->id),
+            'battingCards'  => ($current) ? array_values(BattingCards::getHand($this->id)) : BattingCards::countCards('hand', $this->id),
         );
     }
 
@@ -56,8 +58,17 @@ class Player extends \APP_GameClass
         self::DbQuery("UPDATE player SET `player_eliminated` = $eliminated, `player_role` = {$this->role} WHERE `player_id` = {$this->id}");
     }
 
+    public function pushBatting($player_id, $value) {
+
+    }
+
+    public function resetBatting() {
+
+    }
+
     public function eliminate() {
-        
+        $this->eliminated = true;
+        $this->save();
     }
 
     public function updateRole($role) {

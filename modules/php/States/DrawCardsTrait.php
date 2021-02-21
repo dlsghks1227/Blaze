@@ -20,17 +20,18 @@ trait DrawCardsTrait
         
         for ($i = ATTACKER; $i <= VOLUNTEER; $i++) {
             foreach ($players as $player) {
-                if ($i == DEFENDER) {
-                    if ($is_defensed == DEFENSE_FAILURE) {
-                        $attack_cards = self::getAttackCards();
-                        $defense_cards = self::getDefenseCards();
-                        Cards::moveAttackAndDefenseCards($player->getId());
-                        Notifications::defenseFailed($player, $attack_cards, $defense_cards);
-                    } else {
-                        Cards::discardAttackAndDefenseCards();
-                    }
-                }
                 if ($player->getRole() == $i) {
+                    if ($i == DEFENDER) {
+                        if ($is_defensed == DEFENSE_FAILURE) {
+                            $attack_cards = Cards::getAttackCards();
+                            $defense_cards = Cards::getDefenseCards();
+                            Cards::moveAttackAndDefenseCards($player->getId());
+                            Notifications::defenseFailed($player, $attack_cards, $defense_cards);
+                        } else {
+                            Cards::discardAttackAndDefenseCards();
+                        }
+                    }
+
                     $deckCount = Cards::getDeckCount();
                     if ($deckCount > 0) {
                         $count = Cards::countCards('hand', $player->getId());
@@ -43,5 +44,25 @@ trait DrawCardsTrait
         }
 
         $this->gamestate->nextState("");
+    }
+
+    public function stBatting() {
+        $this->gamestate->setAllPlayersMultiactive();
+    }
+
+    public function stEndOfBatting() {
+        
+        // stStartOfMainTurn
+        $this->gamestate->nextState("");
+    }
+
+    public function batting($selected_player_id) {
+        self::checkAction('batting');
+        $player_id = self::getCurrentPlayerId();
+
+        // logic
+
+        // stEndOfBatting
+        $this->gamestate->setPlayerNonMultiactive($player_id, "");
     }
 }

@@ -4,7 +4,6 @@ namespace Blaze\Cards;
 
 use Blaze\Cards\Card;
 use Blaze\Players\Players;
-use Blaze\Game\Log;
 use Blaze\Game\Notifications;
 
 class Cards extends \APP_GameClass
@@ -16,7 +15,7 @@ class Cards extends \APP_GameClass
         if (is_null(self::$deck)) {
             self::$deck = self::getNew("module.common.deck");
             self::$deck->init("card");
-            self::$deck->autoreshuffle = true;
+            self::$deck->autoreshuffle = false;
         }
         return self::$deck;
     }
@@ -36,9 +35,8 @@ class Cards extends \APP_GameClass
             }
         }
 
-        self::GetDeck()->CreateCards($cards, 'deck');
-        self::GetDeck()->shuffle('deck');
-        self::GetDeck()->autoreshuffle = false;
+        self::getDeck()->CreateCards($cards, 'deck');
+        self::getDeck()->shuffle('deck');
     }
 
     public static function formatCard($card)
@@ -53,7 +51,7 @@ class Cards extends \APP_GameClass
 
     private static function resToObject($row)
     {
-        $card = new Card($row['id'], $row['type'], $row['type_arg']);
+        $card = new Card($row['id'], $row['type'], $row['type_arg'], $row['location_arg']);
         return $card;
     }
 

@@ -2,7 +2,7 @@
  /**
   *------
   * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
-  * BlazeBananani implementation : © <Your name here> <Your email address here>
+  * BlazeBananani implementation : © <Inhwan Lee> <dlsghks1227@gmail.com>
   * 
   * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
   * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -40,6 +40,8 @@ require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 
 // PHP Class
 use Blaze\Cards\Cards;
+use Blaze\Cards\BattingCards;
+
 use Blaze\Players\Players;
 use Blaze\Game\Notifications;
 
@@ -67,6 +69,7 @@ class BlazeBananani extends Table
             "nextOrder" => 12,
             "isAttacked" => 13,
             "isDefensed" => 14,
+            "trophyNumber" => 15,
         ));        
 	}
     public static function get()
@@ -91,7 +94,9 @@ class BlazeBananani extends Table
     {    
         /************ Start the game initialization *****/
         Players::setupNewGame($players);
+
         Cards::SetupNewGame(self::getPlayersNumber());
+        BattingCards::setupNewGame($players);
         
         // Init global values with their initial values
         self::setGameStateInitialValue('trumpSuit', BLUE );
@@ -99,6 +104,7 @@ class BlazeBananani extends Table
         self::setGameStateInitialValue('nextOrder', 0 );
         self::setGameStateInitialValue('isAttacked', 0 );
         self::setGameStateInitialValue('isDefensed', 0 );
+        self::setGameStateInitialValue('trophyNumber', 0 );
         
         // Init game statistics
         // (note: statistics used in this file must be defined in your stats.inc.php file)
@@ -135,10 +141,13 @@ class BlazeBananani extends Table
             'playersInfo'   => Players::getData(self::getCurrentPlayerId()),
             'playerCount'   => self::getPlayersNumber(),
             'playerTurn'    => Players::getCurrentTurn(),
+            
             'deckCards'     => Cards::getAllCardsInDeck(),
             'attackCards'   => Cards::getAttackCards(),
             'defenseCards'  => Cards::getDefenseCards(),
             'trumpSuitCard' => Cards::getTrumpSuitCard(),
+
+            'battingCards'  => BattingCards::getBattingCards(),
         );
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).

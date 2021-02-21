@@ -3,7 +3,7 @@
 <!-- 
 --------
 -- BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
--- BlazeBananani implementation : © <Your name here> <Your email address here>
+-- BlazeBananani implementation : © <Inhwan Lee> <dlsghks1227@gmail.com>
 -- 
 -- This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
 -- See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -29,6 +29,18 @@
     <div id="hand">
         <div id="hand-cards"></div>
     </div>
+    <div id="battingHand">
+        <div id="batting-cards"></div>
+    </div>
+
+    <div id="discard">
+        <div id="discard-cards"></div>
+    </div>
+
+    <div id="trophy">
+        <div id="trophy-cards"></div>
+    </div>
+
     <div id="table">
         <div id="table-container">
             <div class="textOnTable" id="textOnTable-2-2" style="grid-column:2 / span 5; grid-row:2">
@@ -46,16 +58,19 @@
 
 <script type="text/javascript">
 
-var jstpl_table = `
-<div id="deckCount">\${deckCount}</div>
+var jstpl_overallCards = `
+<div class="overallCards" id="overallCards-\${playerId}">
+    <div id="minibetting">
+        <div class="cards" id="player-mini-betting-cards-\${playerId}"></div>
+    </div>
+    <div id="miniBetted">
+        <div class="cards" id="player-mini-betted-cards-\${playerId}"></div>
+    </div>
+    <div id="miniTrophy">
+        <div class="cards" id="player-mini-trophy-cards-\${playerId}"></div>
+    </div>
+</div>
 `
-
-        // <div class="cards" id="decks">
-        //     <div class="card" id="testButton"></div>
-        // </div>
-        // <div id="cards">
-        //     <div class="card" id="trumpSuitCard"></div>
-        // </div>
 
 var jstpl_cardOnTable = `
 <div class="cardOnTable" id="cardOnTable-\${posX}-\${posY}" style="grid-column:\${posX}; grid-row:\${posY}"">
@@ -71,7 +86,15 @@ var jstpl_textOnTable = `
 
 var jstpl_players = `
 <div class="blaze-player" id="blaze-player-\${playerId}" data-pos="\${playerPos}">
-    <div class="blaze-player-name" style="color:#\${playerColor}">\${playerName}</div>
+    <div id="player-container">
+        <div class="blaze-player-name" style="color:#\${playerColor}">\${playerName}</div>
+        <div class="player-cards">
+            <div class="cards" id="player-cards-\${playerId}"></div>
+        </div>
+        <div class="player-token-cards">
+            <div class="cards" id="player-token-cards-\${playerId}"></div>
+        </div>
+    </div>
 </div>
 `
 // Javascript HTML templates

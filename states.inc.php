@@ -2,7 +2,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * BlazeBananani implementation : © <Your name here> <Your email address here>
+ * BlazeBananani implementation : © <Inhwan Lee> <dlsghks1227@gmail.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -80,7 +80,8 @@ $machinestates = array(
         "type" => "game",
         "action" => "stEndOfRound",
         "transitions" => array(
-            "" => ST_BATTING,
+            "start" => ST_START_OF_ROUND,
+            "end" => ST_END_GAME,
         )
     ),
 
@@ -101,7 +102,7 @@ $machinestates = array(
         "action" => "stEndOfMainTurn",
         "transitions" => array(
             "start" => ST_START_OF_MAIN_TURN,
-            "end" => ST_END_OF_ROUND,
+            "end" => ST_BATTING,
         )
     ),
 
@@ -160,8 +161,10 @@ $machinestates = array(
 
     ST_BATTING => array(
         "name" => "batting",
-        "description" => "",
+        "description" => clienttranslate('Pick a card and player to bet on'),
+        "descriptionmyturn" => clienttranslate('Pick a card and player to bet on'),
         "type" => "multipleactiveplayer",
+        "action" => "stBatting",
         "possibleactions" => array( "batting" ),
         "transitions" => array(
             "" => ST_END_OF_BATTING
@@ -174,8 +177,7 @@ $machinestates = array(
         "type" => "game",
         "action" => "stEndOfBatting",
         "transitions" => array(
-            "start" => ST_START_OF_ROUND,
-            "end" => ST_END_GAME,
+            "" => ST_START_OF_MAIN_TURN,
         )
     ),
    

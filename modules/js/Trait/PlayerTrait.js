@@ -40,10 +40,22 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
 
             // 선택한 카드가 1장 이상일 때
             if (items.length > 0) {
-                if (this.checkAction('attack', true)) {
+                if (this.checkAction('attack')) {
                 }
                 else {
                     this._playerHand.unselectAll();
+                }
+            }
+        },
+
+        onPlayerBattingSelectionChanged: function() {
+            var items = this._playerToken.getSelectedItems();
+
+            if (items.length > 0) {
+                if (this.checkAction('batting')) {
+
+                } else {
+                    this._playerToken.unselectAll();
                 }
             }
         },
@@ -53,12 +65,12 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 let items = this._playerHand.getSelectedItems();
                 
                 if (items.length > 0) {
-                    let card_ids = [];
+                    let cardsId = [];
                     items.forEach(card => {
-                        card_ids.push(card.id);
+                        cardsId.push(card.id);
                     });
                     let data = {
-                        cards: card_ids.join(';'),
+                        cards: cardsId.join(';'),
                     }
                     this.takeAction("attack", data);
                     this._playerHand.unselectAll();
@@ -91,6 +103,21 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         onClickPassButton: function() {
             if (this.checkAction('pass', true)) {
                 this.takeAction('pass');
+            }
+        },
+
+        onClickBattingButton: function(playerId) {
+            console.log(playerId);
+
+            this.disconnect($('overall_player_board_' + playerId), 'onclick');
+            this.disconnect($('overall_player_board_' + playerId), 'onmouseenter');
+            this.disconnect($('overall_player_board_' + playerId), 'onmouseleave');
+
+            if (this.checkAction('batting', true)) {
+                let data = {
+                    player_id: playerId,
+                }
+                this.takeAction('batting', data);
             }
         },
 

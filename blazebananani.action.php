@@ -3,7 +3,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * BlazeBananani implementation : © <Your name here> <Your email address here>
+ * BlazeBananani implementation : © <Inhwan Lee> <dlsghks1227@gmail.com>
  *
  * This code has been produced on the BGA studio platform for use on https://boardgamearena.com.
  * See http://en.doc.boardgamearena.com/Studio for more information.
@@ -66,6 +66,14 @@ class action_blazebananani extends APP_GameAction
 	{
 		self::setAjaxMode();
 		$result = $this->game->pass();
+		self::ajaxResponse();
+	}
+
+	public function batting()
+	{
+		self::setAjaxMode();
+		$player_id = self::getArg("player_id", AT_posint, true);
+		$result = $this->game->batting($player_id);
 		self::ajaxResponse();
 	}
 }

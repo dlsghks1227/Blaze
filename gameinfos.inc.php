@@ -13,7 +13,7 @@
 $gameinfos = array( 
 
 // Name of the game in English (will serve as the basis for translation) 
-'game_name' => "My Great Game",
+'game_name' => "Blaze",
 
 // Game designer (or game designers, separated by commas)
 'designer' => 'John Doe',       
@@ -25,10 +25,10 @@ $gameinfos = array(
 'year' => 2000,                 
 
 // Game publisher (use empty string if there is no publisher)
-'publisher' => 'My Publishing Company',                     
+'publisher' => 'publisher',                     
 
 // Url of game publisher website
-'publisher_website' => 'http://www.mypublishingcompany.com/',   
+'publisher_website' => 'https://heidelbaer.de/',   
 
 // Board Game Geek ID of the publisher
 'publisher_bgg_id' => 1234,
