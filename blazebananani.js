@@ -41,72 +41,33 @@ define([
 
                 // Here, you can init the global variables of your user interface
                 // Example:
-                // this.myGlobalValue = 0;
-                this._cardWidth = 108;
-                this._cardHeight = 168;
+                this._cardWidth_L   = 108;
+                this._cardHeight_L  = 168;
 
-                this._card50Width = 72;
-                this._card50Height = 112;
+                this._cardWidth_M   = 72;
+                this._cardHeight_M  = 112;
 
-                this._miniCardWidth = 36;
-                this._miniCardHeight = 56;
+                this._cardWidth_S   = 36;
+                this._cardHeight_S  = 56;
 
-                this._tokenWidth = 108;
-                this._tokenHeight = 168;
+                this._trophyCard        = this.initStock($('trophy-cards'), 'L', 5, 1, true);
+                this._playerHand        = this.initStock($('hand-cards'), 'L', 10, 60, true, true);
 
-                this._discardCard = new ebg.stock();
-                this._discardCard.create(this, $('discard-cards'), this._cardWidth, this._cardHeight);
-                this._discardCard.image_items_per_row = 10;
-                this._discardCard.centerItems = true;
-                this._discardCard.setOverlap(1, 0);
-                this._discardCard.setSelectionMode(0);
+                this._playerToken       = this.initStock($('batting-cards'), 'L', 2, 60, true, true);
+                this._playerToken.setSelectionMode(1);
 
-                this._trophyCard = new ebg.stock();
-                this._trophyCard.create(this, $('trophy-cards'), this._cardWidth, this._cardHeight);
-                this._trophyCard.image_items_per_row = 5;
-                this._trophyCard.centerItems = true;
-                this._trophyCard.setOverlap(1, 0);
-                this._trophyCard.setSelectionMode(0);
+                this._discardCard       = this.initStock($('discard-cards'), 'L', 10, 1, false);
+                this._attackCardPlace   = this.initStock($('attackCardOnTable'), 'L', 10, 70, true);
+                this._defenseCardPlace  = this.initStock($('defenseCardOnTable'), 'L', 10, 70, true);
 
-                this._playerHand = new ebg.stock();
-                this._playerHand.create(this, $('hand-cards'), this._cardWidth, this._cardHeight);
-                this._playerHand.image_items_per_row = 10;
-                this._playerHand.centerItems = true;
-                this._playerHand.setOverlap(60, 0);
-                this._playerHand.setSelectionAppearance('class');
-                
-                this._playerToken = new ebg.stock();
-                this._playerToken.create(this, $('batting-cards'), this._cardWidth, this._cardHeight);
-                this._playerToken.image_items_per_row = 2;
-                this._playerToken.centerItems = true;
-                this._playerToken.setOverlap(60, 0);
-                this._playerToken.setSelectionAppearance('class');
+                this._otherPlayerHand           = new Map();
+                this._otherPlayerToken          = new Map();
+                this._otherplayerBettedCard     = new Map();
+                this._otherplayerBettingCard    = new Map();
+                this._otherplayerTrophyCard     = new Map();
 
-                this._attackCardPlace = new ebg.stock();
-                this._attackCardPlace.create(this, $('attackCardOnTable'), this._cardWidth, this._cardHeight);
-                this._attackCardPlace.image_items_per_row = 10;
-                this._attackCardPlace.centerItems = true;
-                this._attackCardPlace.setOverlap(70, 0);
-                this._attackCardPlace.setSelectionMode(0);
-
-                this._defenseCardPlace = new ebg.stock();
-                this._defenseCardPlace.create(this, $('defenseCardOnTable'), this._cardWidth, this._cardHeight);
-                this._defenseCardPlace.image_items_per_row = 10;
-                this._defenseCardPlace.centerItems = true;
-                this._defenseCardPlace.setOverlap(70, 0);
-                this._defenseCardPlace.setSelectionMode(0);
-
-                this._deck = new ebg.stock();
-                this._deck.create(this, $('deckOnTable'), this._cardWidth, this._cardHeight);
-                this._deck.image_items_per_row = 1;
-                this._deck.setOverlap(1, 0);
-                this._deck.setSelectionMode(0);
-
-                this._otherPlayerHand = new Map();
-                this._otherPlayerToken = new Map();
-                this._otherplayerBettedCard = new Map();
-                this._otherplayerBettingCard = new Map();
-                this._otherplayerTrophyCard = new Map();
+                this._defenderCardsCount        = 0;
+                this._activePlayerRole          = 0;
 
             },
 
@@ -138,19 +99,21 @@ define([
                         this._discardCard.addItemType(card_type_id, card_type_id, g_gamethemeurl + 'img/cards.png', card_type_id);
                     }
                 }
-                this._deck.addItemType(0, 0, g_gamethemeurl + 'img/card_back.png', 0);
 
                 // 트로피 카드 초기화
                 for (var value = 0; value < 5; value++) {
                     this._trophyCard.addItemType(value, value, g_gamethemeurl + 'img/trophy_cards.png', value);
                 }
 
-                // 플레이어 토큰 설정 및 초기화
-                this.gamedatas.battingCards.forEach(card => {
-                    if (card.location_arg == this.player_id) {
-                        this._playerToken.addItemType(card.id, card.value, g_gamethemeurl + 'img/batting_cards.png', (card.type * 2) + Number(card.value));
-                    }
+                // 플레이어 토큰 설정 및 초기화 - 플레이어 수에 맞게 추가
+                var bettingCardsNumber = 0;
+                this.gamedatas.playersInfo.forEach(player => {
+                    this._playerToken.addItemType(bettingCardsNumber,       0, g_gamethemeurl + 'img/batting_cards.png', bettingCardsNumber);
+                    this._playerToken.addItemType(bettingCardsNumber + 1,   1, g_gamethemeurl + 'img/batting_cards.png', bettingCardsNumber + 1);
+                    this._playerToken.addItemType(bettingCardsNumber + 2,   1, g_gamethemeurl + 'img/batting_cards.png', bettingCardsNumber + 1);
+                    bettingCardsNumber += 2;
                 });
+
                 dojo.connect(this._playerToken, "onChangeSelection", this, 'onPlayerBattingSelectionChanged');
 
                 // 플레이어 설정
@@ -160,7 +123,7 @@ define([
 
                     if (isCurrent) {
                         player.hand.forEach(card => this._playerHand.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id));
-                        player.battingCards.forEach(card => this._playerToken.addToStock(card.id));
+                        player.tokenCards.forEach(card => this._playerToken.addToStockWithId((card.type * 2) + Number(card.value), card.id));
                     }
 
                     dojo.place(this.format_block('jstpl_players', {
@@ -170,12 +133,11 @@ define([
                         playerColor: player.color,
                     }), 'board');
 
-                    this._otherPlayerHand.set(player.id, new ebg.stock());
+                    this._otherPlayerHand.set(
+                        player.id, 
+                        this.initStock($('player-cards-' + player.id), 'M', 1, 10, false)
+                    );
                     let playerHand = this._otherPlayerHand.get(player.id);
-                    playerHand.create(this, $('player-cards-' + player.id), this._card50Width, this._card50Height);
-                    playerHand.image_items_per_row = 1;
-                    playerHand.setSelectionMode(0);
-                    playerHand.setOverlap(10, 0);
                     playerHand.addItemType(0, 0, g_gamethemeurl + 'img/card_back_mini.png', 0);
 
                     for (var i = 0; i < player.handCount; i++) {
@@ -187,72 +149,77 @@ define([
                         playerId: player.id,
                     }), 'overall_player_board_' + player.id);
 
-                    this._otherplayerBettingCard.set(player.id, new ebg.stock());
-                    let playerBettingCard = this._otherplayerBettingCard.get(player.id);
-                    playerBettingCard.create(this, $('player-mini-betting-cards-' + player.id,), this._miniCardWidth, this._miniCardHeight);
-                    playerBettingCard.image_items_per_row = 5;
-                    playerBettingCard.setSelectionMode(0);
-                    playerBettingCard.setOverlap(20, 0);                    
-                    this.gamedatas.battingCards.forEach(card => playerBettingCard.addItemType(card.id, card.value, g_gamethemeurl + 'img/batting_cards_back_mini.png', card.type));
+                    this._otherplayerBettingCard.set(
+                        player.id, 
+                        this.initStock( $('player-mini-betting-cards-' + player.id), 'S', 5, 20, false)
+                    );
 
-                    this._otherplayerBettedCard.set(player.id, new ebg.stock());
+                    let playerBettingCard = this._otherplayerBettingCard.get(player.id);            
+                    this.gamedatas.playersInfo.forEach(player => {
+                        playerBettingCard.addItemType(Number(player.no) - 1, 0, g_gamethemeurl + 'img/batting_cards_back_mini.png', Number(player.no) - 1);
+                    });
+
+                    this._otherplayerBettedCard.set(
+                        player.id,
+                        this.initStock( $('player-mini-betted-cards-' + player.id), 'S', 5, 20, false)
+                    );
                     let playerBettedCard = this._otherplayerBettedCard.get(player.id);
-                    playerBettedCard.create(this, $('player-mini-betted-cards-' + player.id,), this._miniCardWidth, this._miniCardHeight);
-                    playerBettedCard.image_items_per_row = 5;
-                    playerBettedCard.setSelectionMode(0);
-                    playerBettedCard.setOverlap(20, 0);                    
-                    this.gamedatas.battingCards.forEach(card => playerBettedCard.addItemType(card.id, card.value, g_gamethemeurl + 'img/batting_cards_mini.png', card.type));
+                    var bettingCardsNumber = 0;
+                    this.gamedatas.playersInfo.forEach(player => {
+                        playerBettedCard.addItemType(bettingCardsNumber,       0, g_gamethemeurl + 'img/batting_cards.png', bettingCardsNumber);
+                        playerBettedCard.addItemType(bettingCardsNumber + 1,   1, g_gamethemeurl + 'img/batting_cards.png', bettingCardsNumber + 1);
+                        playerBettedCard.addItemType(bettingCardsNumber + 2,   1, g_gamethemeurl + 'img/batting_cards.png', bettingCardsNumber + 1);
+                        bettingCardsNumber += 2;
+                    });
 
-                    this._otherplayerTrophyCard.set(player.id, new ebg.stock());
+                    
+
+                    this._otherplayerTrophyCard.set(
+                        player.id,
+                        this.initStock( $('player-mini-trophy-cards-' + player.id), 'S', 5, 20, false)
+                    );
+
                     let playerTrophyCard = this._otherplayerTrophyCard.get(player.id);
-                    playerTrophyCard.create(this, $('player-mini-trophy-cards-' + player.id,), this._miniCardWidth, this._miniCardHeight);
-                    playerTrophyCard.image_items_per_row = 5;
-                    playerTrophyCard.setSelectionMode(0);
-                    playerTrophyCard.setOverlap(20, 0);   
-
                     for (var value = 0; value < 5; value++) {
                         playerTrophyCard.addItemType(value, value, g_gamethemeurl + 'img/trophy_cards.png', value);
                     }              
-
-                    // this.connect($('blaze-player-' + player.id), "onclick", () => this.onClickBattingButton(player.id));
-                    // this.connect($('blaze-player-' + player.id), "onmouseenter", () => this.onMouseEnter(player.id));
-                    // this.connect($('blaze-player-' + player.id), "onmouseleave", () => this.onMouseLeave(player.id));
                 });
                 dojo.connect(this._playerHand, "onChangeSelection", this, 'onPlayerHandSelectionChanged');
 
-                
+                this.updatePlayer(this.gamedatas.playersInfo);
 
                 // 플레이어 토큰 설정
-                this.gamedatas.battingCards.forEach(card => {
-                    this._otherPlayerToken.set(card.location_arg, new ebg.stock());
+                this.gamedatas.tokenCards.forEach(card => {
+                    this._otherPlayerToken.set(
+                        card.location_arg,
+                        this.initStock( $('player-token-cards-' + card.location_arg), 'M', 5, 50, false)
+                    );
                     let playerToken = this._otherPlayerToken.get(card.location_arg);
-                    playerToken.create(this, $('player-token-cards-' + card.location_arg), this._card50Width, this._card50Height);
-                    // playerToken.create(this, $('overall_player_board_' + card.location_arg), this._card50Width, this._card50Height);
-                    playerToken.image_items_per_row = 5;
-                    playerToken.setSelectionMode(0);
-                    playerToken.setOverlap(50, 0);
                     playerToken.addItemType(0, 0, g_gamethemeurl + 'img/batting_cards_back_50.png', card.type);
                 });
 
-                this.gamedatas.battingCards.forEach(card => {
+                this.gamedatas.tokenCards.forEach(card => {
                     let playerToken = this._otherPlayerToken.get(card.location_arg);
                     playerToken.addToStock(0);
                 });
 
-                // 덱 설정
-                this._deck.removeAll();
-                for (var i = 0; i < (this.gamedatas.deckCards.length / 3); i++) {
-                    this._deck.addToStock(0);
-                }
+
+                this.gamedatas.bettingCards.forEach(card => {
+                    let playerBettingCard = this._otherplayerBettingCard.get(card.location_arg);
+                    playerBettingCard.addToStock(card.type);
+                });
+
+                console.log(this.gamedatas.bettingCards);
 
                 // 트럼프 슈트 카드 설정
                 this.placeCard(1, 3, this.gamedatas.trumpSuitCard.type, this.gamedatas.trumpSuitCard.value);
-                dojo.place(this.format_block('jstpl_textOnTable', {
-                    posX: 1,
-                    posY: 4,
-                    size: 1,
-                    text: "Trump suit",
-                }), 'table-container');
+                this.placeText(1, 4, 1, "Trump suit");
+
+                // 덱 카드 설정
+                if (this.gamedatas.deckCards.length > 0) {
+                    this.placeCard(1, 1, 0, 0, true);
+                }
+                this.placeText(1, 2, 1, this.gamedatas.deckCards.length);
                 
                 // 공격 및 방어 카드 설정
                 this._attackCardPlace.removeAll();
@@ -265,12 +232,18 @@ define([
                     this._defenseCardPlace.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id);
                 });
 
+                // 버려진 카드 설정
+                this._discardCard.removeAll();
+                this.gamedatas.discardCards.forEach(card => {
+                    this._discardCard.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id);
+                });
+
                 // 플레이어 수 설정
                 dojo.attr("board", "data-players", this.gamedatas.playersInfo.length);
 
                 // Setup game notifications to handle (see "setupNotifications" method below)
                 //this.setupNotifications();
-                
+
                 console.log("Ending game setup");
                 this.inherited(arguments);
             },
@@ -297,14 +270,18 @@ define([
                     switch (stateName) {
                         case 'playerTurn':
                             if (args.activePlayerRole == '1') {
+                                // 낼 수 있는 카드 업데이트
+                                this.updateEnableAttackCards();
                                 this.addActionButton('Attack', _('Attack'), () => this.onClickAttackButton(), null, false, 'blue');
-                                if (args.tableOnAttackCards != 0) {
+                                if (args.tableOnAttackCards.length > 0) {
                                     this.addActionButton('Pass', _('Pass'), () => this.onClickPassButton(), null, false, 'red');
                                 }
                             } else if (args.activePlayerRole == '2') {
                                 this.addActionButton('Defense', _('Defense'), () => this.onClickDefenseButton(), null, false, 'blue');
                                 this.addActionButton('Retreat', _('Retreat'), () => this.onClickPassButton(), null, false, 'red');
                             } else if (args.activePlayerRole == '3') {
+                                // 낼 수 있는 카드 업데이트
+                                this.updateEnableAttackCards();
                                 this.addActionButton('Support', _('Support'), () => this.onClickAttackButton(), null, false, 'blue');
                                 this.addActionButton('Pass', _('Pass'),     () => this.onClickPassButton(), null, false, 'red');
                             }
@@ -326,12 +303,29 @@ define([
             */
 
             onMouseEnter: function(playerId) {
-                dojo.query('#blaze-player-' + playerId).style('background-color', '#f7f19e');
+                dojo.query('#blaze-player-' + playerId).attr('data-role', 'selected');
             },
 
             onMouseLeave: function(playerId) {
-                dojo.query('#blaze-player-' + playerId).style('background-color', 'rgba(0, 0, 0, 0.65)');
+                dojo.query('#blaze-player-' + playerId).attr('data-role', 'none');
             },
+
+            initStock: function(container_div, type, row, overlap, isCenter, isSelected = false) {
+                var width   = (type == 'L' ? this._cardWidth_L  : (type == 'M' ? this._cardWidth_M  : this._cardWidth_S));
+                var height  = (type == 'L' ? this._cardHeight_L : (type == 'M' ? this._cardHeight_M : this._cardHeight_S));
+                var stock   = new ebg.stock();
+                stock.create(this, container_div, width, height);
+                stock.image_items_per_row = row;
+                stock.centerItems = isCenter;
+                stock.setOverlap(overlap, 0);
+                if (isSelected == false) {
+                    stock.setSelectionMode(0);
+                } else {
+                    stock.setSelectionAppearance('class');
+                }
+
+                return stock;
+            }
 
             ///////////////////////////////////////////////////
             //// Player's action

@@ -76,6 +76,15 @@ class Players extends \APP_GameClass
         }, self::getPlayers());
     }
 
+    public static function getPlayerWithRole($role) {
+        $players = self::getPlayers();
+        foreach ($players as $player) {
+            if ($player->getRole() == $role) {
+                return $player->getData();
+            }
+        }
+    }
+
     public static function getNextRole($current_role) {
         $order = array(
             0 => DEFENDER,
@@ -107,5 +116,7 @@ class Players extends \APP_GameClass
                 break;
             }
         }
+
+        Notifications::updatePlayers();
     }
 }

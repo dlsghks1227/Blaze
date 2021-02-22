@@ -29,7 +29,8 @@ class BattingCards extends \APP_GameClass
         foreach ($players as $player_id => $player) {
             $cards = array();
             $cards[] = array('type' => $color, 'type_arg' => 0, 'nbr' => 1);
-            $cards[] = array('type' => $color, 'type_arg' => 1, 'nbr' => 2);
+            $cards[] = array('type' => $color, 'type_arg' => 1, 'nbr' => 1);
+            $cards[] = array('type' => $color, 'type_arg' => 1, 'nbr' => 1);
             $color++;
             self::getBattingDeck()->CreateCards($cards, "hand", $player_id);
         }
@@ -58,6 +59,11 @@ class BattingCards extends \APP_GameClass
         return $cards;
     }
 
+    public static function moveCard($mixed, $location, $arg = 0) {
+        $id = ($mixed instanceof Card) ? $mixed->getId() : $mixed;
+        self::getBattingDeck()->moveCard($id, $location, $arg);
+    }
+
     public static function getCard($id)
     {
         return self::resToObject(self::getBattingDeck()->GetCard($id));
@@ -68,8 +74,20 @@ class BattingCards extends \APP_GameClass
         return self::getBattingDeck()->countCardsInLocations();
     }
 
-    public static function getBattingCards() {
+    public static function getHandCards() {
         $cards = self::toObjects(self::getBattingDeck()->getCardsInLocation("hand"));
+        return self::formatCards($cards);
+    }
+
+    public static function getBettingCards()
+    {
+        $cards = self::toObjects(self::getBattingDeck()->getCardsInLocation("betting"));
+        return self::formatCards($cards);
+    }
+
+    public static function getBettedCards()
+    {
+        $cards = self::toObjects(self::getBattingDeck()->getCardsInLocation("betted"));
         return self::formatCards($cards);
     }
 

@@ -138,6 +138,11 @@ class Cards extends \APP_GameClass
         return self::formatCards($cards);
     }
 
+    public static function getDiscardCards() {
+        $cards = self::toObjects(self::getDeck()->getCardsInLocation('discard'));
+        return self::formatCards($cards);
+    }
+
     public static function draw($nbr, $player_id) {
         // 덱에 남아있는 카드가 있을 경우 드로우
         if (self::getDeckCount() < 0) {

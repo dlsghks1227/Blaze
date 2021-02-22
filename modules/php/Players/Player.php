@@ -45,12 +45,12 @@ class Player extends \APP_GameClass
             'role'          => $this->role,
             'eliminated'    => $this->eliminated,
             'hand'          => ($current) ? array_values(Cards::getHand($this->id)) : Cards::countCards('hand', $this->id),
-            'battingCards'  => ($current) ? array_values(BattingCards::getHand($this->id)) : BattingCards::countCards('hand', $this->id),
+            'tokenCards'    => ($current) ? array_values(BattingCards::getHand($this->id)) : BattingCards::countCards('hand', $this->id),
         );
     }
 
     public function getRoleFormat() {
-        return ($this->role == ATTACKER ? 'Attacker' : ($this->role == DEFENDER ? 'Defender' : 'Volunteer'));
+        return ($this->role == ATTACKER ? 'attacker' : ($this->role == DEFENDER ? 'defender' : 'volunteer'));
     }
 
     public function save() {

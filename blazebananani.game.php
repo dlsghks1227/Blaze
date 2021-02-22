@@ -69,7 +69,9 @@ class BlazeBananani extends Table
             "nextOrder" => 12,
             "isAttacked" => 13,
             "isDefensed" => 14,
-            "trophyNumber" => 15,
+            "isBetting" => 15,
+            "trophyNumber" => 16,
+            "limitCount" => 17,
         ));        
 	}
     public static function get()
@@ -104,7 +106,9 @@ class BlazeBananani extends Table
         self::setGameStateInitialValue('nextOrder', 0 );
         self::setGameStateInitialValue('isAttacked', 0 );
         self::setGameStateInitialValue('isDefensed', 0 );
+        self::setGameStateInitialValue('isBetting', 0 );
         self::setGameStateInitialValue('trophyNumber', 0 );
+        self::setGameStateInitialValue('limitCount', 0 );
         
         // Init game statistics
         // (note: statistics used in this file must be defined in your stats.inc.php file)
@@ -143,11 +147,14 @@ class BlazeBananani extends Table
             'playerTurn'    => Players::getCurrentTurn(),
             
             'deckCards'     => Cards::getAllCardsInDeck(),
+            'discardCards'  => Cards::getDiscardCards(),
             'attackCards'   => Cards::getAttackCards(),
             'defenseCards'  => Cards::getDefenseCards(),
             'trumpSuitCard' => Cards::getTrumpSuitCard(),
 
-            'battingCards'  => BattingCards::getBattingCards(),
+            'tokenCards'    => BattingCards::getHandCards(),
+            'bettingCards'  => BattingCards::getBettingCards(),
+            'bettedCards'   => BattingCards::getBettedCards(),
         );
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).

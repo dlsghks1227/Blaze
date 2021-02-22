@@ -49,6 +49,9 @@ trait TurnTrait
 
         // 라운드가 끝나면 2라운드로 설정
         BlazeBananani::get()->setGameStateValue("round", 2);
+
+        // 배팅 여부 초기화
+        BlazeBananani::get()->setGameStateValue("isBetting", 0 );
         
         // stStartOfRound
         $this->gamestate->nextState("start");
@@ -56,6 +59,15 @@ trait TurnTrait
 
     public function stStartOfMainTurn() {
         // 역할 지정하기 전 덱과 플레이어 카드의 수가 0이면 트로피 카드 획득
+        $players = Players::getPlayers();
+        $deckCount = Cards::getDeckCount();
+        foreach ($players as $player) {
+        }
+        // 플레이어가 혼자 남으면 
+
+        // stEndOfRound 로
+
+
 
         // 공격자 및 수비자, 지원자 지정
         // 공격자 = 1, 수비자 = 2, 지원자 = 3
@@ -67,13 +79,17 @@ trait TurnTrait
         BlazeBananani::get()->setGameStateValue('isAttacked', 0 );
         BlazeBananani::get()->setGameStateValue('isDefensed', 0 );
 
+        // 수비자 카드 수에 따른 공격 카드 제한
+        BlazeBananani::get()->setGameStateValue('limitCount', Players::getPlayerWithRole(DEFENDER)['hand'] );
+
         // stStartOfSubTurn
-        $this->gamestate->nextState("");
+        $this->gamestate->nextState("start");
     }
 
     public function stEndOfMainTurn() {
         $players = Players::getPlayers();
         $deckCount = Cards::getDeckCount();
+        $is_betting = BlazeBananani::get()->getGameStateValue("isBetting");
         $is_defensed = BlazeBananani::get()->getGameStateValue("isDefensed");
 
         // 수비 성공시 수비자 -> 공격자
@@ -91,14 +107,15 @@ trait TurnTrait
             $player->updateRole(0);
         }
 
-        if ($deckCount <= 0) {
+        if ($deckCount <= 0 && $is_betting == 0) {
             // stBatting
             $this->gamestate->nextState("end");
             return;
         }
         
         // stStartOfMainTurn
-        $this->gamestate->nextState("start");
+        // ----test 중입니다 ----
+        $this->gamestate->nextState("end");
     }
 
     public function stStartOfSubTurn() {

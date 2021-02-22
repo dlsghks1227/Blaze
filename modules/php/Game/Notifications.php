@@ -1,6 +1,7 @@
 <?php
 namespace Blaze\Game;
 
+use Blaze\Cards\BattingCards;
 use BlazeBananani;
 use Blaze\Cards\Cards;
 use Blaze\Players\Players;
@@ -22,8 +23,21 @@ class Notifications {
             'player_id' => $player->getId(),
             "amount" => count($cards),
             "cards" => $cards,
+            'deckCount' => Cards::getDeckCount(),
         );
-        self::notify($player->getId(), 'drawCard', $msg, $data);
+        self::notifyAll('drawCard', $msg, $data);
+    }
+
+    public static function defeneseSuccess($player, $attack_cards, $defense_cards) {
+        $msg = clienttranslate('${player_name} defensed succeed');
+        $data = array(
+            'i18n' => array(),
+            'player_name' => $player->getName(),
+            'player_id' => $player->getId(),
+            'attackCards' => $attack_cards,
+            'defenseCards' => $defense_cards,
+        );
+        self::notifyAll("defenseSuccess", $msg, $data);
     }
 
     public static function defenseFailed($player, $attack_cards, $defense_cards) {
@@ -74,19 +88,54 @@ class Notifications {
         ));
     }
 
-    public static function updatePlayers() {
+    public static function betting($player, $selected_player, $selected_card) {
+        $msg = clienttranslate('Bet ${select_point} point on ${player_name}');
+        $data = array(
+            'i18n'              => array(),
+            'player_name'       => $selected_player->getName(),
+            'player_id'         => $player->getId(),
+            'player_no'         => $player->getNo(),
+            'select_player_id'  => $selected_player->getId(),
+            'select_card'       => $selected_card->getData(),
+            'select_point'      => $selected_card->getValue(),
+        );
 
+        self::notify($player->getId(), 'betting', $msg, $data);
+    }
+
+    public static function endBetting($players, $bettingCards, $player_tokens) {
+        $msg = clienttranslate('End Betting');
+        $data = array(
+            'i18n'              => array(),
+            'players'           => $players,
+            'betting_cards'     => $bettingCards,
+            'player_tokens'     => $player_tokens,
+        );
+
+        self::notifyAll("endBetting", $msg, $data);
+    }
+
+    public static function updatePlayers() {
+        $msg = clienttranslate('Change player role');
+        $data = array(
+            'i18n'      => array(),
+            'deckCount' => Cards::getDeckCount(),
+            'players'   => array_map(function($player) { return $player->getData(); }, Players::getPlayers()),
+        );
+        self::notifyAll("updatePlayer", $msg, $data);
     }
 
     public static function changeRole($player) {
         $msg = clienttranslate('${player_name} is the ${role_text}');
-        self::notifyAll("changeRole", $msg, [
-            'i18n' => array('role_text'),
-            'player_name' => $player->getName(),
-            'player_id' => $player->getId(),
-            'role' => $player->getRole(),
-            'role_text' => $player->getRoleFormat(),
-            'deckCount' => Cards::getDeckCount(),
-        ]);
+        $data = array(
+            'i18n'          => array('role_text'),
+            'player_name'   => $player->getName(),
+            'player_id'     => $player->getId(),
+            'role'          => $player->getRole(),
+            'role_text'     => $player->getRoleFormat(),
+            'deckCount'     => Cards::getDeckCount(),
+        );
+
+        self::notify($player->getId(), "changeRole", $msg, $data);
     }
 }

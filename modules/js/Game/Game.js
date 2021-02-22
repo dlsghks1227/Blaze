@@ -47,6 +47,21 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
         onEnteringState: function (stateName, args) {
             switch (stateName) {
                 case 'playerTurn':
+                    this._activePlayerRole = args.args.activePlayerRole;
+                    this._defenderCardsCount = args.args.DefenderCardsCount;
+                    console.log(this._defenderCardsCount);
+                    break;
+                case 'batting':
+                    this.gamedatas.playersInfo.forEach(player => {
+                        // 플레이어 색상 초기화
+                        dojo.query('#blaze-player-' + player.id).attr('data-role', 'none');
+
+                        if (player.id != this.player_id) {
+                            this.connect($('blaze-player-' + player.id), "onclick",         () => this.onClickBattingButton(player.id));
+                            this.connect($('blaze-player-' + player.id), "onmouseenter",    () => this.onMouseEnter(player.id));
+                            this.connect($('blaze-player-' + player.id), "onmouseleave",    () => this.onMouseLeave(player.id));
+                        }
+                    });
                     break;
                 case 'dummmy':
                     break;
@@ -55,6 +70,15 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
 
         onLeavingState: function (stateName) {
             switch (stateName) {
+                case 'playerTurn':
+                    // 색 초기화
+                    this.setOpacityOnCards(this._playerHand, '1');
+                    this._playerHand.unselectAll();
+                    break;
+                case 'batting':
+                    this.updatePlayer(this.gamedatas.playersInfo);
+                    this._playerToken.unselectAll();
+                    break;
                 case 'dummmy':
                     break;
             }

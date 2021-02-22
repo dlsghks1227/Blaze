@@ -31,7 +31,8 @@ trait PlayCardTrait
 
     public function argPlayerTurn() {
         return array(
-            'tableOnAttackCards' => Cards::countCards('attackCards'),
+            'tableOnAttackCards' => Cards::getAttackCards(),
+            'DefenderCardsCount' => BlazeBananani::get()->getGameStateValue("limitCount"), 
             'activePlayerRole' => Players::getPlayer(self::getActivePlayerId())->getRole()
         );
     }

@@ -146,7 +146,6 @@ div#board
 
 			div#board div#table div#table-container .cardOnTable {
 				width: 100%;
-                height: 100%;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -157,6 +156,15 @@ div#board
 					width: 108px;
 					height: 168px;
 					background-image: url('img/cards.png'); }
+
+                div#board div#table div#table-container .cardOnTable .card[data-filp="back"] {
+                    position: absolute;
+                    width: 108px;
+                    height: 168px;
+                    background-image: url('img/card_back.png'); }
+
+                div#board div#table div#table-container .cardOnTable .card[data-filp="none"] {
+                    display: none; }
             
             div#board div#table div#table-container .textOnTable {
                 width: 100%;
@@ -164,22 +172,13 @@ div#board
 
                 div#board div#table div#table-container .textOnTable .text {
                     width: 100%;
+                    color: rgba(255, 255, 255, 1);
                     font-weight: bold;}
 
             div#board div#table div#table-container .button {
                 width: 80%;
                 height: 80%;
                 text-align: center; }
-
-                div#board div#table div#table-container div#attackButton {
-                    background-color: rgba(100, 255, 100, 0.7);
-                    grid-row: 3;
-                    grid-column: 1 / span 3; }
-
-                div#board div#table div#table-container div#passButton {
-                    background-color: rgba(255, 100, 100, 0.7);
-                    grid-row: 3;
-                    grid-column: 4 / span 3; }
 
     div#board div#battingHand {
         grid-row: 5;
@@ -201,7 +200,7 @@ div#board
         grid-row: 1;
         grid-column: 2 / span 3; }
 
-        div#board div#hand div#discard-cards {
+        div#board div#discard div#discard-cards {
             margin: 10px;
             width: 100%;}
 
@@ -210,7 +209,7 @@ div#board
         grid-row: 1;
         grid-column: 11 / span 3; }
 
-        div#board div#hand div#trophy-cards {
+        div#board div#trophy div#trophy-cards {
             margin: 10px;
             width: 100%;}
 
@@ -229,17 +228,37 @@ div#board
 
         div#board .blaze-player div#player-container .player-cards {
             grid-row: 2;
-            grid-column: 1; 
+            grid-column: 2; 
             display: flex;
             flex-direction: column;
             justify-content: center; }
 
         div#board .blaze-player div#player-container .player-token-cards {
             grid-row: 2;
-            grid-column: 2; 
+            grid-column: 1; 
             display: flex;
             flex-direction: column;
             justify-content: center; }
+
+    div#board .blaze-player[data-role="attacker"] {
+        background-color: rgba(255, 100, 100, 0.65);
+    }
+
+    div#board .blaze-player[data-role="defender"] {
+        background-color: rgba(100, 100, 255, 0.65);
+    }
+
+    div#board .blaze-player[data-role="volunteer"] {
+        background-color: rgba(100, 255, 100, 0.65);
+    }
+
+    div#board .blaze-player[data-role="selected"] {
+        background-color: #f7f19e;
+    }
+
+    div#board .blaze-player[data-role="none"] {
+        background-color: rgba(0, 0, 0, 0.65);
+    }
 
     div#board[data-players="3"] .blaze-player[data-pos="1"] {
         grid-row: 1;

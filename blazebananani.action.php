@@ -72,8 +72,9 @@ class action_blazebananani extends APP_GameAction
 	public function batting()
 	{
 		self::setAjaxMode();
+		$card_id = self::getArg("card_id", AT_posint, true);
 		$player_id = self::getArg("player_id", AT_posint, true);
-		$result = $this->game->batting($player_id);
+		$result = $this->game->batting($card_id, $player_id);
 		self::ajaxResponse();
 	}
 }

@@ -91,7 +91,8 @@ $machinestates = array(
         "type" => "game",
         "action" => "stStartOfMainTurn",
         "transitions" => array(
-            "" => ST_START_OF_SUB_TURN,
+            "start" => ST_START_OF_SUB_TURN,
+            "end" => ST_END_OF_ROUND,
         )
     ),
 
