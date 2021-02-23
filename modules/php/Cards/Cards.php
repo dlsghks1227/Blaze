@@ -86,11 +86,15 @@ class Cards extends \APP_GameClass
     }
 
     public static function moveAttackCards($cards) {
-        foreach ($cards as $card) self::moveCard($card, 'attackCards');
+        foreach ($cards as $card) self::moveCard($card, 'attackedCards');
     }
 
     public static function moveDefenseCards($cards) {
         foreach ($cards as $card) self::moveCard($card, 'defenseCards');
+    }
+
+    public static function moveAttackedCards() {
+        return self::GetDeck()->moveAllCardsInLocation('attackedCards', 'attackCards');
     }
 
     public static function moveAttackAndDefenseCards($player_id) {
@@ -129,7 +133,13 @@ class Cards extends \APP_GameClass
     }
 
     public static function getAttackCards() {
+        $attackedCard = self::toObjects(self::getDeck()->getCardsInLocation('attackedCards'));
         $cards = self::toObjects(self::getDeck()->getCardsInLocation('attackCards'));
+        return self::formatCards(array_merge($cards, $attackedCard));
+    }
+
+    public static function getAttackedCards() {
+        $cards = self::toObjects(self::getDeck()->getCardsInLocation('attackedCards'));
         return self::formatCards($cards);
     }
 
@@ -151,6 +161,23 @@ class Cards extends \APP_GameClass
             $cards = self::toObjects(self::getDeck()->pickCards($nbr, 'deck', $player_id));
             return self::formatCards($cards);
         }
+    }
+
+    public static function roundStart($players) {
+        self::getDeck()->moveAllCardsInLocation('trumpSuitCard', 'deck');
+        self::getDeck()->moveAllCardsInLocation('discard', 'deck');
+        self::getDeck()->moveAllCardsInLocation('hand', 'deck');
+        
+        self::getDeck()->shuffle('deck');
+
+        // 플레이어 당 5장의 카드 배분
+        foreach ($players as $player_id => $player) {
+            Cards::draw(5, $player_id);
+        }
+
+        self::getDeck()->moveAllCardsInLocation('deck', 'removeCards');
+
+        self::bringFromTemplateDeck();
     }
 
     public static function drawTrumpSuitCard() {

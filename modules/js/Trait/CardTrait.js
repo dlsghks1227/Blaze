@@ -4,8 +4,10 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             this._notifications.push(
                 ["drawCard", 1200],
                 ["defenseFailed", 2000],
-                ["defenseSuccess", 2000]
+                ["defenseSuccess", 2000],
+                ["getTrophyCard", 1500],      
             );
+
         },
 
         notif_drawCard: function(notif) {
@@ -18,6 +20,10 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
 
         notif_defenseSuccess: function(notif) {
             this.discardCards(notif.args.attackCards, notif.args.defenseCards);
+        },
+
+        notif_getTrophyCard: function(notif) {
+            this.getTrophyCard(notif.args.player_id, notif.args.value);
         },
 
         placeCard: function(posX, posY, color, value, isBack = false) {
@@ -169,13 +175,6 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 let playerToken = this._otherPlayerToken.get(card.location_arg);
                 playerToken.addToStock(0);
             });
-
-            // bettingCards.forEach(card => {
-            //     if (card.location_arg != this.player_id){
-            //         this._otherplayerBettingCard.get(card.location_arg).addToStock(card.type, 'player-token-cards-' + card.location_arg);
-            //         this._otherPlayerToken.get(card.location_arg).removeFromStockById(0);
-            //     }
-            // });
         },
 
         getCardUniqueId: function (color, value) {
@@ -187,6 +186,13 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             return {
                 color : Math.floor(type / 10),
                 value : (type % 10) + 1
+            }
+        },
+
+        getTrophyCard: function(playerId, value) {
+            if ($('trophy-cards_item_' + value)) {
+                this._otherplayerTrophyCard.get(playerId).addToStockWithId(value, value, 'trophy-cards_item_' + value);
+                this._trophyCard.removeFromStockById(value);
             }
         },
 

@@ -41,6 +41,7 @@ require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
 // PHP Class
 use Blaze\Cards\Cards;
 use Blaze\Cards\BattingCards;
+use Blaze\Cards\TrophyCards;
 
 use Blaze\Players\Players;
 use Blaze\Game\Notifications;
@@ -70,13 +71,17 @@ class BlazeBananani extends Table
             "isAttacked" => 13,
             "isDefensed" => 14,
             "isBetting" => 15,
-            "trophyNumber" => 16,
+            "trophyCardId" => 16,
             "limitCount" => 17,
         ));        
 	}
     public static function get()
     {
         return self::$instance;
+    }
+    public static function getCurrentId()
+    {
+        return self::getCurrentPlayerId();
     }
 	
     protected function getGameName( )
@@ -98,6 +103,7 @@ class BlazeBananani extends Table
         Players::setupNewGame($players);
 
         Cards::SetupNewGame(self::getPlayersNumber());
+        TrophyCards::setupNewGame(self::getPlayersNumber());
         BattingCards::setupNewGame($players);
         
         // Init global values with their initial values
@@ -107,7 +113,7 @@ class BlazeBananani extends Table
         self::setGameStateInitialValue('isAttacked', 0 );
         self::setGameStateInitialValue('isDefensed', 0 );
         self::setGameStateInitialValue('isBetting', 0 );
-        self::setGameStateInitialValue('trophyNumber', 0 );
+        self::setGameStateInitialValue('trophyCardId', 0 );
         self::setGameStateInitialValue('limitCount', 0 );
         
         // Init game statistics
@@ -152,9 +158,14 @@ class BlazeBananani extends Table
             'defenseCards'  => Cards::getDefenseCards(),
             'trumpSuitCard' => Cards::getTrumpSuitCard(),
 
+            'trophyCards'           => TrophyCards::getDeckCards(),
+            'trophyCardsOnPlayer'   => TrophyCards::getHandCards(),
+
             'tokenCards'    => BattingCards::getHandCards(),
             'bettingCards'  => BattingCards::getBettingCards(),
             'bettedCards'   => BattingCards::getBettedCards(),
+
+            'currentRound'  => BlazeBananani::get()->getGameStateValue("round")
         );
   
         // TODO: Gather all information about current game situation (visible by player $current_player_id).
@@ -176,7 +187,7 @@ class BlazeBananani extends Table
     {
         // TODO: compute and return the game progression
 
-        return 0;
+        return 0.5;
     }
 
 

@@ -58,16 +58,8 @@ class Player extends \APP_GameClass
         self::DbQuery("UPDATE player SET `player_eliminated` = $eliminated, `player_role` = {$this->role} WHERE `player_id` = {$this->id}");
     }
 
-    public function pushBatting($player_id, $value) {
-
-    }
-
-    public function resetBatting() {
-
-    }
-
-    public function eliminate() {
-        $this->eliminated = true;
+    public function eliminate($is_eliminated) {
+        $this->eliminated = $is_eliminated;
         $this->save();
     }
 

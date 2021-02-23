@@ -4,6 +4,7 @@ namespace Blaze\Game;
 use Blaze\Cards\BattingCards;
 use BlazeBananani;
 use Blaze\Cards\Cards;
+use Blaze\Cards\TrophyCards;
 use Blaze\Players\Players;
 
 class Notifications {
@@ -137,5 +138,45 @@ class Notifications {
         );
 
         self::notify($player->getId(), "changeRole", $msg, $data);
+    }
+
+    public static function getTrophyCard($player, $trophy_card_id) {
+        $msg = clienttranslate('${player_name} got ${value} trophy card');
+        $data = array(
+            '118n'          => array(),
+            'player_name'   => $player->getName(),
+            'player_id'     => $player->getId(),
+            'value'         => TrophyCards::getCard($trophy_card_id)->getValue(),
+        );
+
+        self::notifyAll("getTrophyCard", $msg, $data);
+    }
+
+    public static function roundStart($round) {
+        $msg = clienttranslate('--------------- Round ${round} ---------------');
+        $players = Players::getPlayers();
+        $players_data = array_map(function($player){ return $player->getData(); }, $players);
+        $data = array(
+            'i18n'          => array(),
+            'players'       => $players_data,
+            'trumpSuitCard' => Cards::getTrumpSuitCard(),
+            'deckCards'     => Cards::getAllCardsInDeck(),
+            'tokenCards'    => BattingCards::getHandCards(),
+            'bettingCards'  => BattingCards::getBettingCards(),
+            'bettedCards'   => BattingCards::getBettedCards(),
+            'trophyCards'           => TrophyCards::getDeckCards(),
+            'trophyCardsOnPlayer'   => TrophyCards::getHandCards(),
+            'round'         => $round
+        );
+
+        foreach ($players as $player) {
+            $data[$player->getId() . '_hand'] = Cards::getHand($player->getId());
+        }
+
+        foreach ($players as $player) {
+            $data[$player->getId() . '_token'] = BattingCards::getHand($player->getId());
+        }
+
+        self::notifyAll('roundStart', $msg, $data);
     }
 }

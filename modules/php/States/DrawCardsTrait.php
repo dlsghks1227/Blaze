@@ -1,8 +1,8 @@
 <?php
 namespace Blaze\States;
 
-use Blaze\Cards\BattingCards;
 use BlazeBananani;
+use Blaze\Cards\BattingCards;
 use Blaze\Players\Players;
 use Blaze\Cards\Cards;
 use Blaze\Game\Notifications;
@@ -31,14 +31,14 @@ trait DrawCardsTrait
                     $deckCount = Cards::getDeckCount();
                     if ($deckCount > 0) {
                         $count = Cards::countCards('hand', $player->getId());
-                        $amount = ($deckCount >= 5) ? (5 - $count) : $deckCount;
                         if ($i == ATTACKER || $i == VOLUNTEER || ($i == DEFENDER && $is_defensed == DEFENSE_SUCCESS))
-                            $player->drawCards($amount);
+                            $player->drawCards((5 - $count));
                     }
                 }
             }
         }
 
+        BlazeBananani::get()->setGameStateValue('isDefensed', 0 );
         $this->gamestate->nextState("");
     }
 

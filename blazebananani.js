@@ -50,7 +50,7 @@ define([
                 this._cardWidth_S   = 36;
                 this._cardHeight_S  = 56;
 
-                this._trophyCard        = this.initStock($('trophy-cards'), 'L', 5, 1, true);
+                this._trophyCard        = this.initStock($('trophy-cards'), 'L', 5, 60, true);
                 this._playerHand        = this.initStock($('hand-cards'), 'L', 10, 60, true, true);
 
                 this._playerToken       = this.initStock($('batting-cards'), 'L', 2, 60, true, true);
@@ -66,9 +66,9 @@ define([
                 this._otherplayerBettingCard    = new Map();
                 this._otherplayerTrophyCard     = new Map();
 
-                this._defenderCardsCount        = 0;
-                this._activePlayerRole          = 0;
-
+                this._defenderCardsCount    = 0;
+                this._activePlayerRole      = 0;
+                this._trumpCardType         = 0;
             },
 
             /*
@@ -101,8 +101,8 @@ define([
                 }
 
                 // 트로피 카드 초기화
-                for (var value = 0; value < 5; value++) {
-                    this._trophyCard.addItemType(value, value, g_gamethemeurl + 'img/trophy_cards.png', value);
+                for (var value = 1; value <= 5; value++) {
+                    this._trophyCard.addItemType(value, value, g_gamethemeurl + 'img/trophy_cards.png', value - 1);
                 }
 
                 // 플레이어 토큰 설정 및 초기화 - 플레이어 수에 맞게 추가
@@ -161,18 +161,16 @@ define([
 
                     this._otherplayerBettedCard.set(
                         player.id,
-                        this.initStock( $('player-mini-betted-cards-' + player.id), 'S', 5, 20, false)
+                        this.initStock( $('player-mini-betted-cards-' + player.id), 'S', 2, 50, false)
                     );
                     let playerBettedCard = this._otherplayerBettedCard.get(player.id);
-                    var bettingCardsNumber = 0;
+                    var bettedCardsNumber = 0;
                     this.gamedatas.playersInfo.forEach(player => {
-                        playerBettedCard.addItemType(bettingCardsNumber,       0, g_gamethemeurl + 'img/batting_cards.png', bettingCardsNumber);
-                        playerBettedCard.addItemType(bettingCardsNumber + 1,   1, g_gamethemeurl + 'img/batting_cards.png', bettingCardsNumber + 1);
-                        playerBettedCard.addItemType(bettingCardsNumber + 2,   1, g_gamethemeurl + 'img/batting_cards.png', bettingCardsNumber + 1);
-                        bettingCardsNumber += 2;
+                        playerBettedCard.addItemType(bettedCardsNumber,       0, g_gamethemeurl + 'img/batting_cards_mini.png', bettedCardsNumber);
+                        playerBettedCard.addItemType(bettedCardsNumber + 1,   1, g_gamethemeurl + 'img/batting_cards_mini.png', bettedCardsNumber + 1);
+                        playerBettedCard.addItemType(bettedCardsNumber + 2,   1, g_gamethemeurl + 'img/batting_cards_mini.png', bettedCardsNumber + 1);
+                        bettedCardsNumber += 2;
                     });
-
-                    
 
                     this._otherplayerTrophyCard.set(
                         player.id,
@@ -180,8 +178,8 @@ define([
                     );
 
                     let playerTrophyCard = this._otherplayerTrophyCard.get(player.id);
-                    for (var value = 0; value < 5; value++) {
-                        playerTrophyCard.addItemType(value, value, g_gamethemeurl + 'img/trophy_cards.png', value);
+                    for (var value = 1; value <= 5; value++) {
+                        playerTrophyCard.addItemType(value, value, g_gamethemeurl + 'img/trophy_cards_mini.png', value - 1);
                     }              
                 });
                 dojo.connect(this._playerHand, "onChangeSelection", this, 'onPlayerHandSelectionChanged');
@@ -202,16 +200,32 @@ define([
                     let playerToken = this._otherPlayerToken.get(card.location_arg);
                     playerToken.addToStock(0);
                 });
-
-
+                
                 this.gamedatas.bettingCards.forEach(card => {
                     let playerBettingCard = this._otherplayerBettingCard.get(card.location_arg);
                     playerBettingCard.addToStock(card.type);
                 });
 
-                console.log(this.gamedatas.bettingCards);
+                this.gamedatas.bettedCards.forEach(card => {
+                    let playerBettedCard = this._otherplayerBettedCard.get(card.location_arg);
+                    playerBettedCard.addToStock(card.id);
+                });
+
+                // 트로피 카드 설정
+                this.gamedatas.trophyCards.forEach(card => {
+                    if (card.location_arg == this.gamedatas.currentRound) {
+                        this._trophyCard.addToStockWithId(card.value, card.value);
+                    }
+                });
+
+                // 다른 플레이어 트로피 카드 설정
+                this.gamedatas.trophyCardsOnPlayer.forEach(card => {
+                    let playerTrophyCard = this._otherplayerTrophyCard.get(card.location_arg);
+                    playerTrophyCard.addToStockWithId(card.value, card.value);
+                });
 
                 // 트럼프 슈트 카드 설정
+                this._trumpCardType = this.gamedatas.trumpSuitCard.type;
                 this.placeCard(1, 3, this.gamedatas.trumpSuitCard.type, this.gamedatas.trumpSuitCard.value);
                 this.placeText(1, 4, 1, "Trump suit");
 
@@ -237,6 +251,7 @@ define([
                 this.gamedatas.discardCards.forEach(card => {
                     this._discardCard.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id);
                 });
+            
 
                 // 플레이어 수 설정
                 dojo.attr("board", "data-players", this.gamedatas.playersInfo.length);
@@ -277,6 +292,8 @@ define([
                                     this.addActionButton('Pass', _('Pass'), () => this.onClickPassButton(), null, false, 'red');
                                 }
                             } else if (args.activePlayerRole == '2') {
+                                // 방어할 수 있는 카드 업데이트
+                                this.updateEnableDefenseCards();
                                 this.addActionButton('Defense', _('Defense'), () => this.onClickDefenseButton(), null, false, 'blue');
                                 this.addActionButton('Retreat', _('Retreat'), () => this.onClickPassButton(), null, false, 'red');
                             } else if (args.activePlayerRole == '3') {

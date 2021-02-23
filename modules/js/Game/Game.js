@@ -6,6 +6,8 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
         constructor: function() {
             this._notifications = [];
             this._activeStates = [];
+
+            this._attackedCard = [];
         },
 
         setLoader: function(value, max) {
@@ -49,7 +51,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
                 case 'playerTurn':
                     this._activePlayerRole = args.args.activePlayerRole;
                     this._defenderCardsCount = args.args.DefenderCardsCount;
-                    console.log(this._defenderCardsCount);
+                    this._attackedCard = args.args.attackedCard;
                     break;
                 case 'batting':
                     this.gamedatas.playersInfo.forEach(player => {

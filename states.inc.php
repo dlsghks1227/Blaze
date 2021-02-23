@@ -68,7 +68,6 @@ $machinestates = array(
         "description" => "",
         "type" => "game",
         "action" => "stStartOfRound",
-        "updateGameProgression" => true,
         "transitions" => array(
             "" => ST_START_OF_MAIN_TURN,
         )
@@ -79,6 +78,7 @@ $machinestates = array(
         "description" => "",
         "type" => "game",
         "action" => "stEndOfRound",
+        "updateGameProgression" => true,
         "transitions" => array(
             "start" => ST_START_OF_ROUND,
             "end" => ST_END_GAME,
@@ -113,7 +113,8 @@ $machinestates = array(
         "type" => "game",
         "action" => "stStartOfSubTurn",
         "transitions" => array(
-            "" => ST_PLAYER_TURN,
+            "start" => ST_PLAYER_TURN,
+            "end" => ST_START_OF_MAIN_TURN,
         )
     ),
 

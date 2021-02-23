@@ -97,10 +97,23 @@ class Players extends \APP_GameClass
 
     public static function updatePlayersRole($player_id) {
         $player_table = BlazeBananani::get()->getNextPlayerTable();
-        $attacker_player = self::getPlayer($player_id);
-        $attacker_player->updateRole(ATTACKER);
-        
+
+        // 여기서도 현재플레이어가 제외 된 상태면 다음 상태로 넘어가야한다..
         $next_player_id = $player_id;
+        for ($i = 0; $i < count($player_table) + 1; $i++) {
+            if (self::getPlayer($next_player_id)->isEliminated() == true) {
+                $next_player_id = $player_table[$next_player_id];
+                continue;
+            }
+            $attacker_player = self::getPlayer($next_player_id);
+            $attacker_player->updateRole(ATTACKER);
+            
+            BlazeBananani::get()->gamestate->changeActivePlayer($next_player_id);
+            BlazeBananani::get()->giveExtraTime($next_player_id);
+
+            break;
+        }
+        
         $defenderSelected = false;
         for ($i = 0; $i < count($player_table) + 1; $i++) {
             if (self::getPlayer($next_player_id)->isEliminated() == true || 
