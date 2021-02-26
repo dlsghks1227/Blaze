@@ -1,8 +1,8 @@
 <?php
 
-namespace Blaze\Cards;
+namespace BlazeBase\Cards;
 
-use Blaze\Cards\Card;
+use BlazeBase\Cards\Card;
 
 class TrophyCards extends \APP_GameClass
 {
@@ -41,7 +41,7 @@ class TrophyCards extends \APP_GameClass
 
     public static function formatCards($cards)
     {
-        return array_values(array_map(['Blaze\Cards\TrophyCards', 'formatCard'], $cards));
+        return array_values(array_map(['BlazeBase\Cards\TrophyCards', 'formatCard'], $cards));
     }
 
     public static function resToObject($row)

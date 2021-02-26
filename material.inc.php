@@ -2,7 +2,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * BlazeBananani implementation : © <Inhwan Lee> <dlsghks1227@gmail.com>
+ * Blaze implementation : © <Inhwan Lee> <dlsghks1227@gmail.com>
  * 
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -10,7 +10,7 @@
  *
  * material.inc.php
  *
- * BlazeBananani game material description
+ * Blaze game material description
  *
  * Here, you can describe the material of your game with PHP variables.
  *   

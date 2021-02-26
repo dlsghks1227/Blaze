@@ -1,11 +1,11 @@
 <?php
-namespace Blaze\Players;
+namespace BlazeBase\Players;
 
-use BlazeBananani;
-use Blaze\Game\Log;
-use Blaze\Players\Player;
-use Blaze\Cards\Cards;
-use Blaze\Game\Notifications;
+use Blaze;
+use BlazeBase\Game\Log;
+use BlazeBase\Players\Player;
+use BlazeBase\Cards\Cards;
+use BlazeBase\Game\Notifications;
 
 class Players extends \APP_GameClass
 {
@@ -13,7 +13,7 @@ class Players extends \APP_GameClass
     {
         // 플레이어 데이터베이스 구성
         self::DbQuery('DELETE FROM player');
-        $gameInfos = BlazeBananani::get()->getGameinfos();
+        $gameInfos = Blaze::get()->getGameinfos();
         $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar, player_role) VALUE';
         
         $default_colors = $gameInfos['player_colors'];
@@ -29,8 +29,8 @@ class Players extends \APP_GameClass
         
         // reattributeColorsBasedOnPreferences
         // 플레이어의 색상 기본 설정과 사용 가능한 색상을 고려해 모든 색상을 다시 지정
-        BlazeBananani::get()->reattributeColorsBasedOnPreferences($players, $gameInfos['player_colors']);
-        BlazeBananani::get()->reloadPlayersBasicInfos();
+        Blaze::get()->reattributeColorsBasedOnPreferences($players, $gameInfos['player_colors']);
+        Blaze::get()->reloadPlayersBasicInfos();
     }
 
     public static function getCurrentTurn($as_object = false) {
@@ -39,7 +39,7 @@ class Players extends \APP_GameClass
     }
 
     public static function getActivePlayer() {
-        return self::getPlayer(BlazeBananani::get()->getActivePlayerId());
+        return self::getPlayer(Blaze::get()->getActivePlayerId());
     }
 
     public static function getPlayer($player_id) {
@@ -96,7 +96,7 @@ class Players extends \APP_GameClass
     }
 
     public static function updatePlayersRole($player_id) {
-        $player_table = BlazeBananani::get()->getNextPlayerTable();
+        $player_table = Blaze::get()->getNextPlayerTable();
 
         // 여기서도 현재플레이어가 제외 된 상태면 다음 상태로 넘어가야한다..
         $next_player_id = $player_id;
@@ -108,8 +108,8 @@ class Players extends \APP_GameClass
             $attacker_player = self::getPlayer($next_player_id);
             $attacker_player->updateRole(ATTACKER);
             
-            BlazeBananani::get()->gamestate->changeActivePlayer($next_player_id);
-            BlazeBananani::get()->giveExtraTime($next_player_id);
+            Blaze::get()->gamestate->changeActivePlayer($next_player_id);
+            Blaze::get()->giveExtraTime($next_player_id);
 
             break;
         }

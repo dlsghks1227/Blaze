@@ -1,8 +1,8 @@
 <?php
 
-namespace Blaze\Game;
+namespace BlazeBase\Game;
 
-use BlazeBananani;
+use Blaze;
 
 class Log extends \APP_GameClass
 {
@@ -19,7 +19,7 @@ class Log extends \APP_GameClass
 
     public static function insert($player_id, $card_id, $action, $args = array())
     {
-        $player_id = $player_id == -1 ? BlazeBananani::get()->getActivePlayerId() : $player_id;
+        $player_id = $player_id == -1 ? Blaze::get()->getActivePlayerId() : $player_id;
         $turn = self::getCurrentTurn() + ($action == "startTurn" ? 1 : 0);
         $actionArgs = json_encode($args);
         self::DbQuery("INSERT INTO log (`turn`, `player_id`, `card_id`, `action`, `action_arg`) VALUES ('$turn', '$player_id', '$card_id', '$action', '$actionArgs')");

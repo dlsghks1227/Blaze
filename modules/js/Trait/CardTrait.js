@@ -11,7 +11,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
 
         notif_drawCard: function(notif) {
-            this.drawCards(notif.args.player_id, notif.args.cards, notif.args.deckCount);
+            this.drawCards(notif.args.player_id, notif.args.cards, notif.args.deckCount, notif.args.trumpSuitCard);
         },
 
         notif_defenseFailed: function(notif) {
@@ -23,20 +23,29 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
 
         notif_getTrophyCard: function(notif) {
-            this.getTrophyCard(notif.args.player_id, notif.args.value);
+            notif.args.players.forEach(player => {
+                this.placeScore(player.id, player.score);
+            });
+            this.getTrophyCard(notif.args.player_id, notif.args.trophyCard);
         },
 
-        placeCard: function(posX, posY, color, value, isBack = false) {
+        placeCard: function(posX, posY, color, value, sizeX = 1, sizeY = 1, isBack = false, angle = 0, index = 0) {
             if ($('cardOnTable-' + posX + '-' + posY)) {
                 dojo.destroy('cardOnTable-' + posX + '-' + posY);
             }
-
+            if (color == -1 && value == -1) {
+                return;
+            }
             dojo.place(this.format_block('jstpl_cardOnTable', {
                 posX: posX,
                 posY: posY,
                 x: isBack ? 0 : this._cardWidth_L  * (value - 1),
                 y: isBack ? 0 : this._cardHeight_L * (color),
-                filp: isBack ? 'back' : 'front'
+                filp: isBack ? 'back' : 'front',
+                sizeX: sizeX,
+                sizeY: sizeY,
+                angle: angle,
+                index: index,
             }), 'table-container');
         },
 
@@ -51,6 +60,17 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 size: size,
                 text: String(text),
             }), 'table-container');
+        },
+
+        placeScore: function(playerId, score) {
+            if ($('player-score-' + playerId)) {
+                dojo.destroy('player-score-' + playerId);
+            }
+
+            dojo.place(this.format_block('jstpl_player_score', {
+                playerId: playerId,
+                score: score
+            }), 'player-container-' + playerId);
         },
 
         placeAttackCards: function(playerId, cards) {
@@ -72,19 +92,22 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 this._otherPlayerHand.get(playerId).removeFromStock(0);
                 if (playerId != this.player_id) {
                     this._defenseCardPlace.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id, 'blaze-player-' + playerId);
+                    this._defenseCardPlace.changeItemsWeight({[this.getCardUniqueId(card.type, card.value)]: card.location_arg});
                 } else {
                     if ($('hand-cards_item_' + card.id)) {
                         this._defenseCardPlace.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id, 'hand-cards_item_' + card.id);
+                        this._defenseCardPlace.changeItemsWeight({[this.getCardUniqueId(card.type, card.value)]: card.location_arg});
+
                         this._playerHand.removeFromStockById(card.id);
                     }
                 }
             });
         },
 
-        drawCards: function(playerId, cards, deckCount) {
+        drawCards: function(playerId, cards, deckCount, trumpSuitCard) {
             cards.forEach(card => {
                 this._otherPlayerHand.get(playerId).addToStock(0, 'deckOnTable');
-                this.placeText(1, 2, 1, deckCount);
+                this.placeText(1, 3, 1, deckCount);
 
                 if (playerId == this.player_id) {
                     this._playerHand.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id, 'deckOnTable')
@@ -94,6 +117,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                     dojo.query('#cardOnTable-1-1 .card').attr('data-filp', 'none');
                 }
             });
+            this._trumpCardType = trumpSuitCard.type;
+            this.placeCard(1, 2, trumpSuitCard.type, trumpSuitCard.value, 1, 1, false, 50, 0);
         },
 
         discardCards: function(attackCards, defenseCards) {
@@ -189,10 +214,10 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             }
         },
 
-        getTrophyCard: function(playerId, value) {
-            if ($('trophy-cards_item_' + value)) {
-                this._otherplayerTrophyCard.get(playerId).addToStockWithId(value, value, 'trophy-cards_item_' + value);
-                this._trophyCard.removeFromStockById(value);
+        getTrophyCard: function(playerId, trophyCard) {
+            if ($('trophy-cards_item_' + trophyCard.id)) {
+                this._otherplayerTrophyCard.get(playerId).addToStockWithId(trophyCard.value, trophyCard.id, 'trophy-cards_item_' + trophyCard.id);
+                this._trophyCard.removeFromStockById(trophyCard.id);
             }
         },
 

@@ -1,9 +1,10 @@
 <?php
-namespace Blaze\Players;
+namespace BlazeBase\Players;
 
-use Blaze\Cards\Cards;
-use Blaze\Cards\BattingCards;
-use Blaze\Game\Notifications;
+use BlazeBase\Cards\Cards;
+use BlazeBase\Cards\BattingCards;
+use BlazeBase\Cards\TrophyCards;
+use BlazeBase\Game\Notifications;
 
 class Player extends \APP_GameClass
 {
@@ -46,7 +47,25 @@ class Player extends \APP_GameClass
             'eliminated'    => $this->eliminated,
             'hand'          => ($current) ? array_values(Cards::getHand($this->id)) : Cards::countCards('hand', $this->id),
             'tokenCards'    => ($current) ? array_values(BattingCards::getHand($this->id)) : BattingCards::countCards('hand', $this->id),
+            'score'         => $this->getScore(),
         );
+    }
+
+    public function getScore() {
+        $total_score = 0;
+        $betting_cards = BattingCards::getBettedCards();
+        foreach ($betting_cards as $card) {
+            if ($card['location_arg'] == $this->id) {
+                $total_score += $card['value'];
+            }
+        }
+        $trophy_cards = TrophyCards::getHandCards();
+        foreach ($trophy_cards as $card) {
+            if ($card['location_arg'] == $this->id) {
+                $total_score += $card['value'];
+            }
+        }
+        return $total_score;
     }
 
     public function getRoleFormat() {

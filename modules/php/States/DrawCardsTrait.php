@@ -1,22 +1,23 @@
 <?php
-namespace Blaze\States;
+namespace BlazeBase\States;
 
-use BlazeBananani;
-use Blaze\Cards\BattingCards;
-use Blaze\Players\Players;
-use Blaze\Cards\Cards;
-use Blaze\Game\Notifications;
+use Blaze;
+use BlazeBase\Cards\BattingCards;
+use BlazeBase\Players\Players;
+use BlazeBase\Cards\Cards;
+use BlazeBase\Game\Notifications;
 
 trait DrawCardsTrait
 {
     public function stDrawCard() {
         $players = Players::getPlayers();
-        $is_defensed = BlazeBananani::get()->getGameStateValue("isDefensed");
+        $is_defensed = Blaze::get()->getGameStateValue("isDefensed");
         
         for ($i = ATTACKER; $i <= VOLUNTEER; $i++) {
             foreach ($players as $player) {
                 if ($player->getRole() == $i) {
                     if ($i == DEFENDER) {
+                        Cards::moveAttackedCards();
                         $attack_cards = Cards::getAttackCards();
                         $defense_cards = Cards::getDefenseCards();
                         if ($is_defensed == DEFENSE_FAILURE) {
@@ -29,17 +30,24 @@ trait DrawCardsTrait
                     }
 
                     $deckCount = Cards::getDeckCount();
+                    if ($deckCount <= 0) {
+                        Cards::moveToTrumpSuitCard();
+                    }
+                    $deckCount = Cards::getDeckCount();
                     if ($deckCount > 0) {
-                        $count = Cards::countCards('hand', $player->getId());
-                        if ($i == ATTACKER || $i == VOLUNTEER || ($i == DEFENDER && $is_defensed == DEFENSE_SUCCESS))
-                            $player->drawCards((5 - $count));
+                        $drawCount = 5 - Cards::countCards('hand', $player->getId());
+                        if ($drawCount > $deckCount) {
+                            Cards::moveToTrumpSuitCard();
+                        }
+                        if ($drawCount > 0 && ($i == ATTACKER || $i == VOLUNTEER || ($i == DEFENDER && $is_defensed == DEFENSE_SUCCESS)))
+                            $player->drawCards($drawCount);
                     }
                 }
             }
         }
 
-        BlazeBananani::get()->setGameStateValue('isDefensed', 0 );
-        $this->gamestate->nextState("");
+        // stEndOfMainTurn
+        $this->gamestate->nextState("start");
     }
 
     public function stBatting() {
@@ -48,7 +56,7 @@ trait DrawCardsTrait
 
     public function stEndOfBatting() {
         // 배팅 여부 활성화
-        BlazeBananani::get()->setGameStateValue("isBetting", 1 );
+        Blaze::get()->setGameStateValue("isBetting", 1 );
 
         // 배팅 종료 알리기
         Notifications::endBetting(
@@ -74,6 +82,6 @@ trait DrawCardsTrait
         );
 
         // stEndOfBatting
-        $this->gamestate->setPlayerNonMultiactive($player_id, "");
+        $this->gamestate->setPlayerNonMultiactive($player_id, "end");
     }
 }

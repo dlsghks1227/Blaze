@@ -1,12 +1,12 @@
-define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, declare) => {
+define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
     return declare("customgame.game", ebg.core.gamegui, {
         /*
          * Constructor
          */
-        constructor: function() {
+        constructor()
+        {
             this._notifications = [];
             this._activeStates = [];
-
             this._attackedCard = [];
         },
 
@@ -52,6 +52,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui", "ebg/stock",], (dojo, 
                     this._activePlayerRole = args.args.activePlayerRole;
                     this._defenderCardsCount = args.args.DefenderCardsCount;
                     this._attackedCard = args.args.attackedCard;
+                    this._defenseCards = new Map();
                     break;
                 case 'batting':
                     this.gamedatas.playersInfo.forEach(player => {

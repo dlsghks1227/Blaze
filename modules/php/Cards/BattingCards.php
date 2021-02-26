@@ -1,10 +1,10 @@
 <?php
 
-namespace Blaze\Cards;
+namespace BlazeBase\Cards;
 
-use Blaze\Cards\Card;
-use Blaze\Players\Players;
-use Blaze\Game\Notifications;
+use BlazeBase\Cards\Card;
+use BlazeBase\Players\Players;
+use BlazeBase\Game\Notifications;
 
 // 카드 상위 클래스를 만들어서 작업하는게 좋을꺼같다.
 
@@ -43,7 +43,7 @@ class BattingCards extends \APP_GameClass
 
     public static function formatCards($cards)
     {
-        return array_values(array_map(['Blaze\Cards\BattingCards', 'formatCard'], $cards));
+        return array_values(array_map(['BlazeBase\Cards\BattingCards', 'formatCard'], $cards));
     }
 
     public static function resToObject($row)

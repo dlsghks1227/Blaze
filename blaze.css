@@ -1,0 +1,314 @@
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * Blaze implementation : © <Inhwan Lee> <dlsghks1227@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * blaze.css
+ *
+ * blaze stylesheet
+ *
+ */
+
+/*
+    This is the CSS stylesheet of your game User Interface.
+    
+    Styles defined on this file will be applied to the HTML elements you define in your
+    HTML template (blazebananani_blazebananani.tpl), and to HTML elements you create dynamically
+    (in blazebananani.js).
+    
+    Usually, you are using CSS to:
+    
+    1°) define the overall layout of your game
+        (ex: place the board on the top left, place player's hand beside, place the deck on the right, ...).
+
+    2°) create your CSS-sprites:
+        All images of your games should be gathered into a small number of image files. Then, using
+        background-image and background-position CSS properties, you create HTML blocks that can 
+        display these images correctly (see example below).
+    
+    3°) ... anything else:
+        It is really easy to add and remove CSS classes dynamically from your Javascript with
+        dojo.addClass and dojo.removeClass. It is also easy to check if an element has a class
+        (dojo.hasClass) or to get all elements with a specific class (dojo.query). This is why,
+        very often, using CSS classes for the logic of your user interface allow you to do complex
+        thing easily.
+        
+        
+     Note: on the production platform, this file will be compressed and comments will be removed.
+           Consequently, don't hesitate to put as many comments as necessary.
+*/
+
+
+/* Note: you must not use any @import directive */
+
+
+/********* You can start writing your CSS below this line: **********/
+
+
+/*
+    Example of CSS sprites (a black token and a white token, 20x20px each, embedded in the same "tokens.png" 40x20px image):
+
+    .white_token {
+        background-image: url('img/tokens.png');
+        background-position: 0px 0px;
+    }
+    .black_token {
+        background-image: url('img/tokens.png');
+        background-position: -20px 0px;
+    }
+    .token {
+        width: 20px;
+        height: 20px;
+        background-repeat: none;
+    }
+*/
+
+.stockitem_selected {
+	border: 2px solid white ! important;
+    top: -30px ! important;
+}
+.overallCards {
+    width: 100%;
+    min-height: 120px;
+    margin: auto;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr); }
+
+    .overallCards .cards {
+        width: 100%;
+        height: 100%; }
+
+    .overallCards div#minibetting {
+        grid-row: 1 / span 2;
+        grid-column: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; }
+
+    .overallCards div#miniBetted {
+        grid-row: 1;
+        grid-column: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; }
+    
+    .overallCards div#miniTrophy {
+        grid-row: 2;
+        grid-column: 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center; }
+
+div#board
+{
+    width: 100%;
+    min-width: 1500px;
+    min-height: 950px;
+    margin: auto;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(14, 1fr);
+    grid-template-rows: repeat(5, 1fr); }
+
+    div#board #table, div#board .button, div#board div#hand, div#board div#battingHand, div#board .blaze-player, div#board div#discard, div#board div#trophy
+    {
+        background-color: rgba(0, 0, 0, 0.65);
+        border-radius: 5px;
+        margin: 10px;
+        display: flex;
+        flex-flow: row;
+    }
+    
+    div#board div#table
+    {
+        margin: 50px 3px;
+        grid-row: 2 / span 3;
+        grid-column: 5 / span 6; }
+
+        
+        div#board div#table div#table-container {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: 1fr 40px 1fr 40px; }
+
+			div#board div#table div#table-container .cardOnTable {
+				width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center; }
+
+				div#board div#table div#table-container .cardOnTable .card[data-filp="front"] {
+					position: absolute;
+					width: 108px;
+					height: 168px;
+					background-image: url('img/cards.png'); }
+
+                div#board div#table div#table-container .cardOnTable .card[data-filp="back"] {
+                    position: absolute;
+                    width: 108px;
+                    height: 168px;
+                    background-image: url('img/card_back.png'); }
+
+                div#board div#table div#table-container .cardOnTable .card[data-filp="none"] {
+                    display: none; }
+            
+            div#board div#table div#table-container .textOnTable {
+                width: 100%;
+                text-align: center}
+
+                div#board div#table div#table-container .textOnTable .text {
+                    width: 100%;
+                    color: rgba(255, 255, 255, 1);
+                    font-weight: bold;}
+
+            div#board div#table div#table-container .button {
+                width: 80%;
+                height: 80%;
+                text-align: center; }
+
+    div#board div#battingHand {
+        grid-row: 5;
+        grid-column: 2 / span 3; }
+
+        div#board div#battingHand div#batting-cards {
+            margin: 10px;
+            width: 100%; }
+
+    div#board div#hand {
+        grid-row: 5;
+        grid-column: 6 / span 8; }
+
+        div#board div#hand div#hand-cards {
+            margin: 10px;
+            width: 100%;}
+
+    div#board div#discard {
+        grid-row: 1;
+        grid-column: 2 / span 3; }
+
+        div#board div#discard div#discard-cards {
+            margin: 10px;
+            width: 100%;}
+
+    
+    div#board div#trophy {
+        grid-row: 1;
+        grid-column: 11 / span 3; }
+
+        div#board div#trophy div#trophy-cards {
+            margin: 10px;
+            width: 100%;}
+
+
+    div#board .blaze-player .player-container { 
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 40px 1fr; }
+
+        div#board .blaze-player .player-container .cards {
+            margin: 10px;
+            width: 100%;
+            height: 100%; }
+
+        div#board .blaze-player .player-container .player-cards {
+            grid-row: 2;
+            grid-column: 2; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center; }
+
+        div#board .blaze-player .player-container .player-token-cards {
+            grid-row: 2;
+            grid-column: 1; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center; }
+
+        div#board .blaze-player .player-container .blaze-player-name {
+            grid-row: 1;
+            grid-column: 1;
+            margin: auto;
+            text-align: center;
+            font-weight: bold; }
+
+        div#board .blaze-player .player-container .blaze-player-score {
+            grid-row: 1;
+            grid-column: 2; 
+            margin: auto;
+            color: rgba(255, 255, 255, 1);
+            text-align: center;
+            font-weight: bold; }
+
+    div#board .blaze-player[data-role="attacker"] {
+        background-color: rgba(255, 100, 100, 0.65);
+    }
+
+    div#board .blaze-player[data-role="defender"] {
+        background-color: rgba(0, 0, 0, 0.65);
+    }
+
+    div#board .blaze-player[data-role="volunteer"] {
+        background-color: rgba(0, 0, 0, 0.65);
+    }
+
+    div#board .blaze-player[data-role="selected"] {
+        background-color: #f7f19e;
+    }
+
+    div#board .blaze-player[data-role="none"] {
+        background-color: rgba(0, 0, 0, 0.65);
+    }
+
+    div#board[data-players="3"] .blaze-player[data-pos="1"] {
+        grid-row: 1;
+        grid-column: 6 / span 4; }
+    div#board[data-players="3"] .blaze-player[data-pos="2"] {
+        grid-row: 3;
+        grid-column: 11 / span 4; }
+    div#board[data-players="3"] .blaze-player[data-pos="3"] {
+        grid-row: 3;
+        grid-column: 1 / span 4; }
+    
+
+
+    div#board[data-players="4"] .blaze-player[data-pos="1"] {
+        grid-row: 2;
+        grid-column: 11 / span 4; }
+    div#board[data-players="4"] .blaze-player[data-pos="2"] {
+        grid-row: 4;
+        grid-column: 11 / span 4; }
+    div#board[data-players="4"] .blaze-player[data-pos="3"] {
+        grid-row: 4;
+        grid-column: 1 / span 4; }
+    div#board[data-players="4"] .blaze-player[data-pos="4"] {
+        grid-row: 2;
+        grid-column: 1 / span 4; }
+        
+
+    div#board[data-players="5"] .blaze-player[data-pos="1"] {
+        grid-row: 1;
+        grid-column: 6 / span 4; }
+    div#board[data-players="5"] .blaze-player[data-pos="2"] {
+        grid-row: 2;
+        grid-column: 11 / span 4; }
+    div#board[data-players="5"] .blaze-player[data-pos="3"] {
+        grid-row: 4;
+        grid-column: 11 / span 4; }
+    div#board[data-players="5"] .blaze-player[data-pos="4"] {
+        grid-row: 4;
+        grid-column: 1 / span 4; }
+    div#board[data-players="5"] .blaze-player[data-pos="5"] {
+        grid-row: 2;
+        grid-column: 1 / span 4; }

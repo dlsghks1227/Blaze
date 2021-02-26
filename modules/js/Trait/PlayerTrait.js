@@ -15,6 +15,9 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
 
             this._selectCardValue = 0;
             this._trumpCardType = 0;
+
+            this._selectValid = false;
+            this._defenseCards = new Map();
         },
 
         notif_attack: function(notif) {
@@ -82,6 +85,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             
             // Attacker 일 때
             if (this._activePlayerRole == 1) {
+                this._playerHand.setSelectionMode(2);
+
                 if (this._attackCardPlace.count() <= 0) {
                     // 선공 할 때
                     let limit = this._defenderCardsCount >= 5 ? 5 : this._defenderCardsCount;
@@ -122,15 +127,129 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 }
             // Defender 일 때 
             } else if (this._activePlayerRole == 2) {
+                this._playerHand.setSelectionMode(1);
+
                 // 현재 배치된 공격 카드 수 - 현재 배치된 수비 카드 = 낼 수 있는 카드 수
-                if (items.length > this._attackCardPlace.count() - this._defenseCardPlace.count()) {
+                if (items.length > 1) {
                     this._playerHand.unselectItem(item_id);
+                    return;
                 }
 
+                this.setOpacityOnCards(this._attackCardPlace, '1');
+
+                for (let [key, value] of this._defenseCards) {
+                    var item = this._attackCardPlace.getAllItems()[key];
+                    if (item) {
+                        var div = this._attackCardPlace.getItemDivId(item.id);
+                        dojo.query('#' + div).style('opacity', '0.5');
+                    }
+
+                    var div = this._playerHand.getItemDivId(value);
+                    dojo.query('#' + div).style('opacity', '0.5');
+                }
+                
                 // 방어할 수 있는 카드 업데이트
-                this.updateEnableDefenseCards();
+                if (items.length > 0) {
+                    if (items.length == 1) {
+                        // 선택한 요소가 있으면 삭제한다.
+                        for (let [key, value] of this._defenseCards) {
+                            if (value == item_id) {
+                                this._defenseCards.delete(key);
+
+                                var item = this._attackCardPlace.getAllItems()[key];
+                                if (item) {
+                                    var div = this._attackCardPlace.getItemDivId(item.id);
+                                    dojo.query('#' + div).style('opacity', '1');
+                                }
+
+                                var div = this._playerHand.getItemDivId(item_id);
+                                dojo.query('#' + div).style('opacity', '1');
+                            }
+                        }
+
+                        var attackedList = this._attackCardPlace.getAllItems();
+                        this._attackedCard.forEach(atCard => {
+                            attackedList.forEach((card, num) => {
+                                if (card.id == atCard.id) {
+                                    attackedList.splice(num, 1);
+                                }
+                            })
+                        });
+                        
+                        attackedList.forEach(card => {
+                            var div = this._attackCardPlace.getItemDivId(card.id);
+                            dojo.query('#' + div).style('opacity', '0.5');
+
+                        });
+
+                        var selectCard =  this.getCardType(this._playerHand.getItemById(item_id).type);
+                        this._playerHand.getUnselectedItems().forEach(card => {
+                            var div = this._playerHand.getItemDivId(card.id);
+                            dojo.query('#' + div).style('opacity', '0.5');
+                            this._playerHand.unselectItem(card.id);
+                        });
+
+                        // 여기서 요소 검사해야함
+                        this._attackedCard.forEach(card => {
+                            var attackCardType = {
+                                color: Number(card.type),
+                                value: Number(card.value)
+                            }
+                            if (selectCard.color == this._trumpCardType) {
+                                if (attackCardType.color == this._trumpCardType ) {
+                                    if (selectCard.value < attackCardType.value || selectCard.value == 10) {
+                                        var div = this._attackCardPlace.getItemDivId(card.id);
+                                        dojo.query('#' + div).style('opacity', '0.5');
+                                    }
+                                }
+                            } else if (selectCard.color == attackCardType.color) {
+                                if (selectCard.value < attackCardType.value || selectCard.value == 10) {
+                                    var div = this._attackCardPlace.getItemDivId(card.id);
+                                    dojo.query('#' + div).style('opacity', '0.5');
+                                }
+                            } else {
+                                var div = this._attackCardPlace.getItemDivId(card.id);
+                                dojo.query('#' + div).style('opacity', '0.5');
+                            }
+                        });
+
+                        // 로직 검사
+
+                        this._attackCardPlace.setSelectionMode(1);
+                    }
+                } else if (items.length == 0) {
+                    this._attackCardPlace.setSelectionMode(0);
+
+                    var attackedList = this._attackCardPlace.getAllItems();
+                    this._attackedCard.forEach(atCard => {
+                        attackedList.forEach((card, num) => {
+                            if (card.id == atCard.id) {
+                                attackedList.splice(num, 1);
+                            }
+                        })
+                    });
+                    
+                    attackedList.forEach(card => {
+                        var div = this._attackCardPlace.getItemDivId(card.id);
+                        dojo.query('#' + div).style('opacity', '0.5');
+
+                    });
+                }
+
+                for (let [key, value] of this._defenseCards) {
+                    var item = this._attackCardPlace.getAllItems()[key];
+                    if (item) {
+                        var div = this._attackCardPlace.getItemDivId(item.id);
+                        dojo.query('#' + div).style('opacity', '0.5');
+                    }
+
+                    var div = this._playerHand.getItemDivId(value);
+                    dojo.query('#' + div).style('opacity', '0.5');
+                }
+                // this.updateEnableDefenseCards();
 
             } else if (this._activePlayerRole == 3) {
+                this._playerHand.setSelectionMode(2);
                 // 이후 공격 할 때와 똑같이
                 let limit = this._defenderCardsCount >= 5 ? 5 : this._defenderCardsCount;
                 // 최대 낼 수 있는 값 - 현재 배치된 공격 카드 수 = 낼 수 있는 카드 수
@@ -140,6 +259,77 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
 
                 // 낼 수 있는 카드 업데이트
                 this.updateEnableAttackCards();
+            }
+        },
+
+        onAttackPlaceSelectionChanged: function(control_name, item_id) {
+            var handItems = this._playerHand.getSelectedItems();
+            var attackSelectedItems = this._attackCardPlace.getSelectedItems();
+            var attackItems = this._attackCardPlace.getAllItems();
+
+            var attackedList = this._attackCardPlace.getAllItems();
+            this._attackedCard.forEach(atCard => {
+                attackedList.forEach((card, num) => {
+                    if (card.id == atCard.id) {
+                        attackedList.splice(num, 1);
+                    }
+                })
+            });
+            
+            var isSelected = true;
+            attackedList.forEach(card => {
+                var div = this._attackCardPlace.getItemDivId(card.id);
+                dojo.query('#' + div).style('opacity', '0.5');
+                if (item_id == card.id) {
+                    isSelected = false;
+                }
+            });
+
+    
+            var isValid = true;
+            if (handItems.length > 0 && attackSelectedItems.length > 0) {
+                    var selectCard = this.getCardType(handItems[0].type);
+
+                    var type = this._attackCardPlace.getItemById(item_id).type;
+                    var attackCardType = this.getCardType(type);
+
+                    if (selectCard.color == this._trumpCardType) {
+                        if (attackCardType.color == this._trumpCardType ) {
+                            if (selectCard.value < attackCardType.value || selectCard.value == 10) {
+                                isValid = false;
+                            }
+                        }
+                    } else if (selectCard.color == attackCardType.color) {
+                        if (selectCard.value < attackCardType.value || selectCard.value == 10) {
+                            isValid = false;
+                        }
+                    } else {
+                        isValid = false;
+                    }
+                    console.log(selectCard);
+                    console.log(attackCardType);
+            }
+
+            if (handItems.length > 0 && isSelected && isValid) {
+                if (this._activePlayerRole == 2) {
+                    let attackCardPos = 0;
+                    attackItems.forEach(attackCard => {
+                        if (attackCard.id == item_id) {
+                            for (let [key, value] of this._defenseCards) {
+                                if (value == handItems[0].id) {
+                                    this._defenseCards.delete(key);
+                                }
+                            }
+                            this._defenseCards.set(attackCardPos, handItems[0].id);
+                            this._playerHand.unselectAll();
+                            this._attackCardPlace.unselectAll();
+                            return;
+                        }
+                        attackCardPos++;
+                    });
+                }
+            } else {
+                this._attackCardPlace.unselectAll();
             }
         },
 
@@ -183,69 +373,35 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         
         onClickDefenseButton: function() {
             if (this.checkAction('defense', true)) {
-                let items = this._playerHand.getSelectedItems();
-
-                if (items.length <= 0) {
+                if (this._defenseCards.size <= 0) {
                     this.showMessage(_("Please select a card"), 'error');
                     this._playerHand.unselectAll();
                     return;
                 }
 
-                if (items.length < this._attackCardPlace.count() - this._defenseCardPlace.count()) {
+                if (this._defenseCards.size < this._attackCardPlace.count() - this._defenseCardPlace.count()) {
                     this.showMessage(_("Not enough cards."), 'error');
                     return;
                 }
-
-                var selectCardSum   = [0, 0, 0];
-                var attackedCardSum = [0, 0, 0];
-                var isDefensed = true;
-                var temp = false;
-                items.forEach(selectCards => {
-                    var selectCardType = this.getCardType(selectCards.type);
-                    if (selectCardType.color == this._trumpCardType && selectCardType.value == 10) {
-                        temp = true;
-                        console.log("asdfasfd");
-                    }
-                    selectCardSum[selectCardType.color] += selectCardType.value == 10 ? 0 : selectCardType.value;
-                });
-                for (var i = 0; i < 3; i++) {
-                    if (i != this._trumpCardType && (selectCardSum[this._trumpCardType] != 0 || temp == true)) {
-                        selectCardSum[i] += 10 + selectCardSum[this._trumpCardType];
-                    }
-                }
-
-                this._attackedCard.forEach(attackCards => {
-                    attackedCardSum[attackCards.type] += Number(attackCards.value);
-                });
-                for (var i = 0; i < 3; i++) {
-                    if (i != this._trumpCardType) {
-                        attackedCardSum[i] += attackedCardSum[this._trumpCardType];
-                    }
-                }
-
-                for (var i = 0; i < 3; i++) {
-                    if (selectCardSum[i] < attackedCardSum[i]) {
-                        isDefensed = false;
-                    }
-                }
-
-                console.log(selectCardSum);
-                console.log(attackedCardSum);
-
-                if (isDefensed == false) {
-                    this.showMessage(_("You cannot defend with this cards"), 'error');
-                    return;
-                }
                 
-                if (items.length > 0 && items.length == this._attackCardPlace.count() - this._defenseCardPlace.count()) {
+                if (this._defenseCards.size > 0 && this._defenseCards.size == this._attackCardPlace.count() - this._defenseCardPlace.count()) {
                     let card_ids = [];
-                    items.forEach(card => {
-                        card_ids.push(card.id);
-                    });
+                    let card_locations = [];
+                    for (let [key, value] of this._defenseCards) {
+                        card_ids.push(value);
+                        card_locations.push(key);
+                    }
+                    // items.forEach(card => {
+                    //     card_ids.push(card.id);
+                    //     card_locations.push(3);
+                    // });
                     let data = {
                         cards: card_ids.join(';'),
+                        card_locations: card_locations.join(';')
                     }
                     this.takeAction("defense", data);
+                    this.setOpacityOnCards(this._attackCardPlace, '1');
+
                     this._playerHand.unselectAll();
                 }
             } else {
@@ -255,6 +411,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
 
         onClickPassButton: function() {
             if (this.checkAction('pass', true)) {
+                this.setOpacityOnCards(this._attackCardPlace, '1');
+
                 this.takeAction('pass');
             }
         },
@@ -392,8 +550,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             round) {
             // 라운드 시작할 때 업데이트 되어야할 목록
             // 1. 트럼프 카드
-            console.log(trumpSuitCards);
-            this.placeCard(1, 3, trumpSuitCards.type, trumpSuitCards.value);
+            this._trumpCardType = trumpSuitCards.type;
+            this.placeCard(1, 2, trumpSuitCards.type, trumpSuitCards.value, 1, 1, false, 50, 0);
 
             // 2. 플레이어가 들고있는 카드
             this._playerHand.removeAll();
@@ -410,9 +568,11 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 // 다른 플레이어 카드
                 let playerHand = this._otherPlayerHand.get(player.id);
                 playerHand.removeAll();
-                for (var i = 0; i < player.handCount; i++) {
+                for (var i = 0; i < player.hand; i++) {
                     playerHand.addToStock(0);
                 }
+
+                this.placeScore(player.id, player.score);
 
                 let playerToken = this._otherPlayerToken.get(player.id);
                 playerToken.removeAll();
@@ -428,6 +588,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             });
 
             // 4. 다른 플레이어들 카드
+            this._discardCard.removeAll();
+
             tokenCards.forEach(card => {
                 let playerToken = this._otherPlayerToken.get(card.location_arg);
                 playerToken.addToStock(0);
@@ -440,23 +602,26 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
 
             bettedCards.forEach(card => {
                 let playerBettedCard = this._otherplayerBettedCard.get(card.location_arg);
-                playerBettedCard.addToStock(card.id);
+                playerBettedCard.addToStockWithId((card.type * 2) + Number(card.value), card.id);
             });
 
             this._trophyCard.removeAll();
             trophyCards.forEach(card => {
                 if (card.location_arg == round) {
-                    this._trophyCard.addToStockWithId(card.value, card.value);
+                    this._trophyCard.addToStockWithId(card.value, card.id);
                 }
             });
 
             trophyCardsOnPlayer.forEach(card => {
                 let playerTrophyCard = this._otherplayerTrophyCard.get(card.location_arg);
-                playerTrophyCard.addToStockWithId(card.value, card.value);
+                playerTrophyCard.addToStockWithId(card.value, card.id);
             });
             
             // 5. 덱 카운트
-            this.placeText(1, 2, 1, deckCards.length);
+            if (deckCards.length > 0) {
+                this.placeCard(1, 1, 0, 0, 1, 3, true, 0, 1);
+            }
+            this.placeText(1, 3, 1, deckCards.length);
         },
     });
 });

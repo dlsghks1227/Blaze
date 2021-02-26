@@ -1,19 +1,19 @@
 <?php
-namespace Blaze\Game;
+namespace BlazeBase\Game;
 
-use Blaze\Cards\BattingCards;
-use BlazeBananani;
-use Blaze\Cards\Cards;
-use Blaze\Cards\TrophyCards;
-use Blaze\Players\Players;
+use BlazeBase\Cards\BattingCards;
+use Blaze;
+use BlazeBase\Cards\Cards;
+use BlazeBase\Cards\TrophyCards;
+use BlazeBase\Players\Players;
 
 class Notifications {
     protected static function notifyAll($name, $message, $data) {
-        BlazeBananani::get()->notifyAllPlayers($name, $message, $data);
+        Blaze::get()->notifyAllPlayers($name, $message, $data);
     }
 
     protected static function notify($pID, $name, $message, $data) {
-        BlazeBananani::get()->notifyPlayer($pID, $name, $message, $data);
+        Blaze::get()->notifyPlayer($pID, $name, $message, $data);
     }
 
     public static function drawCards($player, $cards) {
@@ -24,6 +24,7 @@ class Notifications {
             'player_id' => $player->getId(),
             "amount" => count($cards),
             "cards" => $cards,
+            'trumpSuitCard' => Cards::getTrumpSuitCard(),
             'deckCount' => Cards::getDeckCount(),
         );
         self::notifyAll('drawCard', $msg, $data);
@@ -141,12 +142,16 @@ class Notifications {
     }
 
     public static function getTrophyCard($player, $trophy_card_id) {
-        $msg = clienttranslate('${player_name} got ${value} trophy card');
+        $msg = clienttranslate('${player_name} got ${point} trophy card');
+        $players = Players::getPlayers();
+        $players_data = array_map(function($player){ return $player->getData(); }, $players);
         $data = array(
             '118n'          => array(),
+            'players'       => $players_data,
             'player_name'   => $player->getName(),
             'player_id'     => $player->getId(),
-            'value'         => TrophyCards::getCard($trophy_card_id)->getValue(),
+            'trophyCard'    => TrophyCards::getCard($trophy_card_id)->getData(),
+            'point'         => TrophyCards::getCard($trophy_card_id)->getValue(),
         );
 
         self::notifyAll("getTrophyCard", $msg, $data);

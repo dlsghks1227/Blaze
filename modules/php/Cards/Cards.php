@@ -1,10 +1,11 @@
 <?php
 
-namespace Blaze\Cards;
+namespace BlazeBase\Cards;
 
-use Blaze\Cards\Card;
-use Blaze\Players\Players;
-use Blaze\Game\Notifications;
+use Blaze;
+use BlazeBase\Cards\Card;
+use BlazeBase\Players\Players;
+use BlazeBase\Game\Notifications;
 
 class Cards extends \APP_GameClass
 {
@@ -46,7 +47,7 @@ class Cards extends \APP_GameClass
 
     public static function formatCards($cards)
     {
-        return array_values(array_map(['Blaze\Cards\Cards', 'formatCard'], $cards));
+        return array_values(array_map(['BlazeBase\Cards\Cards', 'formatCard'], $cards));
     }
 
     private static function resToObject($row)
@@ -90,7 +91,7 @@ class Cards extends \APP_GameClass
     }
 
     public static function moveDefenseCards($cards) {
-        foreach ($cards as $card) self::moveCard($card, 'defenseCards');
+        foreach ($cards as $card) self::moveCard($card, 'defenseCards', $card->getLocationArg());
     }
 
     public static function moveAttackedCards() {
@@ -129,7 +130,17 @@ class Cards extends \APP_GameClass
 
     public static function getTrumpSuitCard() {
         $card = self::toObjects(self::getDeck()->getCardsInLocation('trumpSuitCard'));
-        return self::formatCards($card)[0];
+        if (empty(self::formatCards($card))) {
+            $trump_suit_type = Blaze::get()->getGameStateValue('trumpSuitType');
+            $trump_suit_value = Blaze::get()->getGameStateValue('trumpSuitValue');
+
+            return array(
+                "type" => $trump_suit_type,
+                "value" => $trump_suit_value,
+            );
+        } else {
+            return self::formatCards($card)[0];
+        }
     }
 
     public static function getAttackCards() {
@@ -184,6 +195,10 @@ class Cards extends \APP_GameClass
         $card = self::resToObject(self::getDeck()->getCardOnTop('deck'));
         self::getDeck()->moveCard($card->getId(), 'trumpSuitCard');
         return $card;
+    }
+
+    public static function moveToTrumpSuitCard() {
+        return self::GetDeck()->moveAllCardsInLocation('trumpSuitCard', 'deck');
     }
 
     public static function moveToTemplateDeck($nbr) {

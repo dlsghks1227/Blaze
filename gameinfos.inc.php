@@ -16,25 +16,25 @@ $gameinfos = array(
 'game_name' => "Blaze",
 
 // Game designer (or game designers, separated by commas)
-'designer' => 'John Doe',       
+'designer' => 'Mr.Park',       
 
 // Game artist (or game artists, separated by commas)
-'artist' => 'Jane Doe',         
+'artist' => 'Mr.Park',         
 
 // Year of FIRST publication of this game. Can be negative.
-'year' => 2000,                 
+'year' => 2021,                 
 
 // Game publisher (use empty string if there is no publisher)
-'publisher' => 'publisher',                     
+'publisher' => 'HeidelBÄR Games',                     
 
 // Url of game publisher website
-'publisher_website' => 'https://heidelbaer.de/',   
+'publisher_website' => 'https://heidelbaer.de/',
 
 // Board Game Geek ID of the publisher
-'publisher_bgg_id' => 1234,
+'publisher_bgg_id' => 38505,
 
 // Board game geek ID of the game
-'bgg_id' => 0,
+'bgg_id' => 332317,
 
 
 // Players configuration that can be played (ex: 2 to 4 players)
@@ -131,8 +131,9 @@ $gameinfos = array(
 // Each paragraph must be wrapped with totranslate() for translation and should not contain html (plain text without formatting).
 // A good length for this text is between 100 and 150 words (about 6 to 9 lines on a standard display)
 'presentation' => array(
-//    totranslate("This wonderful game is about geometric shapes!"),
-//    totranslate("It was awarded best triangle game of the year in 2005 and nominated for the Spiel des Jahres."),
+      "!!! Castle TriCon SPECIAL: this game is available to be presented for the Castle TriCon Event !!!",
+      totranslate("In Blaze, players try to get rid of their cards, but have to achieve this in an extremely clever and very unusual way. The player whose turn it is plays together with the second next player, which leads to constantly changing alliances. In the end, the player who collects the most feathers wins."),
+      totranslate("Blaze is designed for at least three players and based on the classic Russian public domain game Durak."),
 //    ...
 ),
 
@@ -143,7 +144,7 @@ $gameinfos = array(
 //  http://en.doc.boardgamearena.com/Game_meta-information:_gameinfos.inc.php
 //  IMPORTANT: this list should be ORDERED, with the most important tag first.
 //  IMPORTANT: it is mandatory that the FIRST tag is 1, 2, 3 and 4 (= game category)
-'tags' => array( 2 ),
+'tags' => array( 2, 200, 204 ),
 
 
 //////// BGA SANDBOX ONLY PARAMETERS (DO NOT MODIFY)

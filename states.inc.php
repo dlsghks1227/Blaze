@@ -2,7 +2,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * BlazeBananani implementation : © <Inhwan Lee> <dlsghks1227@gmail.com>
+ * Blaze implementation : © <Inhwan Lee> <dlsghks1227@gmail.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -10,7 +10,7 @@
  * 
  * states.inc.php
  *
- * BlazeBananani game states description
+ * Blaze game states description
  *
  */
 
@@ -137,6 +137,7 @@ $machinestates = array(
         "args" => "argPlayerTurn",
         "possibleactions" => array("attack", "defense", "support", "pass"),
         "transitions" => array(
+            "zombiePass" => ST_START_OF_MAIN_TURN,
             "next" => ST_NEXT_PLAYER,
         )
     ),
@@ -148,6 +149,7 @@ $machinestates = array(
         "action" => "stNextPlayer",
         "transitions" => array(
             "next" => ST_END_OF_SUB_TURN,
+            "end" => ST_DRAW_CARD,
         )
     ),
 
@@ -157,7 +159,8 @@ $machinestates = array(
         "type" => "game",
         "action" => "stDrawCard",
         "transitions" => array(
-            "" => ST_END_OF_MAIN_TURN,
+            "start" => ST_END_OF_MAIN_TURN,
+
         ),
     ),
 
@@ -169,7 +172,8 @@ $machinestates = array(
         "action" => "stBatting",
         "possibleactions" => array( "batting" ),
         "transitions" => array(
-            "" => ST_END_OF_BATTING
+            "end" => ST_END_OF_BATTING,
+            "zombiePass" => ST_END_OF_BATTING
         )
     ),
 

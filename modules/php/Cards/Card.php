@@ -1,7 +1,7 @@
 <?php
-namespace Blaze\Cards;
+namespace BlazeBase\Cards;
 
-use Blaze\Game\Notifications;
+use BlazeBase\Game\Notifications;
 
 class Card extends \APP_GameClass
 {
@@ -32,4 +32,6 @@ class Card extends \APP_GameClass
     public function getType()           { return $this->type; }
     public function getValue()          { return $this->value; }
     public function getLocationArg()    { return $this->location_arg; }
+
+    public function setLocationArg($loc)    { $this->location_arg = $loc;}
 }
