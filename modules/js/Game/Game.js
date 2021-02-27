@@ -7,8 +7,9 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
         {
             this._notifications = [];
             this._activeStates = [];
-
-            this._attackedCard = [];
+        }
+    });
+});ackedCard = [];
         },
 
         setLoader: function(value, max) {
