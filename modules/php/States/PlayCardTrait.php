@@ -15,6 +15,8 @@ trait PlayCardTrait
         $next_order = Blaze::get()->getGameStateValue("nextOrder");
         $order = Players::getNextRole($next_order);
         $is_defensed = Blaze::get()->getGameStateValue("isDefensed");
+        $active_player = Players::getPlayer(self::getActivePlayerId());
+
 
         // 플레이어가 두명 밖에 남지 않으면 지원자 생략하고 넘어간다.
         $players = Players::getPlayers();
@@ -30,6 +32,27 @@ trait PlayCardTrait
                 $order = Players::getNextRole($order);
             }
         }
+
+
+        // 활성화된 플레이어의 카드가 없으면 트로피 카드 제공과 제외시킨다.
+        // 활성화된 플레이어가 한명뿐이라면 트로피 카드 제공하지 않는다.        
+        $deckCount = Cards::getDeckCount();
+        $is_betting = Blaze::get()->getGameStateValue("isBetting");
+        $count = Cards::countCards('hand', $active_player->getId());
+        
+        if ($deckCount <= 0 && 
+            $count <= 0 &&
+            $is_betting == 1 &&
+            $eliminated_player_count >= 2 &&            // 남아 있는 플레이어가 2명 이상일 때 지급
+            $active_player->isEliminated() == false) 
+        {
+            $trophy_card_id = Blaze::get()->getGameStateValue('trophyCardId');
+            $active_player->eliminate(true);
+            TrophyCards::moveCard($trophy_card_id, "hand", $active_player->getId());
+            Notifications::getTrophyCard($active_player, $trophy_card_id);
+            Blaze::get()->setGameStateValue('trophyCardId', $trophy_card_id - 1);
+        }
+
         
         foreach ($players as $player) {
             if ($player->getRole() == $order) {
@@ -48,6 +71,7 @@ trait PlayCardTrait
 
     public function argPlayerTurn() {
         return array(
+            'attackCard'        => Cards::getAttackCards(),
             'attackedCard'      => Cards::getAttackedCards(),
             'tableOnAttackCards' => Cards::getAttackCards(),
             'DefenderCardsCount' => Blaze::get()->getGameStateValue("limitCount"), 
@@ -55,12 +79,14 @@ trait PlayCardTrait
         );
     }
 
-    public function attack($cards_id) {
+    public function attack($cards_id, $card_locations) {
         self::checkAction('attack');
         
-        $cards = array_map(function($id){
-            return Cards::getCard($id);
-        }, $cards_id);
+        $cards = array_map(function($id, $location){
+            $card = Cards::getCard($id);
+            $card->setLocationArg($location);
+            return $card;
+        }, $cards_id, $card_locations);
 
         $player = Players::getPlayer(self::getActivePlayerId());
         Blaze::get()->setGameStateValue('isAttacked', 1 );
@@ -90,12 +116,14 @@ trait PlayCardTrait
         $this->gamestate->nextState('next');
     }
 
-    public function support($cards_id) {
+    public function support($cards_id, $card_locations) {
         self::checkAction('support');
 
-        $cards = array_map(function($id){
-            return Cards::getCard($id);
-        }, $cards_id);
+        $cards = array_map(function($id, $location){
+            $card = Cards::getCard($id);
+            $card->setLocationArg($location);
+            return $card;
+        }, $cards_id, $card_locations);
 
         $player = Players::getPlayer(self::getActivePlayerId());
         Blaze::get()->setGameStateValue('isAttacked', 1 );

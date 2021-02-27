@@ -306,8 +306,6 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                     } else {
                         isValid = false;
                     }
-                    console.log(selectCard);
-                    console.log(attackCardType);
             }
 
             if (handItems.length > 0 && isSelected && isValid) {
@@ -352,11 +350,17 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 
                 if (items.length > 0) {
                     let cardsId = [];
+                    let cardLocations = [];
+
                     items.forEach(card => {
                         cardsId.push(card.id);
+                        cardLocations.push(this._attackCardsCount);
+                        this._attackCardsCount += 1;
                     });
+
                     let data = {
                         cards: cardsId.join(';'),
+                        card_locations: cardLocations.join(';')
                     }
                     this.takeAction("attack", data);
 

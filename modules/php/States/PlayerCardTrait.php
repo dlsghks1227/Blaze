@@ -8,23 +8,4 @@ use BlazeBase\Game\Notifications;
 
 trait PlayerCardTrait
 {
-    public function stAttack() {
-        
-    }
-
-    public function stSupport() {
-
-    }
-
-    public function stDefense() {
-        
-    }
-    
-    public function stNextPlayer() {
-
-    }
-
-    public function stBatting() {
-
-    }
 }

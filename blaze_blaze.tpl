@@ -51,8 +51,8 @@
             </div>
             <div class="cardOnTable" id="deckOnTable" style="grid-column:1; grid-row:1"></div>
 
-            <div class="cardOnTable" id="attackCardOnTable"     style="grid-column:2 / span 5; grid-row:1"></div>
-            <div class="cardOnTable" id="defenseCardOnTable"    style="grid-column:2 / span 5; grid-row:3"></div>
+            <div class="cardOnTable" id="attackCardOnTable"     style="grid-column:3 / span 5; grid-row:1"></div>
+            <div class="cardOnTable" id="defenseCardOnTable"    style="grid-column:3 / span 5; grid-row:3"></div>
         </div>
     </div>
 </div>

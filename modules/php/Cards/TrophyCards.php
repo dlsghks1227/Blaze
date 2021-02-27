@@ -22,15 +22,15 @@ class TrophyCards extends \APP_GameClass
         // 플레이어 수에 맞게 트로피 카드 생성 1라운드용 2라운드용 으로 나눔
 
         for ($round = 1; $round <= 2; $round++) {
-            $cards = array();
             for ($value = $round; $value <= ($round == 1 ? $player_number - 1 : $player_number); $value++) {
+                $cards = array();
                 $cards[] = array(
                     'type'      => $round,
                     'type_arg'  => $value,
                     'nbr'       => 1
                 );
+                self::getTrophyDeck()->CreateCards($cards, 'deck', $round);
            }
-           self::getTrophyDeck()->CreateCards($cards, 'deck', $round);
         };
     }
 

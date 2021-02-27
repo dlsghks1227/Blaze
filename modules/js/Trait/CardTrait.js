@@ -78,9 +78,11 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 this._otherPlayerHand.get(playerId).removeFromStock(0);
                 if (playerId != this.player_id) {
                     this._attackCardPlace.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id, 'blaze-player-' + playerId);
+                    this._attackCardPlace.changeItemsWeight({[this.getCardUniqueId(card.type, card.value)]: card.location_arg});
                 } else {
                     if ($('hand-cards_item_' + card.id)) {
                         this._attackCardPlace.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id, 'hand-cards_item_' + card.id);
+                        this._attackCardPlace.changeItemsWeight({[this.getCardUniqueId(card.type, card.value)]: card.location_arg});
                         this._playerHand.removeFromStockById(card.id);
                     }
                 }

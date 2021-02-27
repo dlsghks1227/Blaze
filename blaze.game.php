@@ -258,11 +258,6 @@ class Blaze extends Table
                 case 'playerTurn':
                     $player = Players::getActivePlayer();
 
-                    $players = Players::getPlayers();
-                    foreach ($players as $player) {
-                        $player->updateRole(0);
-                    }
-
                     $player->eliminate(true);
                     
                     $this->gamestate->nextState( "zombiePass" );

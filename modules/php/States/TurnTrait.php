@@ -25,7 +25,6 @@ trait TurnTrait
             // 카드 배분 후 반으로 나누어 임시 덱에 넣은 후 1라운드 진행
             $current_deck_count = Cards::getDeckCount();
             Cards::moveToTemplateDeck(round($current_deck_count / 2));
-
         } else {
             Cards::roundStart($players);
         }
@@ -50,6 +49,7 @@ trait TurnTrait
         $current_round = Blaze::get()->getGameStateValue('round');
         if ($current_round >= 2) {
             // gameEnd
+            Players::endGame();
             Notifications::roundStart(2);
             $this->gamestate->nextState("end");
             return;
@@ -204,34 +204,6 @@ trait TurnTrait
     public function stEndOfSubTurn() {
         $is_defensed = Blaze::get()->getGameStateValue("isDefensed");
         $active_player = Players::getPlayer(self::getActivePlayerId());
-
-        // 활성화된 플레이어의 카드가 없으면 트로피 카드 제공과 제외시킨다.
-        // 활성화된 플레이어가 한명뿐이라면 트로피 카드 제공하지 않는다.
-        
-        $players = Players::getPlayers();
-        $eliminated_player_count = 0;
-        foreach ($players as $player) {
-            if ($player->isEliminated() == false) {
-                $eliminated_player_count++;
-            }
-        }
-        
-        $deckCount = Cards::getDeckCount();
-        $is_betting = Blaze::get()->getGameStateValue("isBetting");
-        $count = Cards::countCards('hand', $active_player->getId());
-        
-        if ($deckCount <= 0 && 
-            $count <= 0 &&
-            $is_betting == 1 &&
-            $eliminated_player_count >= 2 &&            // 남아 있는 플레이어가 2명 이상일 때 지급
-            $active_player->isEliminated() == false) 
-        {
-            $trophy_card_id = Blaze::get()->getGameStateValue('trophyCardId');
-            $active_player->eliminate(true);
-            TrophyCards::moveCard($trophy_card_id, "hand", $active_player->getId());
-            Notifications::getTrophyCard($active_player, $trophy_card_id);
-            Blaze::get()->setGameStateValue('trophyCardId', $trophy_card_id - 1);
-        }
 
         $players = Players::getPlayers();
         $eliminated_player_count = 0;

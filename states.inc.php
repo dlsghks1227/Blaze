@@ -137,7 +137,7 @@ $machinestates = array(
         "args" => "argPlayerTurn",
         "possibleactions" => array("attack", "defense", "support", "pass"),
         "transitions" => array(
-            "zombiePass" => ST_START_OF_MAIN_TURN,
+            "zombiePass" => ST_DRAW_CARD,
             "next" => ST_NEXT_PLAYER,
         )
     ),
@@ -160,7 +160,6 @@ $machinestates = array(
         "action" => "stDrawCard",
         "transitions" => array(
             "start" => ST_END_OF_MAIN_TURN,
-
         ),
     ),
 

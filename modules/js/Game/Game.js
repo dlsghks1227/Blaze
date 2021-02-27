@@ -7,6 +7,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
         {
             this._notifications = [];
             this._activeStates = [];
+
             this._attackedCard = [];
         },
 
@@ -52,6 +53,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
                     this._activePlayerRole = args.args.activePlayerRole;
                     this._defenderCardsCount = args.args.DefenderCardsCount;
                     this._attackedCard = args.args.attackedCard;
+                    this._attackCardsCount = args.args.attackCard.length;
                     this._defenseCards = new Map();
                     break;
                 case 'batting':

@@ -56,8 +56,8 @@ define([
 
                 this._discardCard       = this.initStock($('discard-cards'), 'L', 10, 1, false);
 
-                this._attackCardPlace   = this.initStock($('attackCardOnTable'), 'L', 10, 70, true);
-                this._defenseCardPlace  = this.initStock($('defenseCardOnTable'), 'L', 10, 70, true);
+                this._attackCardPlace   = this.initStock($('attackCardOnTable'), 'L', 10, 70, false);
+                this._defenseCardPlace  = this.initStock($('defenseCardOnTable'), 'L', 10, 70, false);
 
                 this._otherPlayerHand           = new Map();
                 this._otherPlayerToken          = new Map();
@@ -65,6 +65,7 @@ define([
                 this._otherplayerBettingCard    = new Map();
                 this._otherplayerTrophyCard     = new Map();
 
+                this._attackCardsCount      = 0;
                 this._defenderCardsCount    = 0;
                 this._activePlayerRole      = 0;
                 this._trumpCardType         = 0;
@@ -206,7 +207,7 @@ define([
                     let playerBettingCard = this._otherplayerBettingCard.get(card.location_arg);
                     playerBettingCard.addToStock(card.type);
                 });
-                console.log(this.gamedatas.bettingCards);
+
                 this.gamedatas.bettedCards.forEach(card => {
                     let playerBettedCard = this._otherplayerBettedCard.get(card.location_arg);
                     playerBettedCard.addToStockWithId((card.type * 2) + Number(card.value), card.id);
@@ -238,8 +239,10 @@ define([
                 
                 // 공격 및 방어 카드 설정
                 this._attackCardPlace.removeAll();
+                this._attackCardsCount = this.gamedatas.attackCards.length;
                 this.gamedatas.attackCards.forEach(card => {
                     this._attackCardPlace.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id);
+                    this._attackCardPlace.changeItemsWeight({[this.getCardUniqueId(card.type, card.value)]: card.location_arg});
                 });
 
                 this._defenseCardPlace.removeAll();
@@ -260,8 +263,6 @@ define([
 
                 // Setup game notifications to handle (see "setupNotifications" method below)
                 //this.setupNotifications();
-
-                console.log("Ending game setup");
                 this.inherited(arguments);
             },
 
@@ -281,8 +282,6 @@ define([
             //                        action status bar (ie: the HTML links in the status bar).
             //        
             onUpdateActionButtons: function (stateName, args) {
-                console.log('onUpdateActionButtons: ' + stateName);
-
                 if (this.isCurrentPlayerActive()) {
                     switch (stateName) {
                         case 'playerTurn':

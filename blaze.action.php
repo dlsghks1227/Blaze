@@ -42,7 +42,8 @@ class action_blaze extends APP_GameAction
 	{
 		self::setAjaxMode();
 		$cards = explode(";", self::getArg("cards", AT_numberlist, false));
-		$result = $this->game->attack($cards);
+		$card_locations = explode(";", self::getArg("card_locations", AT_numberlist, false));
+		$result = $this->game->attack($cards, $card_locations);
 		self::ajaxResponse();
 	}
 
@@ -59,7 +60,8 @@ class action_blaze extends APP_GameAction
 	{
 		self::setAjaxMode();
 		$cards = explode(";", self::getArg("cards", AT_numberlist, false));
-		$result = $this->game->support($cards);
+		$card_locations = explode(";", self::getArg("card_locations", AT_numberlist, false));
+		$result = $this->game->support($cards, $card_locations);
 		self::ajaxResponse();
 	}
 

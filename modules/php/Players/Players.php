@@ -95,6 +95,15 @@ class Players extends \APP_GameClass
         return $order[$current_role];
     }
 
+    public static function endGame() {
+        $players = self::getPlayers();
+        foreach ($players as $player) {
+            $score = $player->getScore();
+            $id = $player->getId();
+            self::DbQuery("UPDATE player SET player_score = $score WHERE player_id = $id");
+        }
+    }
+
     public static function updatePlayersRole($player_id) {
         $player_table = Blaze::get()->getNextPlayerTable();
 

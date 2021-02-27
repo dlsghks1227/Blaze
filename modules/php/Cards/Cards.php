@@ -87,7 +87,7 @@ class Cards extends \APP_GameClass
     }
 
     public static function moveAttackCards($cards) {
-        foreach ($cards as $card) self::moveCard($card, 'attackedCards');
+        foreach ($cards as $card) self::moveCard($card, 'attackedCards', $card->getLocationArg());
     }
 
     public static function moveDefenseCards($cards) {
