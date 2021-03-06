@@ -26,11 +26,15 @@
 -->
 
 <div id="board">
-    <div id="hand">
-        <div id="hand-cards"></div>
-    </div>
-    <div id="battingHand">
-        <div id="batting-cards"></div>
+    <div id="player-hand">
+        <div id="player-hand-container">
+            <div id="hand">
+                <div id="hand-cards"></div>
+            </div>
+            <div id="battingHand">
+                <div id="batting-cards"></div>
+            </div>
+        </div>
     </div>
 
     <div id="discard">
@@ -101,7 +105,7 @@ var jstpl_players = `
 
 var jstpl_player_score = `
 <div class="blaze-player-score" id="player-score-\${playerId}">
-    ----- \${score} -----
+    \${score} Point
 </div>
 `
 // Javascript HTML templates

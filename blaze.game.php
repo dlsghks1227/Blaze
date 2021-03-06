@@ -153,6 +153,8 @@ class Blaze extends Table
             'playersInfo'   => Players::getData(self::getCurrentPlayerId()),
             'playerCount'   => self::getPlayersNumber(),
             'playerTurn'    => Players::getCurrentTurn(),
+
+            'playerOrder'   => self::getNextPlayerTable(),
             
             'deckCards'     => Cards::getAllCardsInDeck(),
             'discardCards'  => Cards::getDiscardCards(),

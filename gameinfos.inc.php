@@ -99,7 +99,7 @@ $gameinfos = array(
 'diplomacy' => 3,    
 
 // Colors attributed to players
-'player_colors' => array( "ff0000", "008000", "0000ff", "ffa500", "773300" ),
+'player_colors' => array( "d1ab83", "ea7e24", "f96c98", "0fbbc1", "a969be" ),
 
 // Favorite colors support : if set to "true", support attribution of favorite colors based on player's preferences (see reattributeColorsBasedOnPreferences PHP method)
 // NB: this parameter is used only to flag games supporting this feature; you must use (or not use) reattributeColorsBasedOnPreferences PHP method to actually enable or disable the feature.
@@ -131,7 +131,6 @@ $gameinfos = array(
 // Each paragraph must be wrapped with totranslate() for translation and should not contain html (plain text without formatting).
 // A good length for this text is between 100 and 150 words (about 6 to 9 lines on a standard display)
 'presentation' => array(
-      "!!! Castle TriCon SPECIAL: this game is available to be presented for the Castle TriCon Event !!!",
       totranslate("In Blaze, players try to get rid of their cards, but have to achieve this in an extremely clever and very unusual way. The player whose turn it is plays together with the second next player, which leads to constantly changing alliances. In the end, the player who collects the most feathers wins."),
       totranslate("Blaze is designed for at least three players and based on the classic Russian public domain game Durak."),
 //    ...

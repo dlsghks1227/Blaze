@@ -109,7 +109,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         drawCards: function(playerId, cards, deckCount, trumpSuitCard) {
             cards.forEach(card => {
                 this._otherPlayerHand.get(playerId).addToStock(0, 'deckOnTable');
-                this.placeText(1, 3, 1, deckCount);
+                this.placeText(1, 3, 1, deckCount + " Cards");
 
                 if (playerId == this.player_id) {
                     this._playerHand.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id, 'deckOnTable')
