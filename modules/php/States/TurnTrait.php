@@ -47,13 +47,6 @@ trait TurnTrait
 
     public function stEndOfRound() {
         $current_round = Blaze::get()->getGameStateValue('round');
-        if ($current_round >= 2) {
-            // gameEnd
-            Players::endGame();
-            Notifications::roundStart(2);
-            $this->gamestate->nextState("end");
-            return;
-        }        
         
         // 마지막 플레이어 불러오기
         $last_player_id = 0;
@@ -93,6 +86,14 @@ trait TurnTrait
                 }
             }
         }
+
+        if ($current_round >= 2) {
+            // gameEnd
+            Notifications::roundStart(2);
+            Players::endGame();
+            $this->gamestate->nextState("end");
+            return;
+        }        
 
         // 라운드가 끝나면 2라운드로 설정
         Blaze::get()->setGameStateValue("round", 2);

@@ -36,7 +36,13 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
 
         notif_changeRole: function(notif) {
-
+            notif.args.players.forEach(player => {
+                let playerHand = this._otherPlayerHand.get(player.id);
+                playerHand.removeAll();
+                for (var i = 0; i < player.hand; i++) {
+                    playerHand.addToStock(0);
+                }
+            });
         },
 
         notif_betting: function(notif) {
@@ -377,6 +383,14 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         
         onClickDefenseButton: function() {
             if (this.checkAction('defense', true)) {
+                var items = this._playerHand.getSelectedItems();
+
+                if (this._defenseCards.size <= 0 && items.length >= 1) {
+                    this.showMessage(_("After choosing a card in your hand, you must defend by chooing from among the attacking cards."), 'error');
+                    this._playerHand.unselectAll();
+                    return;
+                }
+
                 if (this._defenseCards.size <= 0) {
                     this.showMessage(_("Please select a card"), 'error');
                     this._playerHand.unselectAll();
@@ -625,7 +639,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             if (deckCards.length > 0) {
                 this.placeCard(1, 1, 0, 0, 1, 3, true, 0, 1);
             }
-            this.placeText(1, 3, 1, deckCards.length);
+            this.placeText(1, 3, 1, deckCards.length + " Cards");
         },
     });
 });

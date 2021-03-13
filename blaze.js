@@ -56,8 +56,8 @@ define([
 
                 this._discardCard       = this.initStock($('discard-cards'), 'L', 10, 1, false);
 
-                this._attackCardPlace   = this.initStock($('attackCardOnTable'), 'L', 10, 70, false);
-                this._defenseCardPlace  = this.initStock($('defenseCardOnTable'), 'L', 10, 70, false);
+                this._attackCardPlace   = this.initStock($('attackCardOnTable'), 'L', 10, 70, true);
+                this._defenseCardPlace  = this.initStock($('defenseCardOnTable'), 'L', 10, 70, true);
 
                 this._otherPlayerHand           = new Map();
                 this._otherPlayerToken          = new Map();
@@ -65,7 +65,6 @@ define([
                 this._otherplayerBettingCard    = new Map();
                 this._otherplayerTrophyCard     = new Map();
 
-                this._attackCardsCount      = 0;
                 this._defenderCardsCount    = 0;
                 this._activePlayerRole      = 0;
                 this._trumpCardType         = 0;
@@ -115,6 +114,17 @@ define([
 
                 dojo.connect(this._playerToken, "onChangeSelection", this, 'onPlayerBattingSelectionChanged');
 
+                
+                playerOrder = new Map();
+                playerOrder.set(this.player_id, 1);
+
+                index = 2;
+                for (var order = this.gamedatas.playerOrder[this.player_id]; order != this.player_id; order = this.gamedatas.playerOrder[order])
+                {
+                    playerOrder.set(order, index);
+                    index++;
+                }
+
                 // 플레이어 설정
                 this.gamedatas.playersInfo.forEach(player => {
                     let isCurrent = player.id == this.player_id;
@@ -127,7 +137,7 @@ define([
 
                     dojo.place(this.format_block('jstpl_players', {
                         playerId: player.id,
-                        playerPos: player.no,
+                        playerPos: playerOrder.get(Number(player.id)),
                         playerName: player.name,
                         playerColor: player.color,
                     }), 'board');
@@ -175,7 +185,7 @@ define([
 
                     this._otherplayerTrophyCard.set(
                         player.id,
-                        this.initStock( $('player-mini-trophy-cards-' + player.id), 'S', 5, 50, false)
+                        this.initStock( $('player-mini-trophy-cards-' + player.id), 'S', 5, 20, false)
                     );
 
                     let playerTrophyCard = this._otherplayerTrophyCard.get(player.id);
@@ -207,7 +217,6 @@ define([
                     let playerBettingCard = this._otherplayerBettingCard.get(card.location_arg);
                     playerBettingCard.addToStock(card.type);
                 });
-
                 this.gamedatas.bettedCards.forEach(card => {
                     let playerBettedCard = this._otherplayerBettedCard.get(card.location_arg);
                     playerBettedCard.addToStockWithId((card.type * 2) + Number(card.value), card.id);
@@ -216,14 +225,14 @@ define([
                 // 트로피 카드 설정
                 this.gamedatas.trophyCards.forEach(card => {
                     if (card.location_arg == this.gamedatas.currentRound) {
-                        this._trophyCard.addToStockWithId(card.value, card.id);
+                        this._trophyCard.addToStockWithId(card.id, card.id);
                     }
                 });
-                
+
                 // 다른 플레이어 트로피 카드 설정
                 this.gamedatas.trophyCardsOnPlayer.forEach(card => {
                     let playerTrophyCard = this._otherplayerTrophyCard.get(card.location_arg);
-                    playerTrophyCard.addToStockWithId(card.value, card.id);
+                    playerTrophyCard.addToStockWithId(card.id, card.id);
                 });
 
                 // 트럼프 슈트 카드 설정
@@ -235,14 +244,12 @@ define([
                 if (this.gamedatas.deckCards.length > 0) {
                     this.placeCard(1, 1, 0, 0, 1, 3, true, 0, 1);
                 }
-                this.placeText(1, 3, 1, this.gamedatas.deckCards.length);
+                this.placeText(1, 3, 1, this.gamedatas.deckCards.length + " Cards");
                 
                 // 공격 및 방어 카드 설정
                 this._attackCardPlace.removeAll();
-                this._attackCardsCount = this.gamedatas.attackCards.length;
                 this.gamedatas.attackCards.forEach(card => {
                     this._attackCardPlace.addToStockWithId(this.getCardUniqueId(card.type, card.value), card.id);
-                    this._attackCardPlace.changeItemsWeight({[this.getCardUniqueId(card.type, card.value)]: card.location_arg});
                 });
 
                 this._defenseCardPlace.removeAll();
@@ -263,6 +270,8 @@ define([
 
                 // Setup game notifications to handle (see "setupNotifications" method below)
                 //this.setupNotifications();
+
+                console.log("Ending game setup");
                 this.inherited(arguments);
             },
 
@@ -282,6 +291,8 @@ define([
             //                        action status bar (ie: the HTML links in the status bar).
             //        
             onUpdateActionButtons: function (stateName, args) {
+                console.log('onUpdateActionButtons: ' + stateName);
+
                 if (this.isCurrentPlayerActive()) {
                     switch (stateName) {
                         case 'playerTurn':
@@ -316,7 +327,7 @@ define([
                                     dojo.query('#' + div).style('opacity', '0.5');
    
                                 });
-
+                                console.log(this.gamedatas.gamestate.descriptionmyturn);
                                 this.addActionButton('Defense', _('Defense'), () => this.onClickDefenseButton(), null, false, 'blue');
                                 this.addActionButton('Retreat', _('Retreat'), () => this.onClickPassButton(), null, false, 'red');
                             } else if (args.activePlayerRole == '3') {

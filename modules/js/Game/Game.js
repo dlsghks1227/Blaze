@@ -7,9 +7,8 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
         {
             this._notifications = [];
             this._activeStates = [];
-        }
-    });
-});ackedCard = [];
+
+            this._attackedCard = [];
         },
 
         setLoader: function(value, max) {
@@ -41,7 +40,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
                 });
             });
 
-            if(reEnterStateOnError){
+            if(reEnterStateOnError) {
                 promise.catch(() => this.onEnteringState(this.gamedatas.gamestate.name, this.gamedatas.gamestate) );
             }
        

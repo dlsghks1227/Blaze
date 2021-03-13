@@ -71,11 +71,11 @@ trait PlayCardTrait
 
     public function argPlayerTurn() {
         return array(
-            'attackCard'        => Cards::getAttackCards(),
-            'attackedCard'      => Cards::getAttackedCards(),
-            'tableOnAttackCards' => Cards::getAttackCards(),
-            'DefenderCardsCount' => Blaze::get()->getGameStateValue("limitCount"), 
-            'activePlayerRole' => Players::getPlayer(self::getActivePlayerId())->getRole()
+            'attackCard'            => Cards::getAttackCards(),
+            'attackedCard'          => Cards::getAttackedCards(),
+            'tableOnAttackCards'    => Cards::getAttackCards(),
+            'DefenderCardsCount'    => Blaze::get()->getGameStateValue("limitCount"), 
+            'activePlayerRole'      => Players::getPlayer(self::getActivePlayerId())->getRole(),
         );
     }
 

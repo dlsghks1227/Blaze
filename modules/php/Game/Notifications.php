@@ -136,6 +136,7 @@ class Notifications {
             'role'          => $player->getRole(),
             'role_text'     => $player->getRoleFormat(),
             'deckCount'     => Cards::getDeckCount(),
+            'players'       => array_map(function($player) { return $player->getData(); }, Players::getPlayers()),
         );
 
         self::notify($player->getId(), "changeRole", $msg, $data);
