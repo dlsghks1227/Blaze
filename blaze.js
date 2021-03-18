@@ -18,20 +18,16 @@
 define([
     "dojo", "dojo/_base/declare",
     "ebg/core/gamegui",
+    "ebg/stock",
     "ebg/counter",
 
     g_gamethemeurl + "modules/js/Game/Game.js",
-
-    g_gamethemeurl + "modules/js/States/CardSelectorTrait.js",
-
     g_gamethemeurl + "modules/js/Trait/CardTrait.js",
     g_gamethemeurl + "modules/js/Trait/PlayerTrait.js",
 ],
     function (dojo, declare) {
         return declare("bgagame.blaze", [
             customgame.game,
-            
-            blaze.cardSelectorTrait,
 
             blaze.cardTrait,
             blaze.playerTrait,
@@ -291,7 +287,7 @@ define([
             //                        action status bar (ie: the HTML links in the status bar).
             //        
             onUpdateActionButtons: function (stateName, args) {
-                console.log('onUpdateActionButtons: ' + stateName);
+                // console.log('onUpdateActionButtons: ' + stateName);
 
                 if (this.isCurrentPlayerActive()) {
                     switch (stateName) {
@@ -327,7 +323,6 @@ define([
                                     dojo.query('#' + div).style('opacity', '0.5');
    
                                 });
-                                console.log(this.gamedatas.gamestate.descriptionmyturn);
                                 this.addActionButton('Defense', _('Defense'), () => this.onClickDefenseButton(), null, false, 'blue');
                                 this.addActionButton('Retreat', _('Retreat'), () => this.onClickPassButton(), null, false, 'red');
                             } else if (args.activePlayerRole == '3') {

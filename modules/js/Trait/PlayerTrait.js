@@ -122,7 +122,6 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 } else {
                     // 이후 공격 할 때
                     let limit = this._defenderCardsCount >= 5 ? 5 : this._defenderCardsCount;
-
                     // 최대 낼 수 있는 값 - 현재 배치된 공격 카드 수 = 낼 수 있는 카드 수
                     if (items.length > limit - this._attackCardPlace.count()) {
                         this._playerHand.unselectItem(item_id);
