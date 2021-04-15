@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="../blaze.css"/>
+    </head>
+    <body>
+        <div id="board" class="whitePanel" data-players="5">
+            <div id="table" class="blackPanel">
+                <div id="playCardText" class="text">Deck</div>
+                <div id="discardCardText" class="text">Discard</div>
+                <div id="playCardOnTable">
+                    <div id="deck" class="blazeCard">
+                        <div id="cardCount" class="text">x10</div>
+                    </div>
+                    <div id="trump" class="blazeCard" style="background-position:-0px -0px;"></div>
+                </div>
+                
+                <div id="attackCardsText" class="text">Attack Cards</div>
+                <div id="attackCardsOnTable"></div>
+                <div id="defenseCardsText" class="text">Defense Cards</div>
+                <div id="defenseCardsOnTable"></div>
+            </div>
+
+            <div id="playerBettingCardsPlace" class="blackPanel"></div>
+            <div id="playerCardsPlace" class="blackPanel"></div>
+            <div id="trophyCardsPlace" class="blackPanel"></div>        
+
+            <div id="otherPlayer-" class="otherPlayer" data-pos="2", data-role="defender">
+                <div id="playerName-" class="playerName text">Player 2</div>
+                <div id="playerScore-" class="playerScore text">1 Point</div>
+                <div id="playCard">
+                    <div id="otherPlayerCards-" class="otherPlayerCards blazeCard" data-type="back">
+                        <div id="playCardCount-" class="playCardCount text">x5</div>
+                    </div>
+                </div>
+                <div id="bettingCard">
+                    <div id="otherPlayerBettingCards-" class="otherPlayerBettingCards blazeCard" data-type="betting" style="background-position:-216px -112px;">
+                        <div id="bettingCardCount-" class="bettingCardCount text">x3</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

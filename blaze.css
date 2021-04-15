@@ -67,259 +67,301 @@
     }
 */
 
+
+/*id left-side-wrapper가 현재 화면*/
+@charset "UTF-8";
+@import url(../../../css/csslayer.css); /* Note: you must not use any @import directive other than this one */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap');
+
+/********* You can start writing your CSS below this line: **********/
 .stockitem_selected {
-	border: 2px solid white ! important;
-    top: -30px ! important;
-}
-.overallCards {
-    width: 100%;
-    min-height: 120px;
+    border: 4px solid aliceblue !important; 
+    top: -25px !important; }
+
+.blackPanel {
+    margin: 5px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.65); }
+
+.selectedPanel {
+    margin: 5px;
+    border-radius: 5px;
+    background-color: rgba(224, 245, 40, 0.65); }
+
+.blazeCard {
+    border-radius: 10px;
+    border: 1px black solid;
+    -moz-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.4);
+    -webkit-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.4);
+    -o-box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.4);
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.4);
+    filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=134, Strength=30); }
+
+    .blazeCard[data-color="0"] {
+        border: 4px #d1ab83 solid;}
+
+    .blazeCard[data-color="1"] {
+        border: 4px #ea7e24 solid;}
+
+    .blazeCard[data-color="2"] {
+        border: 4px #f96c98 solid;}
+
+    .blazeCard[data-color="3"] {
+        border: 4px #0fbbc1 solid;}
+
+    .blazeCard[data-color="4"] {
+        border: 4px #a969be solid;}
+
+.disableCard {
+    opacity: 0.7 !important; }
+
+div#board {
+    width: 1300px;
+    height: 950px;
     margin: auto;
     position: relative;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr); }
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(6, 1fr); }
 
-    .overallCards .cards {
-        width: 100%;
-        height: 100%; }
-
-    .overallCards div#minibetting {
-        grid-row: 1 / span 2;
-        grid-column: 1;
+    div#board div#playerBettingCardsPlace, div#playerCardsPlace, div#trophyCardsPlace {
         display: flex;
         flex-direction: column;
         justify-content: center; }
 
-    .overallCards div#miniBetted {
-        grid-row: 1;
-        grid-column: 2;
-        display: flex;
-        flex-direction: column;
-        justify-content: center; }
+    div#board div#playerBettingCardsPlace {
+        grid-column: 1 / span 2;
+        grid-row: 5; }
+
+        div#board div#playerBettingCardsPlace div#playerBettingCardsStock {
+            margin: 0;
+        }
+
+    div#board div#playerCardsPlace {
+        grid-column: 2 / span 6;
+        grid-row: 6; }
+
+        div#board div#playerCardsPlace div#playerCardsStock {
+            margin: 5px;
+        }
+
+    div#board div#trophyCardsPlace {
+        grid-column: 1 / span 2;
+        grid-row: 1; }
+
+        div#board div#trophyCardsPlace div#trophyCardsStock {
+            margin: 5px;
+        }
+
+    div#board div.text {
+        font-family: 'Ubuntu';
+        text-align: center;}
+
+    div#board div#table {
+        grid-column: 3 / span 4;
+        grid-row: 2 / span 3;
     
-    .overallCards div#miniTrophy {
-        grid-row: 2;
-        grid-column: 2;
-        display: flex;
-        flex-direction: column;
-        justify-content: center; }
-
-div#board
-{
-    width: 100%;
-    min-width: 1500px;
-    min-height: 950px;
-    margin: auto;
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(14, 1fr);
-    grid-template-rows: repeat(5, 1fr); 
-    align-items: center;}
-
-    div#board #table, div#board .button, div#board .blaze-player, div#board div#discard, div#board div#trophy, div#board #player-hand
-    {
-        background-color: rgba(0, 0, 0, 0.65);
-        border-radius: 5px;
-        margin: 10px;
-        display: flex;
-        flex-flow: row;
-    }
-    
-    div#board div#table
-    {
-        margin: 0px 3px;
-        grid-row: 2 / span 2;
-        grid-column: 5 / span 6; }
-
-        
-        div#board div#table div#table-container {
-            width: 100%;
-            height: 100%;
-            display: grid;
-            place-items: center;
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: 1fr 40px 1fr 40px; }
-
-			div#board div#table div#table-container .cardOnTable {
-				width: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center; }
-
-				div#board div#table div#table-container .cardOnTable .card[data-filp="front"] {
-					position: absolute;
-					width: 108px;
-					height: 168px;
-					background-image: url('img/cards.png'); }
-
-                div#board div#table div#table-container .cardOnTable .card[data-filp="back"] {
-                    position: absolute;
-                    width: 108px;
-                    height: 168px;
-                    background-image: url('img/card_back.png'); }
-
-                div#board div#table div#table-container .cardOnTable .card[data-filp="none"] {
-                    display: none; }
-            
-            div#board div#table div#table-container .textOnTable {
-                width: 100%;
-                font-size: 1.3em;
-                text-align: center}
-
-                div#board div#table div#table-container .textOnTable .text {
-                    width: 100%;
-                    color: rgba(255, 255, 255, 1);
-                    font-weight: bold;}
-
-            div#board div#table div#table-container .button {
-                width: 80%;
-                height: 80%;
-                text-align: center; }
-    
-    div#board #player-hand {
-        grid-row: 5;
-        grid-column: 4 / span 8; }
-
-        div#board #player-hand-container {
-            width: 100%;
-            height: 100%;
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: 1fr; }
-
-            div#board #player-hand-container div#hand {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                grid-row: 1;
-                grid-column: 3 / span 4; }
-                    
-            div#board #player-hand-container div#battingHand {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                grid-row: 1;
-                grid-column: 1 / span 2; }
-
-    div#board div#discard {
-        grid-row: 1;
-        grid-column: 2 / span 3; }
-
-        div#board div#discard div#discard-cards {
-            margin: 10px;
-            width: 100%;}
-
-    
-    div#board div#trophy {
-        grid-row: 1;
-        grid-column: 11 / span 3; }
-
-        div#board div#trophy div#trophy-cards {
-            margin: 10px;
-            width: 100%;}
-
-
-    div#board .blaze-player .player-container { 
-        width: 100%;
-        height: 100%;
+        position: relative;
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: 40px 1fr; }
+        grid-template-columns: 1fr 3fr;
+        grid-template-rows: repeat(2, 1fr 5fr); }
 
-        div#board .blaze-player .player-container .cards {
-            margin: 10px;
+        div#board div#table div#attackCardsText, div#defenseCardsText, div#playCardText, div#discardCardText {
             width: 100%;
-            height: 100%; }
-
-        div#board .blaze-player .player-container .player-cards {
-            grid-row: 2;
-            grid-column: 2; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center; }
-
-        div#board .blaze-player .player-container .player-token-cards {
-            grid-row: 2;
-            grid-column: 1; 
-            display: flex;
-            flex-direction: column;
-            justify-content: center; }
-
-        div#board .blaze-player .player-container .blaze-player-name {
-            grid-row: 1;
-            grid-column: 1;
             margin: auto;
-            text-align: center;
-            font-size: 1.3em;
-            font-weight: bold; }
-
-        div#board .blaze-player .player-container .blaze-player-score {
-            grid-row: 1;
-            grid-column: 2; 
-            margin: auto;
-            color: rgba(255, 255, 255, 1);
-            text-align: center;
-            font-size: 1.3em;
-            font-weight: bold; }
-
-    div#board .blaze-player[data-role="attacker"] {
-        border: 8px solid rgba(255, 50, 50, 0.80);
-    }
-
-    div#board .blaze-player[data-role="defender"] {
-        border: 8px solid rgba(50, 50, 255, 0.80);
-    }
-
-    div#board .blaze-player[data-role="volunteer"] {
-        background-color: rgba(0, 0, 0, 0.65);
-    }
-
-    div#board .blaze-player[data-role="selected"] {
-        background-color: #f7f19e;
-    }
-
-    div#board .blaze-player[data-role="none"] {
-        background-color: rgba(0, 0, 0, 0.65);
-    }
-
-    div#board[data-players="3"] .blaze-player[data-pos="1"] {
-        grid-row: 4;
-        grid-column: 6 / span 4; }
-    div#board[data-players="3"] .blaze-player[data-pos="2"] {
-        grid-row: 2 / span 2;
-        grid-column: 1 / span 4; }
-    div#board[data-players="3"] .blaze-player[data-pos="3"] {
-        grid-row: 2 / span 2;
-        grid-column: 11 / span 4; }
-    
-    div#board[data-players="4"] .blaze-player[data-pos="1"] {
-        grid-row: 4;
-        grid-column: 6 / span 4; }
-    div#board[data-players="4"] .blaze-player[data-pos="2"] {
-        grid-row: 2 / span 2;
-        grid-column: 1 / span 4; }
-    div#board[data-players="4"] .blaze-player[data-pos="3"] {
-        grid-row: 1;
-        grid-column: 6 / span 4; }
-    div#board[data-players="4"] .blaze-player[data-pos="4"] {
-        grid-row: 2 / span 2;
-        grid-column: 11 / span 4; }
+            border-bottom: 1px solid rgba(255, 255, 255, 255);
+            color: aliceblue; }
         
+        div#board div#table div#playCardOnTable {
+            grid-column: 1;
+            grid-row: 2; }
 
-    div#board[data-players="5"] .blaze-player[data-pos="1"] {
-        grid-row: 4;
-        grid-column: 6 / span 4; }
-    div#board[data-players="5"] .blaze-player[data-pos="2"] {
-        grid-row: 3;
-        grid-column: 1 / span 4; }
-    div#board[data-players="5"] .blaze-player[data-pos="3"] {
-        grid-row: 2;
-        grid-column: 1 / span 4; }
-    div#board[data-players="5"] .blaze-player[data-pos="4"] {
-        grid-row: 2;
-        grid-column: 11 / span 4; }
-    div#board[data-players="5"] .blaze-player[data-pos="5"] {
-        grid-row: 3;
-        grid-column: 11 / span 4; }
+            div#board div#table div#deck, div#trump {
+                position: absolute;
+                margin: auto;
+                width: 108px;
+                height: 168px; }
+
+            div#board div#table div#playCardOnTable div#cardCount {
+                position : relative;
+                color: aliceblue;
+                margin: 10px;
+                top: 60%;
+                font-size: 2.5rem; }
+
+            div#board div#table div#playCardOnTable div#deck {
+                z-index: 1;
+                left: 8%;
+                background-image: url('img/play_card_back_L.png'); }
+
+            div#board div#table div#playCardOnTable div#deckTemp {
+                z-index: 1;
+                left: 8%;
+                background-image: url('img/play_card_back_L.png'); }
+
+            div#board div#table div#playCardOnTable div#trump {
+                z-index: 0;
+                background-image: url('img/play_cards_L.png'); }
+
+        div#board div#table div#discardCardOnTable {
+            grid-column: 1;
+            grid-row: 4; }
+
+            div#board div#table div#discardCardOnTable div#discard {
+                position: relative;
+                margin: auto;
+                width: 108px;
+                height: 168px;
+                z-index: 0;
+                background-image: url('img/play_cards_L.png'); }
+
+        div#board div#table div#attackCardsOnTable, div#defenseCardsOnTable {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; }
+
+        div#board div#table div#playCardText {
+            grid-column: 1;
+            grid-row: 1; }
+        
+        div#board div#table div#discardCardText {
+            grid-column: 1;
+            grid-row: 3; }
+
+        div#board div#table div#attackCardsText {
+            grid-column: 2;
+            grid-row: 1; }
+            
+        div#board div#table div#attackCardsOnTable {
+            grid-column: 2;
+            grid-row: 2; }
+
+            div#board div#table div#attackCardsOnTable div#attackCardStock {
+                margin: 0;}
+
+        div#board div#table div#defenseCardsText {
+            grid-column: 2;
+            grid-row: 3; }
+
+        div#board div#table div#defenseCardsOnTable {
+            grid-column: 2;
+            grid-row: 4; }
+
+            div#board div#table div#defenseCardsOnTable div#defenseCardStock {
+                margin: 0;}
+
+    div#board div.otherPlayer {
+        display: grid;
+        margin: 5px;
+        border-radius: 5px; 
+        background-color: rgba(0, 0, 0, 0.65); 
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: 1fr 5fr; }
+
+        div#board div.otherPlayer div.playerName, div.playerScore {
+            width: 100%;
+            margin: auto;
+            border-bottom: 1px solid rgba(255, 255, 255, 255); }
+
+        div#board div.otherPlayer div.playerName {
+            grid-column: 1;
+            grid-row: 1; }
+        
+        div#board div.otherPlayer div.playerScore {
+            color: aliceblue;
+            grid-column: 2;
+            grid-row: 1; }
+
+        div#board div.otherPlayer div.playCardCount, div.bettingCardCount {
+            position : relative;
+            color: aliceblue;
+            margin: 5px;
+            top: 50%;
+            font-size: 2.3rem; }
+    
+        div#board div.otherPlayer div#playCard {
+            margin: auto;
+            grid-column: 1;
+            grid-row: 2; }
+
+            div#board div.otherPlayer div#playCard div.otherPlayerCards {
+                width: 72px;
+                height: 112px;
+                background-image: url('img/play_card_back_M.png'); }
+
+        div#board div.otherPlayer div#bettingCard {
+            margin: auto;
+            grid-column: 2;
+            grid-row: 2; }
+            
+            div#board div.otherPlayer div#bettingCard div.otherPlayerBettingCards {
+                width: 72px;
+                height: 112px;
+                background-image: url('img/betting_cards_back_M.png'); }
+
+    div#board div.otherPlayer[data-role="attacker"] {
+        border: 8px solid rgba(255, 100, 100, 0.65)
+    }
+    div#board div.otherPlayer[data-role="defender"] {
+        border: 8px solid rgba(100, 100, 255, 0.65)
+    }
+    div#board div.otherPlayer[data-role="supporter"] {
+        background-color: rgba(0, 0, 0, 0.65);
+    }
+    div#board div.otherPlayer[data-role="selected"] {
+        background-color: rgba(255, 255, 100, 0.65);
+    }
+    div#board div.otherPlayer[data-role="none"] {
+        background-color: rgba(0, 0, 0, 0.65);
+    }
+
+
+div#board[data-players="3"] div.otherPlayer[data-pos="1"] {
+    grid-column: 4 / span 2;
+    grid-row: 5; }
+
+div#board[data-players="3"] div.otherPlayer[data-pos="2"] {
+    grid-column: 1 / span 2;
+    grid-row: 3; }
+        
+div#board[data-players="3"] div.otherPlayer[data-pos="3"] {
+    grid-column: 7 / span 2;
+    grid-row: 3; }
+
+
+div#board[data-players="4"] div.otherPlayer[data-pos="1"] {
+    grid-column: 4 / span 2;
+    grid-row: 5; }
+
+div#board[data-players="4"] div.otherPlayer[data-pos="2"] {
+    grid-column: 1 / span 2;
+    grid-row: 3; }
+        
+div#board[data-players="4"] div.otherPlayer[data-pos="3"] {
+    grid-column: 4 / span 2;
+    grid-row: 1; }
+
+div#board[data-players="4"] div.otherPlayer[data-pos="4"] {
+    grid-column: 7 / span 2;
+    grid-row: 3; }
+
+
+div#board[data-players="5"] div.otherPlayer[data-pos="1"] {
+    grid-column: 4 / span 2;
+    grid-row: 5; }
+
+div#board[data-players="5"] div.otherPlayer[data-pos="2"] {
+    grid-column: 1 / span 2;
+    grid-row: 4; }
+        
+div#board[data-players="5"] div.otherPlayer[data-pos="3"] {
+    grid-column: 1 / span 2;
+    grid-row: 2; }
+
+div#board[data-players="5"] div.otherPlayer[data-pos="4"] {
+    grid-column: 7 / span 2;
+    grid-row: 2; }
+
+div#board[data-players="5"] div.otherPlayer[data-pos="5"] {
+    grid-column: 7 / span 2;
+    grid-row: 4; }

@@ -1,16 +1,12 @@
 <?php
-
 namespace BlazeBase\Cards;
 
-use Blaze;
-use BlazeBase\Cards\Card;
-use BlazeBase\Players\Players;
 use BlazeBase\Game\Notifications;
+use BlazeBase\Players\Players;
 
-class Cards extends \APP_GameClass
+class Cards extends \BlazeBase\Singleton
 {
     private static $deck = null;
-
     private static function getDeck()
     {
         if (is_null(self::$deck)) {
@@ -20,14 +16,15 @@ class Cards extends \APP_GameClass
         }
         return self::$deck;
     }
-
-    public static function setupNewGame($players_number)
+    
+    public static function setupNewGame($players)
     {
         $cards = array();
-        // 60장의 게임용 카드
+
+        // 60장의 게임용 카드 설정
         // 1 ~ 10 숫자의 카드가 2장 씩
         for ($color = 0; $color < 3; $color++) {
-            for ($value = ($players_number == 3 ? 2 : 1); $value <= 10; $value++) {
+            for ($value = (count($players) == 3 ? 2 : 1); $value <= 10; $value++) {
                 $cards[] = array(
                     'type'      => $color,
                     'type_arg'  => $value,
@@ -38,174 +35,270 @@ class Cards extends \APP_GameClass
 
         self::getDeck()->CreateCards($cards, 'deck');
         self::getDeck()->shuffle('deck');
+
+        // 배팅 카드 설정
+        $color = 0;
+        // 플레이어 당 0vp 1장 , 1vp 2장 (player_number) * 3 장
+        foreach ($players as $player_id => $player) {
+            $cards = array();
+            $cards[] = array('type' => $color, 'type_arg' => 0, 'nbr' => 1);
+            $cards[] = array('type' => $color, 'type_arg' => 1, 'nbr' => 1);
+            $cards[] = array('type' => $color, 'type_arg' => 1, 'nbr' => 1);
+            $color++;
+            self::getDeck()->CreateCards($cards, "betting_hand", $player_id);
+        }
+
+        // 트로피 카드 설정
+        // 플레이어 수에 맞게 트로피 카드 생성 1라운드용 2라운드용 으로 나눔
+        for ($round = 1; $round <= 2; $round++) {
+            for ($value = $round; $value <= ($round == 1 ? count($players) - 1 : count($players)); $value++) {
+                $cards = array();
+                $cards[] = array(
+                    'type'      => $round,
+                    'type_arg'  => $value,
+                    'nbr'       => 1
+                );
+                self::getDeck()->CreateCards($cards, 'trophy_deck_' . $round);
+            }
+        };
     }
 
-    public static function formatCard($card)
+    private static function formatCard(Card $card) : array
     {
         return $card->getData();
     }
 
-    public static function formatCards($cards)
+    private static function formatCards(array $cards) : array
     {
         return array_values(array_map(['BlazeBase\Cards\Cards', 'formatCard'], $cards));
     }
 
-    private static function resToObject($row)
+    private static function resToObject($row) : Card
     {
         $card = new Card($row['id'], $row['type'], $row['type_arg'], $row['location_arg']);
         return $card;
     }
 
-    public static function toObjects($array)
+    public static function toObjects($array) : array
     {
         $cards = array();
         foreach ($array as $row) $cards[] = self::resToObject($row);
         return $cards;
     }
 
-    public static function getCard($id)
+    public static function getCountCards($location, $player_id = null)
+    {
+        if (is_null($player_id))
+        {
+            return self::getDeck()->countCardInLocation($location);
+        } 
+        else 
+        {
+            return self::getDeck()->countCardInLocation($location, $player_id);
+        }
+    }
+
+    public static function getCard($id) : Card
     {
         return self::resToObject(self::getDeck()->GetCard($id));
     }
 
-    public static function getAllCardsInDeck() {
-        $cards = self::toObjects(self::getDeck()->getCardsInLocation('deck'));
-        return $cards;
-    }
-
-    public static function getAllCardsInCurrentPlayer($current_player_id) {
-        return self::getDeck()->getCardsInLocation('hand', $current_player_id);
-    }
-
-    public static function getCountCardsByLocationInPlayers() {
-        return self::getDeck()->countCardsByLocationArgs('hand');
-    }
-
-    public static function moveCard($mixed, $location, $arg = 0) {
-        $id = ($mixed instanceof Card) ? $mixed->getId() : $mixed;
-        self::getDeck()->moveCard($id, $location, $arg);
-    }
-
-    public static function moveAttackCards($cards) {
-        foreach ($cards as $card) self::moveCard($card, 'attackedCards', $card->getLocationArg());
-    }
-
-    public static function moveDefenseCards($cards) {
-        foreach ($cards as $card) self::moveCard($card, 'defenseCards', $card->getLocationArg());
-    }
-
-    public static function moveAttackedCards() {
-        return self::GetDeck()->moveAllCardsInLocation('attackedCards', 'attackCards');
-    }
-
-    public static function moveAttackAndDefenseCards($player_id) {
-        self::getDeck()->moveAllCardsInLocation('attackCards', 'hand', null, $player_id);
-        self::getDeck()->moveAllCardsInLocation('defenseCards', 'hand', null, $player_id);
-    }
-
-    public static function discardAttackAndDefenseCards() {
-        self::getDeck()->moveAllCardsInLocation('attackCards', 'discard');
-        self::getDeck()->moveAllCardsInLocation('defenseCards', 'discard');
-    }
-
-    // 위치에 있는 카드의 숫자 반환
-    public static function countCards($location, $player = null) {
-        if (is_null($player)) {
-            return self::getDeck()->countCardsInLocation($location);
-        } else {
-            return self::getDeck()->countCardsInLocation($location, $player);
-        }
-    }
-
-    // 덱에 있는 카드의 숫자 반환
-    public static function getDeckCount() {
-        return self::countCards('deck');
-    }
-
-    // $player_id의 hand에 있는 카드들(cards) 정보 반환
-    public static function getHand($player_id) {
-        $cards = self::toObjects(self::getDeck()->getCardsInLocation('hand', $player_id));
-        return self::formatCards($cards);
-    }
-
-    public static function getTrumpSuitCard() {
-        $card = self::toObjects(self::getDeck()->getCardsInLocation('trumpSuitCard'));
-        if (empty(self::formatCards($card))) {
-            $trump_suit_type = Blaze::get()->getGameStateValue('trumpSuitType');
-            $trump_suit_value = Blaze::get()->getGameStateValue('trumpSuitValue');
-
-            return array(
-                "type" => $trump_suit_type,
-                "value" => $trump_suit_value,
-            );
-        } else {
-            return self::formatCards($card)[0];
-        }
-    }
-
-    public static function getAttackCards() {
-        $attackedCard = self::toObjects(self::getDeck()->getCardsInLocation('attackedCards'));
-        $cards = self::toObjects(self::getDeck()->getCardsInLocation('attackCards'));
-        return self::formatCards(array_merge($cards, $attackedCard));
-    }
-
-    public static function getAttackedCards() {
-        $cards = self::toObjects(self::getDeck()->getCardsInLocation('attackedCards'));
-        return self::formatCards($cards);
-    }
-
-    public static function getDefenseCards() {
-        $cards = self::toObjects(self::getDeck()->getCardsInLocation('defenseCards'));
-        return self::formatCards($cards);
-    }
-
-    public static function getDiscardCards() {
-        $cards = self::toObjects(self::getDeck()->getCardsInLocation('discard'));
-        return self::formatCards($cards);
-    }
-
-    public static function draw($nbr, $player_id) {
-        // 덱에 남아있는 카드가 있을 경우 드로우
-        if (self::getDeckCount() < 0) {
-            return null;
-        } else {
-            $cards = self::toObjects(self::getDeck()->pickCards($nbr, 'deck', $player_id));
+    public static function getCardsInLocation($location, $location_arg = null) : array
+    {
+        if (is_null($location_arg))
+        {
+            $cards = self::toObjects(self::getDeck()->getCardsInLocation($location));
+            return self::formatCards($cards);
+        } 
+        else 
+        {
+            $cards = self::toObjects(self::getDeck()->getCardsInLocation($location, $location_arg));
             return self::formatCards($cards);
         }
     }
 
-    public static function roundStart($players) {
-        self::getDeck()->moveAllCardsInLocation('trumpSuitCard', 'deck');
-        self::getDeck()->moveAllCardsInLocation('discard', 'deck');
-        self::getDeck()->moveAllCardsInLocation('hand', 'deck');
-        
-        self::getDeck()->shuffle('deck');
-
-        // 플레이어 당 5장의 카드 배분
-        foreach ($players as $player_id => $player) {
-            Cards::draw(5, $player_id);
-        }
-
-        self::getDeck()->moveAllCardsInLocation('deck', 'removeCards');
-
-        self::bringFromTemplateDeck();
+    public static function moveCard($id, $location, $arg = 0)
+    {
+        $card_id = ($id instanceof Card) ? $id->getId() : $id;
+        self::getDeck()->moveCard($card_id, $location, $arg);
     }
 
-    public static function drawTrumpSuitCard() {
+    public static function moveCards($ids, $location, $arg = 0)
+    {
+        foreach ($ids as $card_id) self::moveCard($card_id, $location, $arg);
+    }
+
+    public static function moveAllCards($from_location, $to_location, $from_location_arg = null, $to_location_arg = 0)
+    {
+        self::getDeck()->moveAllCardsInLocation($from_location, $to_location, $from_location_arg, $to_location_arg);
+    }
+
+    
+    // ----------------------------------------------------
+    // ----------------- Play Card Action -----------------
+    // ----------------------------------------------------
+
+    public static function draw($count, $player_id)
+    {
+        if (self::getCountCards('deck') < $count)
+        {
+            self::moveAllCards('trumpCard', 'deck');
+        }
+        
+        if (self::getCountCards('deck') <= 0)
+        {
+            return null;
+        }
+        else
+        {
+            $cards = self::toObjects(self::getDeck()->pickCards($count, 'deck', $player_id));
+            return self::formatCards($cards);
+        }
+    }
+
+    public static function drawTrumpCard() : Card
+    {
         $card = self::resToObject(self::getDeck()->getCardOnTop('deck'));
-        self::getDeck()->moveCard($card->getId(), 'trumpSuitCard');
+        self::moveCard($card, 'trumpCard');
         return $card;
     }
 
-    public static function moveToTrumpSuitCard() {
-        return self::GetDeck()->moveAllCardsInLocation('trumpSuitCard', 'deck');
+    public static function roundSetting($round) : Card
+    {
+        $players = Players::getPlayers();
+
+        if ($round == 1) 
+        {
+            foreach ($players as $player)
+            {
+                self::draw(5, $player->getId());
+            }
+
+            self::getDeck()->pickCardsForLocation(round(self::getCountCards('deck') / 2), 'deck', 'round_2_deck');
+        }
+        else if ($round == 2)
+        {
+            self::moveAllCards('discard', 'deck');
+            self::moveAllCards('hand', 'deck');
+            
+            self::getDeck()->shuffle('deck');
+            
+            foreach ($players as $player)
+            {
+                self::draw(5, $player->getId());
+            }
+            
+            self::moveAllCards('deck', 'removeCards');
+            self::moveAllCards('round_2_deck', 'deck');
+        }
+
+        $trump_card = self::drawTrumpCard();
+        return $trump_card;
     }
 
-    public static function moveToTemplateDeck($nbr) {
-        return self::GetDeck()->pickCardsForLocation($nbr, 'deck', 'tempDeck');
+    public static function moveAttackCards($cards)
+    {
+        $attack_cards_count = is_null(self::getCountCards('attackCards')) ? 0 : self::getCountCards('attackCards');
+        foreach($cards as $card)
+        {
+            $attack_cards_count += 1;
+            $card->setWeight($attack_cards_count);
+            self::moveCard($card, 'attackCards', $attack_cards_count);
+        }
+
+        return $cards;
     }
 
-    public static function bringFromTemplateDeck() {
-        return self::GetDeck()->moveAllCardsInLocation('tempDeck', 'deck');
+    public static function moveDefenseCards($cards)
+    {
+        // 기존 공격 카드는 방어되었으므로 공격된 카드로 옳긴다.
+        self::moveAllCards('attackCards', 'attackedCards');
+
+        foreach($cards as $card)
+        {
+            self::moveCard($card, 'defenseCards', Cards::getCard($card->getWeight())->getWeight());
+        }
+    }
+
+    public static function moveUsedCards($player_id, $is_defensed)
+    {
+        $player = Players::getPlayer($player_id);
+
+        $attack_cards = self::getAttackCardsOnTable();
+        $defense_cards = self::getCardsInLocation('defenseCards');
+
+        if ($is_defensed == DEFENSE_SUCCESS)
+        {
+            self::moveAllCards('attackedCards', 'discard');
+            self::moveAllCards('attackCards',   'discard');
+            self::moveAllCards('defenseCards',  'discard');
+
+            // Notifications
+            Notifications::defenseSuccess($player, $defense_cards, $attack_cards);
+        }
+        else
+        {
+            self::moveAllCards('attackedCards', 'hand', $player_id);
+            self::moveAllCards('attackCards',   'hand', $player_id);
+            self::moveAllCards('defenseCards',  'hand', $player_id);
+
+            // Notifications
+            Notifications::defenseFailure($player, $defense_cards, $attack_cards);
+        }
+    }
+
+    public static function getAttackCardsOnTable() {
+        $attackedCards = self::toObjects(self::getDeck()->getCardsInLocation('attackedCards'));
+        $attackCards = self::toObjects(self::getDeck()->getCardsInLocation('attackCards'));
+        return self::formatCards(array_merge($attackedCards, $attackCards));
+    }
+
+    // ------------------------------------------------------
+    // ----------------- Trophy Card Action -----------------
+    // ------------------------------------------------------
+    public static function drawTrophyCard($round, $player_id)
+    {
+        $card = self::resToObject(self::getDeck()->pickCardForLocation('trophy_deck_' . $round, 'score', $player_id));
+        return $card;
+    }
+
+    // -------------------------------------------------------
+    // ----------------- Betting Card Action -----------------
+    // -------------------------------------------------------
+    public static function bettingCard($card_id, $player_id)
+    {
+        self::moveCard($card_id, 'betting', $player_id);
+    }
+
+    public static function resultBettingCard($last_player_id)
+    {
+        $betting_cards = self::getCardsInLocation('betting');
+        $players = Players::getPlayers();
+        foreach ($betting_cards as $card)
+        {
+            foreach($players as $player)
+            {
+                // 배팅 카드가 0이면 항상 다시 자기 손으로 돌아온다
+                // 또는 베팅된 카드가 마지막 플레이어와 같으면 플레이어 점수에 등록한다.
+                if ($card['value'] == 0)
+                {
+                    if ($player->getNo() == ((int)$card['type'] + 1))
+                    {
+                        self::moveCard($card['id'], 'betting_hand', $player->getId());
+                    }
+                }
+                else if ($card['location_arg'] == $last_player_id)
+                {
+                    if ($player->getNo() == ((int)$card['type'] + 1))
+                    {
+                        self::moveCard($card['id'], 'score', $player->getId());
+                    }
+                }
+                else
+                {
+                    self::moveCard($card['id'], 'score', $card['location_arg']);
+                }
+            }
+        }
     }
 }

@@ -59,8 +59,8 @@ $machinestates = array(
         "type" => "manager",
         "action" => "stGameSetup",
         "transitions" => array( 
-            "" => ST_START_OF_ROUND 
-        )
+            "" => ST_START_OF_ROUND,
+        ),
     ),
 
     ST_START_OF_ROUND => array(
@@ -69,8 +69,8 @@ $machinestates = array(
         "type" => "game",
         "action" => "stStartOfRound",
         "transitions" => array(
-            "" => ST_START_OF_MAIN_TURN,
-        )
+            "start" => ST_START_OF_MAIN_TURN,
+        ),
     ),
 
     ST_END_OF_ROUND => array(
@@ -78,11 +78,10 @@ $machinestates = array(
         "description" => "",
         "type" => "game",
         "action" => "stEndOfRound",
-        "updateGameProgression" => true,
         "transitions" => array(
             "start" => ST_START_OF_ROUND,
-            "end" => ST_END_GAME,
-        )
+            "end" => ST_PRE_END_GAME,
+        ),
     ),
 
     ST_START_OF_MAIN_TURN => array(
@@ -92,8 +91,7 @@ $machinestates = array(
         "action" => "stStartOfMainTurn",
         "transitions" => array(
             "start" => ST_START_OF_SUB_TURN,
-            "end" => ST_END_OF_ROUND,
-        )
+        ),
     ),
 
     ST_END_OF_MAIN_TURN => array(
@@ -103,8 +101,9 @@ $machinestates = array(
         "action" => "stEndOfMainTurn",
         "transitions" => array(
             "start" => ST_START_OF_MAIN_TURN,
-            "end" => ST_BATTING,
-        )
+            "startbetting" => ST_START_OF_BETTING,
+            "endRound" => ST_END_OF_ROUND
+        ),
     ),
 
     ST_START_OF_SUB_TURN => array(
@@ -114,8 +113,7 @@ $machinestates = array(
         "action" => "stStartOfSubTurn",
         "transitions" => array(
             "start" => ST_PLAYER_TURN,
-            "end" => ST_START_OF_MAIN_TURN,
-        )
+        ),
     ),
 
     ST_END_OF_SUB_TURN => array(
@@ -126,20 +124,22 @@ $machinestates = array(
         "transitions" => array(
             "start" => ST_START_OF_SUB_TURN,
             "end" => ST_DRAW_CARD,
-        )
+        ),
     ),
 
+    
     ST_PLAYER_TURN => array(
         "name" => "playerTurn",
         "description" => clienttranslate('${actplayer} can play a card'),
         "descriptionmyturn" => clienttranslate('${you} can play a card'),
         "type" => "activeplayer",
         "args" => "argPlayerTurn",
+        "action" => "stPlayerTurn",
         "possibleactions" => array("attack", "defense", "support", "pass"),
         "transitions" => array(
-            "zombiePass" => ST_DRAW_CARD,
+            "zombiePass" => ST_NEXT_PLAYER,
             "next" => ST_NEXT_PLAYER,
-        )
+        ),
     ),
 
     ST_NEXT_PLAYER => array(
@@ -148,9 +148,8 @@ $machinestates = array(
         "type" => "game",
         "action" => "stNextPlayer",
         "transitions" => array(
-            "next" => ST_END_OF_SUB_TURN,
-            "end" => ST_DRAW_CARD,
-        )
+            "start" => ST_END_OF_SUB_TURN,
+        ),
     ),
 
     ST_DRAW_CARD => array(
@@ -159,35 +158,45 @@ $machinestates = array(
         "type" => "game",
         "action" => "stDrawCard",
         "transitions" => array(
-            "start" => ST_END_OF_MAIN_TURN,
+            "end" => ST_END_OF_MAIN_TURN,
         ),
     ),
 
-    ST_BATTING => array(
-        "name" => "batting",
+    ST_START_OF_BETTING => array(
+        "name" => "startOfBetting",
         "description" => clienttranslate('Pick a card and player to bet on'),
         "descriptionmyturn" => clienttranslate('Pick a card and player to bet on'),
         "type" => "multipleactiveplayer",
-        "action" => "stBatting",
-        "possibleactions" => array( "batting" ),
+        "action" => "stStartOfBetting",
+        "possibleactions" => array( "betting" ),
         "transitions" => array(
-            "end" => ST_END_OF_BATTING,
-            "zombiePass" => ST_END_OF_BATTING
-        )
+            "end" => ST_END_OF_BETTING,
+        ),
     ),
 
-    ST_END_OF_BATTING => array(
-        "name" => "endOfBatting",
+    ST_END_OF_BETTING => array(
+        "name" => "endOfBetting",
         "description" => "",
         "type" => "game",
-        "action" => "stEndOfBatting",
+        "action" => "stEndOfBetting",
         "transitions" => array(
-            "" => ST_START_OF_MAIN_TURN,
-        )
+            "start" => ST_START_OF_MAIN_TURN,
+        ),
     ),
-   
+
+
+    ST_PRE_END_GAME => array(
+        "name" => "preEndGame",
+        "description" => "",
+        "type" => "game",
+        "action" => "stPreEndGame",
+        "transitions" => array(
+            "end" => ST_END_GAME,
+        ),
+    ),
+
     // Final state.
-    // Please do not modify (and do not overload action/args methods).
+    // Please do not modify.
     ST_END_GAME => array(
         "name" => "gameEnd",
         "description" => clienttranslate("End of game"),

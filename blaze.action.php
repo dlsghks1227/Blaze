@@ -39,38 +39,47 @@ class action_blaze extends APP_GameAction
 
 	// TODO: defines your action entry points there
 	public function attack()
-	{
-		self::setAjaxMode();
-		$cards = explode(";", self::getArg("cards", AT_numberlist, false));
-		$card_locations = explode(";", self::getArg("card_locations", AT_numberlist, false));
-		$result = $this->game->attack($cards, $card_locations);
-		self::ajaxResponse();
-	}
+    {
+        self::setAjaxMode();
 
-	public function defense()
-	{
-		self::setAjaxMode();
-		$cards = explode(";", self::getArg("cards", AT_numberlist, false));
-		$card_locations = explode(";", self::getArg("card_locations", AT_numberlist, false));
-		$result = $this->game->defense($cards, $card_locations);
-		self::ajaxResponse();
-	}
+		$cards_id = explode(";", self::getArg("cards_id", AT_numberlist, false));
 
-	public function support()
-	{
-		self::setAjaxMode();
-		$cards = explode(";", self::getArg("cards", AT_numberlist, false));
-		$card_locations = explode(";", self::getArg("card_locations", AT_numberlist, false));
-		$result = $this->game->support($cards, $card_locations);
-		self::ajaxResponse();
-	}
+        $this->game->attack($cards_id);
 
-	public function pass()
-	{
-		self::setAjaxMode();
-		$result = $this->game->pass();
 		self::ajaxResponse();
-	}
+    }
+    
+    public function defense()
+    {
+        self::setAjaxMode();
+
+		$defense_cards_id = explode(";", self::getArg("defense_cards_id", AT_numberlist, false));
+		$attack_cards_id = explode(";", self::getArg("attack_cards_id", AT_numberlist, false));
+
+        $this->game->defense($defense_cards_id, $attack_cards_id);
+
+		self::ajaxResponse();
+    }
+
+    public function support()
+    {
+        self::setAjaxMode();
+
+		$cards_id = explode(";", self::getArg("cards_id", AT_numberlist, false));
+
+        $this->game->support($cards_id);
+
+		self::ajaxResponse();
+    }
+
+    public function pass()
+    {
+        self::setAjaxMode();
+
+        $this->game->pass();
+
+		self::ajaxResponse();
+    }
 
 	public function batting()
 	{

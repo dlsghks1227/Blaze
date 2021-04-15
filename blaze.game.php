@@ -16,73 +16,62 @@
   *
   */
 
-$swdNamespaceAutoLoad = function($class)
-{
-    $classPaths = explode('\\', $class);
-    if ($classPaths[0] == 'BlazeBase')
-    {
-        array_shift($classPaths);
-        $file = dirname(__FILE__)."/modules/php/".implode(DIRECTORY_SEPARATOR, $classPaths).".php";
-        if (file_exists($file))
-        {
-            require_once($file);
-        }
-        else
-        {
-            var_dump("Impossible to load blaze class : $file");
+$swdNamespaceAutoload = function ($class) {
+    $classParts = explode('\\', $class);
+    if ($classParts[0] == 'BlazeBase') {
+        array_shift($classParts);
+        $file = dirname(__FILE__) . '/modules/php/' . implode(DIRECTORY_SEPARATOR, $classParts) . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+        } else {
+            var_dump("Impossible to load blaze class : $class");
         }
     }
 };
+spl_autoload_register($swdNamespaceAutoload, true, true);
+  
+require_once APP_GAMEMODULE_PATH . 'module/table/table.game.php';
 
-spl_autoload_register($swdNamespaceAutoLoad, true, true);
-
-require_once( APP_GAMEMODULE_PATH.'module/table/table.game.php' );
-
-// PHP Class
-use BlazeBase\Cards\Cards;
-use BlazeBase\Cards\BattingCards;
-use BlazeBase\Cards\TrophyCards;
-
-use BlazeBase\Players\Players;
+/*
+ *  PHP Class
+ */
 use BlazeBase\Game\Notifications;
+
+use BlazeBase\Cards\Cards;
+use BlazeBase\Players\Players;
 
 class Blaze extends Table
 {
-    use BlazeBase\States\TurnTrait;
+    use BlazeBase\States\RoundTrait;
+    use BlazeBase\States\MainTurnTrait;
+    use BlazeBase\States\SubTurnTrait;
     use BlazeBase\States\PlayCardTrait;
-    use BlazeBase\States\DrawCardsTrait;
+    use BlazeBase\States\PlayerActionTrait;
+    use BlazeBase\States\BettingTrait;
+    use BlazeBase\States\EndOfGameTrait;
 
     public static $instance = null;
-	public function __construct( )
+	public function __construct()
 	{
-        // Your global variables labels:
-        //  Here, you can assign labels to global variables you are using for this game.
-        //  You can use any number of global variables with IDs between 10 and 99.
-        //  If your game has options (variants), you also have to associate here a label to
-        //  the corresponding ID in gameoptions.inc.php.
-        // Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
         parent::__construct();
         self::$instance = $this;
         
-        self::initGameStateLabels(array(
-            "trumpSuitType" => 10,
-            "trumpSuitValue" => 11,
-            "round" => 12,
-            "nextOrder" => 13,
-            "isAttacked" => 14,
-            "isDefensed" => 15,
-            "isBetting" => 16,
-            "trophyCardId" => 17,
-            "limitCount" => 18
-        ));        
+        self::initGameStateLabels( array(
+            'round'             => 10,
+            'roleOrder'         => 11,
+            'startAttackerId'   => 12,
+            'limitCardCount'    => 13,
+            'isBetting'         => 14,
+            'isDefensed'        => 15,
+            'isAttacked'        => 16,
+            'trumpCardColor'    => 17,
+            'trumpCardValue'    => 18
+        ) );
 	}
+
     public static function get()
     {
         return self::$instance;
-    }
-    public static function getCurrentId()
-    {
-        return self::getCurrentPlayerId();
     }
 	
     protected function getGameName( )
@@ -99,37 +88,23 @@ class Blaze extends Table
         the game is ready to be played.
     */
     protected function setupNewGame( $players, $options = array() )
-    {    
+    {
         /************ Start the game initialization *****/
-        Players::setupNewGame($players);
-
-        Cards::SetupNewGame(self::getPlayersNumber());
-        TrophyCards::setupNewGame(self::getPlayersNumber());
-        BattingCards::setupNewGame($players);
+        Players::getInstance()->setupNewGame($players);
+        Cards::getInstance()->setupNewGame($players);
         
-        // Init global values with their initial values
-        self::setGameStateInitialValue('trumpSuitType', BLUE );
-        self::setGameStateInitialValue('trumpSuitValue', 0 );
-        self::setGameStateInitialValue('round', 1 );
-        self::setGameStateInitialValue('nextOrder', 0 );
-        self::setGameStateInitialValue('isAttacked', 0 );
-        self::setGameStateInitialValue('isDefensed', 0 );
-        self::setGameStateInitialValue('isBetting', 0 );
-        self::setGameStateInitialValue('trophyCardId', 0 );
-        self::setGameStateInitialValue('limitCount', 0 );
-        
-        // Init game statistics
-        // (note: statistics used in this file must be defined in your stats.inc.php file)
-        //self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
-        //self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
-
-        // TODO: setup the initial game situation here
-       
-
-        // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
-
+        
         /************ End of the game initialization *****/
+        self::setGameStateInitialValue('round',             1);
+        self::setGameStateInitialValue('roleOrder',         ROLE_NONE);
+        self::setGameStateInitialValue('startAttackerId',   Players::getActivePlayer()->getId());
+        self::setGameStateInitialValue('limitCardCount',    0);
+        self::setGameStateInitialValue('isBetting',         0);
+        self::setGameStateInitialValue('isDefensed',        DEFENSE_NONE);
+        self::setGameStateInitialValue('isAttacked',        0);
+        self::setGameStateInitialValue('trumpCardColor',    BLUE);
+        self::setGameStateInitialValue('trumpCardValue',    1);
     }
 
     /*
@@ -143,37 +118,26 @@ class Blaze extends Table
     */
     protected function getAllDatas()
     {
-        $result = array();
-    
-        $current_player_id = self::getCurrentPlayerId();    // !! We must only return informations visible by this player !!
-
-        // Get information about players
-        // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
-        $result = array(
-            'playersInfo'   => Players::getData(self::getCurrentPlayerId()),
-            'playerCount'   => self::getPlayersNumber(),
-            'playerTurn'    => Players::getCurrentTurn(),
-
-            'playerOrder'   => self::getNextPlayerTable(),
-            
-            'deckCards'     => Cards::getAllCardsInDeck(),
-            'discardCards'  => Cards::getDiscardCards(),
-            'attackCards'   => Cards::getAttackCards(),
-            'defenseCards'  => Cards::getDefenseCards(),
-            'trumpSuitCard' => Cards::getTrumpSuitCard(),
-
-            'trophyCards'           => TrophyCards::getDeckCards(),
-            'trophyCardsOnPlayer'   => TrophyCards::getHandCards(),
-
-            'tokenCards'    => BattingCards::getHandCards(),
-            'bettingCards'  => BattingCards::getBettingCards(),
-            'bettedCards'   => BattingCards::getBettedCards(),
-
-            'currentRound'  => Blaze::get()->getGameStateValue("round")
+        $current_player_id = self::getCurrentPlayerId();
+        $current_round = self::get()->getGameStateValue('round');
+        $trumpCardData = array(
+            'color' => self::get()->getGameStateValue('trumpCardColor'),
+            'value' => self::get()->getGameStateValue('trumpCardValue'),
         );
-  
-        // TODO: Gather all information about current game situation (visible by player $current_player_id).
-  
+
+        $result = array( 
+            'blazePlayers'      => Players::getDatas($current_player_id),
+            'nextPlayerTable'   => self::getNextPlayerTable(),
+
+            // card on table
+            'deckCount'         => Cards::getCountCards('deck'),
+            'trumpCard'         => $trumpCardData,
+            'trophyCards'       => Cards::getCardsInLocation('trophy_deck_' . $current_round),
+            
+            // attack card and defense card on table
+            'attackCardsOnTable'    => Cards::getAttackCardsOnTable(),
+            'defenseCardsOnTable'   => Cards::getCardsInLocation('defenseCards'),
+        );
         return $result;
     }
 
@@ -255,15 +219,8 @@ class Blaze extends Table
     {
     	$statename = $state['name'];
     	
-        if ($state['type'] === "activeplayer") {
+        if ($state['type'] == "activeplayer") {
             switch ($statename) {
-                case 'playerTurn':
-                    $player = Players::getActivePlayer();
-
-                    $player->eliminate(true);
-                    
-                    $this->gamestate->nextState( "zombiePass" );
-                    break;
                 default:
                     $this->gamestate->nextState( "zombiePass" );
                 	break;
@@ -272,15 +229,52 @@ class Blaze extends Table
             return;
         }
 
-        if ($state['type'] === "multipleactiveplayer") {
+        if ($state['type'] == "multipleactiveplayer") {
             // Make sure player is in a non blocking status for role turn
-            $this->gamestate->setPlayerNonMultiactive( $active_player, 'zombiePass' );
-            
+            $sql = "
+                UPDATE  player
+                SET     player_is_multiactive = 0
+                WHERE   player_id = $active_player
+            ";
+            self::DbQuery( $sql );
+
+            $this->gamestate->updateMultiactiveOrNextState( '' );
             return;
         }
 
         throw new feException( "Zombie mode not supported at this game state: ".$statename );
     }
+
+    // function zombieTurn( $state, $active_player )
+    // {
+    // 	$statename = $state['name'];
+    	
+    //     if ($state['type'] === "activeplayer") {
+    //         switch ($statename) {
+    //             case 'playerTurn':
+    //                 $player = Players::getActivePlayer();
+
+    //                 $player->eliminate(true);
+                    
+    //                 $this->gamestate->nextState( "zombiePass" );
+    //                 break;
+    //             default:
+    //                 $this->gamestate->nextState( "zombiePass" );
+    //             	break;
+    //         }
+
+    //         return;
+    //     }
+
+    //     if ($state['type'] === "multipleactiveplayer") {
+    //         // Make sure player is in a non blocking status for role turn
+    //         $this->gamestate->setPlayerNonMultiactive( $active_player, 'zombiePass' );
+            
+    //         return;
+    //     }
+
+    //     throw new feException( "Zombie mode not supported at this game state: ".$statename );
+    // }
     
 ///////////////////////////////////////////////////////////////////////////////////:
 ////////// DB upgrade

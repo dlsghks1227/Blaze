@@ -1,37 +1,35 @@
 <?php
 namespace BlazeBase\Cards;
 
-use BlazeBase\Game\Notifications;
-
 class Card extends \APP_GameClass
 {
     protected $id;
-    protected $type;
+    protected $color;
     protected $value;
-    protected $location_arg;
+    protected $weight;
     
-    public function __construct($id = null, $type = null, $value = "", $location_arg = null)
+    public function __construct($id = null, $color = null, $value = "", $weigth = null)
     {
-        $this->id = $id;
-        $this->type = $type;
-        $this->value = $value;
-        $this->location_arg = $location_arg;
+        $this->id       = $id;
+        $this->color    = $color;
+        $this->value    = $value;
+        $this->weight   = $weigth;
     }
 
     public function getData()
     {
         return array(
-            "id" => $this->id,
-            "type" => $this->type,
-            "value" => $this->value,
-            "location_arg" => $this->location_arg
+            "id"        => $this->id,
+            "color"     => $this->color,
+            "value"     => $this->value,
+            "weight"    => $this->weight
         );
     }
 
     public function getId()             { return $this->id; }
-    public function getType()           { return $this->type; }
+    public function getColor()          { return $this->color; }
     public function getValue()          { return $this->value; }
-    public function getLocationArg()    { return $this->location_arg; }
+    public function getWeight()         { return $this->weight; }
 
-    public function setLocationArg($loc)    { $this->location_arg = $loc;}
+    public function setWeight($weight)  { $this->weight = $weight; }
 }
