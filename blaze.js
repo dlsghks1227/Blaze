@@ -63,6 +63,11 @@ function (dojo, declare) {
             // --------- 플레이어 위치 설정 ---------
             this.setupPlayersPlace(this.gamedatas.blazePlayers, this.player_id, playerPlace);
 
+            // --------- 테이블 위 플레이어 설정 ---------
+            this.gamedatas.blazePlayers.forEach(player => {
+                this.updateOtherPlayerRole(player.id, player.role);
+            });
+
             // --------- 덱 카드 수 설정 ---------
             this.updateDeckCount(this.gamedatas.deckCount);
 
@@ -76,7 +81,7 @@ function (dojo, declare) {
             // --------- 테이블 위 공격 카드 설정 ---------
             this.setupAttackCards(this.gamedatas.attackCardsOnTable);
             
-            // --------- 방어 카드 설정 ---------
+            // --------- 테이블 위 방어 카드 설정 ---------
             this.setupDefenseCards(this.gamedatas.defenseCardsOnTable);
 
             // --------- 플레이어 수 설정 ---------

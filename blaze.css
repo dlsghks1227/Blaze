@@ -176,7 +176,7 @@ div#board {
             grid-column: 1;
             grid-row: 2; }
 
-            div#board div#table div#deck, div#trump {
+            div#board div#table div#deck, div#trump, div#drawCard {
                 position: absolute;
                 margin: auto;
                 width: 108px;
@@ -194,10 +194,16 @@ div#board {
                 left: 8%;
                 background-image: url('img/play_card_back_L.png'); }
 
-            div#board div#table div#playCardOnTable div#deckTemp {
+            div#board div#table div#playCardOnTable div#drawCard {
                 z-index: 1;
                 left: 8%;
-                background-image: url('img/play_card_back_L.png'); }
+
+                position: absolute;
+                margin: auto;
+                width: 72px;
+                height: 112px;
+
+                background-image: url('img/play_card_back_M.png'); }
 
             div#board div#table div#playCardOnTable div#trump {
                 z-index: 0;
@@ -299,19 +305,19 @@ div#board {
                 height: 112px;
                 background-image: url('img/betting_cards_back_M.png'); }
 
-    div#board div.otherPlayer[data-role="attacker"] {
+    div#board div.otherPlayer[data-role="1"] {
         border: 8px solid rgba(255, 100, 100, 0.65)
     }
-    div#board div.otherPlayer[data-role="defender"] {
+    div#board div.otherPlayer[data-role="2"] {
         border: 8px solid rgba(100, 100, 255, 0.65)
     }
-    div#board div.otherPlayer[data-role="supporter"] {
+    div#board div.otherPlayer[data-role="3"] {
         background-color: rgba(0, 0, 0, 0.65);
     }
-    div#board div.otherPlayer[data-role="selected"] {
+    div#board div.otherPlayer[data-role="4"] {
         background-color: rgba(255, 255, 100, 0.65);
     }
-    div#board div.otherPlayer[data-role="none"] {
+    div#board div.otherPlayer[data-role="0"] {
         background-color: rgba(0, 0, 0, 0.65);
     }
 

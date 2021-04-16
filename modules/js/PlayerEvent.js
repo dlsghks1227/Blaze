@@ -4,6 +4,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             this._notifications.push(
                 ["attack", 1200],
                 ["defense", 1200],
+                ["changeRole", 500],
             );
 
             this._firstAttackCardValue = -1;
@@ -54,7 +55,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                     }
                 }
 
-                this.updateInvalidAttackCardOnTable(itemId);
+                this._invaildAttackCardOnTable = this.updateInvalidAttackCardOnTable(itemId);
 
             } else if (this._activePlayerRole == "3") {
                 this._invaildPlayerCards = this.updateInvaildPlayerCard();
@@ -251,6 +252,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             invalidCards.forEach(cardId => {
                 this.setEnableCard("attackCardStock", cardId, false);
             });
+
+            return invalidCards;
         },
 
         resetCombinedDefenseCards: function() {

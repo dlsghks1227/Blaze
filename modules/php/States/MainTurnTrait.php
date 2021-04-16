@@ -2,6 +2,7 @@
 namespace BlazeBase\States;
 
 use Blaze;
+use BlazeBase\Game\Notifications;
 use BlazeBase\Players\Players;
 use BlazeBase\Cards\Cards;
 
@@ -15,6 +16,7 @@ trait MainTurnTrait
         // ----- 1 -----
         $attacker_id = Blaze::get()->getGameStateValue('startAttackerId');
         Players::updatePlayersRole($attacker_id);
+        Notifications::changeRole(Players::getPlayers());
 
         // ----- 2 -----
         $defenser_card_count = Players::getPlayerWithRole(ROLE_DEFENDER)['hand'];

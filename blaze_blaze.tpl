@@ -27,17 +27,17 @@
 
 <div id="board">
     <div id="table" class="blackPanel">
-        <div id="playCardText" class="text">Deck</div>
-        <div id="discardCardText" class="text">Discard</div>
+        <div id="playCardText" class="text">{Deck_text}</div>
+        <div id="discardCardText" class="text">{Discard_text}</div>
 
         <div id="playCardOnTable"></div>
         <div id="discardCardOnTable"></div>
 
-        <div id="attackCardsText" class="text">Attack Cards</div>
+        <div id="attackCardsText" class="text">{Attack_Cards_text}</div>
         <div id="attackCardsOnTable">
             <div id="attackCardStock"></div>
         </div>
-        <div id="defenseCardsText" class="text">Defense Cards</div>
+        <div id="defenseCardsText" class="text">{Defense_Cards_text}</div>
         <div id="defenseCardsOnTable">
             <div id="defenseCardStock"></div>
         </div>
@@ -60,10 +60,6 @@ var jstpl_deck = `
 <div id="deck" class="blazeCard">
     <div id="cardCount" class="text">x\${count}</div>
 </div>
-`
-
-var jstpl_drawCard = `
-<div id="deck" class="blazeCard"></div>
 `
 
 var jstpl_trump = `

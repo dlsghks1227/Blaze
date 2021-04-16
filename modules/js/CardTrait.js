@@ -2,14 +2,30 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
     return declare("blaze.cardTrait", null, {
         constructor: function() {
             this._notifications.push(
-                // ["", 1200],
+                ["draw", 1200],
             );
         },
         /*
          * Notifications
          */
         notif_draw: function(notif) {
+            const playerId          = notif.args.player_id;
+            const drawCards         = notif.args.draw_cards;
+            const drawCardsCount    = notif.args.draw_cards_count;
+            const playerCardsCount  = notif.args.player_cards_count;
 
+            if (playerId == this.player_id) {
+                drawCards.forEach(card => {
+                    var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
+                    this._playerCardStock.addToStockWithId(uniqueId, card.id, "deck");
+                });
+            } else {
+                for (var count = 0; count < Number(drawCardsCount); count++) {
+                    this.slideTemporaryObject('<div id="drawCard" class="blazeCard"></div>', "deck", "drawCard", "otherPlayerCards-" + playerId, 500, count * 100).play();
+                }
+            }
+
+            this.updateOtherPlayerPlayCardCount(playerId, playerCardsCount);
         },
 
         /*

@@ -85,6 +85,7 @@ class Player extends \APP_GameClass
         {
             $cards = Cards::draw($amount, $this->id);
             // Notifications
+            Notifications::draw($this, $cards);
         }
     }
 

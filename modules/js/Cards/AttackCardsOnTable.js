@@ -13,10 +13,10 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
          */
         notif_attack: function(notif) {
             const playerId            = notif.args.player_id;
-            const attackCardss         = notif.args.attack_cards;
+            const attackCards         = notif.args.attack_cards;
             const attackCardsCount    = notif.args.attack_cards_count;
             const playerCardsCount    = notif.args.player_cards_count;
-
+            
             attackCards.forEach(card => {
                 var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
                 if (playerId == this.player_id) {

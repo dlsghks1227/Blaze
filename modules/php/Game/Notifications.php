@@ -13,6 +13,16 @@ class Notifications {
         Blaze::get()->notifyPlayer($player_id, $name, $message, $data);
     }
 
+    public static function changeRole($players)
+    {
+        $message = clienttranslate('Change Role!');
+
+        self::notifyAll('changeRole', $message, array(
+            'i18n'      => array(),
+            'players'   => $players            
+        ));
+    }
+
     public static function attack($player, $attack_cards)
     {
         $message = clienttranslate('${player_name} attacks with ${attack_cards_count} cards');

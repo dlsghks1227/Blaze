@@ -127,6 +127,10 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             }), "board");
         },
 
+        updateOtherPlayerRole: function(playerId, role) {
+            dojo.query("#otherPlayer-" + playerId).attr("data-role", role);
+        },
+
         updateOtherPlayerPlayCardCount: function(playerId, count) {
             $("playCardCount-" + playerId).innerHTML = "x" + count;
         },
