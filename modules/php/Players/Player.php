@@ -61,6 +61,11 @@ class Player extends \APP_GameClass
         return $total_score;
     }
 
+    public function getRoleFormat()
+    {
+        return $this->role == ROLE_ATTACKER ? 'attacker' : ($this->role == ROLE_DEFENDER ? 'defender' : 'supporter');
+    }
+
     private function save()
     {
         $eliminated = ($this->eliminated) ? 1 : 0;
@@ -77,6 +82,12 @@ class Player extends \APP_GameClass
     {
         $this->role = $role;
         $this->save();
+
+        // Notifications
+        if ($role != ROLE_NONE)
+        {
+            Notifications::changeRolePrivate($this);
+        }
     }
 
     public function drawCards($amount)

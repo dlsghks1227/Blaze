@@ -1,6 +1,7 @@
 <?php
 namespace BlazeBase\Cards;
 
+use Blaze;
 use BlazeBase\Game\Notifications;
 use BlazeBase\Players\Players;
 
@@ -233,14 +234,17 @@ class Cards extends \BlazeBase\Singleton
             self::moveAllCards('attackCards',   'discard');
             self::moveAllCards('defenseCards',  'discard');
 
+            Blaze::get()->setGameStateValue('discardCardColor', $defense_cards[0]['color']);
+            Blaze::get()->setGameStateValue('discardCardValue', $defense_cards[0]['value']);
+
             // Notifications
             Notifications::defenseSuccess($player, $defense_cards, $attack_cards);
         }
-        else
+        else if($is_defensed == DEFENSE_FAILURE)
         {
-            self::moveAllCards('attackedCards', 'hand', $player_id);
-            self::moveAllCards('attackCards',   'hand', $player_id);
-            self::moveAllCards('defenseCards',  'hand', $player_id);
+            self::moveAllCards('attackedCards', 'hand', null, $player_id);
+            self::moveAllCards('attackCards',   'hand', null, $player_id);
+            self::moveAllCards('defenseCards',  'hand', null, $player_id);
 
             // Notifications
             Notifications::defenseFailure($player, $defense_cards, $attack_cards);

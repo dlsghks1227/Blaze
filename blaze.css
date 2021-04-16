@@ -112,6 +112,16 @@
     .blazeCard[data-color="4"] {
         border: 4px #a969be solid;}
 
+div#drawCard {
+    z-index: 2;
+
+    position: absolute;
+    margin: auto;
+    width: 72px !important;
+    height: 112px !important;
+
+    background-image: url('img/play_card_back_M.png'); }
+
 .disableCard {
     opacity: 0.7 !important; }
 
@@ -193,17 +203,6 @@ div#board {
                 z-index: 1;
                 left: 8%;
                 background-image: url('img/play_card_back_L.png'); }
-
-            div#board div#table div#playCardOnTable div#drawCard {
-                z-index: 1;
-                left: 8%;
-
-                position: absolute;
-                margin: auto;
-                width: 72px;
-                height: 112px;
-
-                background-image: url('img/play_card_back_M.png'); }
 
             div#board div#table div#playCardOnTable div#trump {
                 z-index: 0;

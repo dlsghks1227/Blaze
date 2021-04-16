@@ -7,7 +7,7 @@ use BlazeBase\Cards\Cards;
 
 trait RoundTrait
 {
-    // 1. 라운드에 사용할 카드 및 트럼프 카드 설정
+    // 1. 라운드에 사용할 카드 및 트럼프 카드, 버려진 카드 설정
     //      - DB에 저장해서 하는 방법도 있지만 지금 만들기 늦었으니 그냥 쓴다!
     public function stStartOfRound()
     {
@@ -17,6 +17,9 @@ trait RoundTrait
 
         Blaze::get()->setGameStateValue('trumpCardColor', $trump_card->getColor());
         Blaze::get()->setGameStateValue('trumpCardValue', $trump_card->getValue());
+
+        Blaze::get()->setGameStateValue('discardCardColor', BLUE);
+        Blaze::get()->setGameStateValue('discardCardValue', -1);
 
         // startOfMainTurn
         $this->gamestate->nextState('start');

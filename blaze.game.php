@@ -65,7 +65,9 @@ class Blaze extends Table
             'isDefensed'        => 15,
             'isAttacked'        => 16,
             'trumpCardColor'    => 17,
-            'trumpCardValue'    => 18
+            'trumpCardValue'    => 18,
+            'discardCardColor'  => 19,
+            'discardCardValue'  => 20,
         ) );
 	}
 
@@ -105,6 +107,8 @@ class Blaze extends Table
         self::setGameStateInitialValue('isAttacked',        0);
         self::setGameStateInitialValue('trumpCardColor',    BLUE);
         self::setGameStateInitialValue('trumpCardValue',    1);
+        self::setGameStateInitialValue('discardCardColor',  BLUE);
+        self::setGameStateInitialValue('discardCardValue',  -1);
     }
 
     /*
@@ -120,9 +124,13 @@ class Blaze extends Table
     {
         $current_player_id = self::getCurrentPlayerId();
         $current_round = self::get()->getGameStateValue('round');
-        $trumpCardData = array(
+        $trump_card_data = array(
             'color' => self::get()->getGameStateValue('trumpCardColor'),
             'value' => self::get()->getGameStateValue('trumpCardValue'),
+        );
+        $discard_card_data = array(
+            'color' => self::get()->getGameStateValue('discardCardColor'),
+            'value' => self::get()->getGameStateValue('discardCardValue'),
         );
 
         $result = array( 
@@ -131,7 +139,8 @@ class Blaze extends Table
 
             // card on table
             'deckCount'         => Cards::getCountCards('deck'),
-            'trumpCard'         => $trumpCardData,
+            'trumpCard'         => $trump_card_data,
+            'dicardCard'        => $discard_card_data,
             'trophyCards'       => Cards::getCardsInLocation('trophy_deck_' . $current_round),
             
             // attack card and defense card on table

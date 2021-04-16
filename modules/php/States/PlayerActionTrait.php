@@ -64,6 +64,7 @@ trait PlayerActionTrait
         // logic check
 
         // result
+        Blaze::get()->setGameStateValue('isAttacked', 1);
         $active_player->attack($attack_cards);
 
         // nextPlayer
@@ -128,7 +129,7 @@ trait PlayerActionTrait
         {
             Blaze::get()->setGameStateValue('isDefensed', DEFENSE_FAILURE);
         } 
-        else 
+        else if($active_player_role == ROLE_SUPPORTER)
         {
             $is_attacked = Blaze::get()->getGameStateValue('isAttacked');
             if ($is_attacked == 0)

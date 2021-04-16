@@ -2,8 +2,6 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
     return declare("blaze.playerEvent", null, {
         constructor: function() {
             this._notifications.push(
-                ["attack", 1200],
-                ["defense", 1200],
                 ["changeRole", 500],
             );
 
@@ -11,6 +9,19 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
 
             this._invaildAttackCardOnTable = [];
             this._selectedDefenseCardId = -1;
+        },
+        /*
+         * Notifications
+         */
+        notif_changeRole: function(notif) {
+            const players       = notif.args.players;
+            const deckCount     = notif.args.deck_count;
+
+            players.forEach(player => {
+                this.updateOtherPlayerRole(player.id, player.role);
+            });
+
+            this.updateDeckCount(deckCount);
         },
 
         /*

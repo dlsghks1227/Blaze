@@ -12,6 +12,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             const playerId          = notif.args.player_id;
             const drawCards         = notif.args.draw_cards;
             const drawCardsCount    = notif.args.draw_cards_count;
+            const deckCount         = notif.args.deck_count;
             const playerCardsCount  = notif.args.player_cards_count;
 
             if (playerId == this.player_id) {
@@ -25,6 +26,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 }
             }
 
+            this.updateDeckCount(deckCount);
             this.updateOtherPlayerPlayCardCount(playerId, playerCardsCount);
         },
 
@@ -52,15 +54,19 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             }), "playCardOnTable");
         },
 
-        updateDiscardCard: function(color, value) {
-            if ($("discard")) {
-                dojo.destroy("discard");
+        updateDiscardCard: function(card) {
+            if (card.value >= 0) {
+                if ($("discard")) {
+                    dojo.destroy("discard");
+                }
+    
+                dojo.place(this.format_block("jstpl_discard", {
+                    x: this._CARD_WIDTH_L   * (card.value - 1),
+                    y: this._CARD_HEIGHT_L  * card.color,
+                }), "discardCardOnTable");
+            } else {
+                this.removeDiscardCard();
             }
-
-            dojo.place(this.format_block("jstpl_discard", {
-                x: this._CARD_WIDTH_L   * (value - 1),
-                y: this._CARD_HEIGHT_L  * color,
-            }), "discardCardOnTable");
         },
 
         removeDiscardCard: function() {

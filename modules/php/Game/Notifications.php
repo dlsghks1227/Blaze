@@ -18,8 +18,21 @@ class Notifications {
         $message = clienttranslate('Change Role!');
 
         self::notifyAll('changeRole', $message, array(
-            'i18n'      => array(),
-            'players'   => $players            
+            'i18n'          => array(),
+            'players'       => $players,
+            'deck_count'    => Cards::getCountCards('deck'),
+        ));
+    }
+
+    public static function changeRolePrivate($player)
+    {
+        $message = clienttranslate('${player_name} is the ${player_role}.');
+
+        self::notify($player->getId(), 'changeRolePrivate', $message, array(
+            'i18n'          => array(),
+            'player_name'   => $player->getName(),
+            'player_id'     => $player->getId(),
+            'player_role'   => $player->getRoleFormat()
         ));
     }
 
@@ -61,7 +74,12 @@ class Notifications {
 
     public static function defenseSuccess($player, $defense_cards, $attack_cards)
     {
-        $message = clienttranslate('');
+        $message = clienttranslate('${player_name} defensed succeed');
+
+        $discard_card_data = array(
+            'color' => Blaze::get()->getGameStateValue('discardCardColor'),
+            'value' => Blaze::get()->getGameStateValue('discardCardValue'),
+        );
 
         self::notifyAll('defenseSuccess', $message, array(
             'i18n'                  => array(),
@@ -69,13 +87,14 @@ class Notifications {
             'player_id'             => $player->getId(),
             'defense_cards'         => $defense_cards,
             'attack_cards'          => $attack_cards,
+            'discard_card_data'     => $discard_card_data,
             'player_cards_count'    => Cards::getCountCards('hand', $player->getId()),
         ));
     }
 
     public static function defenseFailure($player, $defense_cards, $attack_cards)
     {
-        $message = clienttranslate('');
+        $message = clienttranslate('${player_name} defense failed');
 
         self::notifyAll('defenseFailure', $message, array(
             'i18n'                  => array(),
@@ -97,6 +116,7 @@ class Notifications {
             'player_id'             => $player->getId(),
             'draw_cards'            => $draw_cards,
             'draw_cards_count'      => count($draw_cards),
+            'deck_count'            => Cards::getCountCards('deck'),
             'player_cards_count'    => Cards::getCountCards('hand', $player->getId()),
         ));
     }

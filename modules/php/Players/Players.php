@@ -59,7 +59,7 @@ class Players extends \BlazeBase\Singleton
         return self::getPlayer(Blaze::get()->getActivePlayerId());
     }
 
-    public static function getDatas($current_player) {
+    public static function getDatas($current_player = null) {
         return array_map(function($player) use ($current_player){
             return $player->getData($current_player);
         }, self::getPlayers());

@@ -3,8 +3,8 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
         constructor: function() {
             this._notifications.push(
                 ["defense", 1200],
-                ["defenseSuccess", 1500],
-                ["defenseFailure", 1500],
+                ["defenseSuccess", 2000],
+                ["defenseFailure", 2000],
             );
 
             this._defenseCardStock = new ebg.stock();
@@ -43,8 +43,24 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
             const playerId          = notif.args.player_id;
             const defenseCards      = notif.args.defense_cards;
             const attackCards       = notif.args.attack_cards;
+            const discardCards      = notif.args.discard_card_data;
             const playerCardsCount  = notif.args.player_cards_count;
 
+            defenseCards.forEach(card => {
+                if ($("defenseCardStock_item_" + card.id)) {
+                    this.slideToObject(("defenseCardStock_item_" + card.id), "discardCardOnTable").play();
+                    this._defenseCardStock.removeFromStockById(card.id);
+                }
+            });
+
+            attackCards.forEach(card => {
+                if ($("attackCardStock_item_" + card.id)) {
+                    this.slideToObject(("attackCardStock_item_" + card.id), "discardCardOnTable").play();
+                    this._attackCardStock.removeFromStockById(card.id);
+                }
+            });
+
+            this.updateDiscardCard(discardCards);
             this.updateOtherPlayerPlayCardCount(playerId, playerCardsCount);
         },
 
@@ -53,6 +69,36 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
             const defenseCards      = notif.args.defense_cards;
             const attackCards       = notif.args.attack_cards;
             const playerCardsCount  = notif.args.player_cards_count;
+
+            defenseCards.forEach(card => {
+                var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
+                if ($("defenseCardStock_item_" + card.id)) {
+                    if (playerId == this.player_id) {
+                        this._playerCardStock.addToStockWithId(uniqueId, card.id, ("defenseCardStock_item_" + card.id));
+                        this._defenseCardStock.removeFromStockById(card.id);
+                    } else {
+                        if ($("otherPlayerCards-" + playerId)) {
+                            this.slideTemporaryObject('<div id="drawCard" class="blazeCard"></div>', ("defenseCardStock_item_" + card.id), "drawCard", "otherPlayerCards-" + playerId).play();
+                            this._defenseCardStock.removeFromStockById(card.id);
+                        }
+                    }
+                }
+            });
+
+            attackCards.forEach(card => {
+                var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
+                if ($("attackCardStock_item_" + card.id)) {
+                    if (playerId == this.player_id) {
+                        this._playerCardStock.addToStockWithId(uniqueId, card.id, ("attackCardStock_item_" + card.id));
+                        this._attackCardStock.removeFromStockById(card.id);
+                    } else {
+                        if ($("otherPlayerCards-" + playerId)) {
+                            this.slideTemporaryObject('<div id="drawCard" class="blazeCard"></div>', ("attackCardStock_item_" + card.id), "drawCard", "otherPlayerCards-" + playerId).play();
+                            this._attackCardStock.removeFromStockById(card.id);
+                        }
+                    }
+                }
+            });
 
             this.updateOtherPlayerPlayCardCount(playerId, playerCardsCount);
         },

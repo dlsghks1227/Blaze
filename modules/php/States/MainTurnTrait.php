@@ -16,7 +16,7 @@ trait MainTurnTrait
         // ----- 1 -----
         $attacker_id = Blaze::get()->getGameStateValue('startAttackerId');
         Players::updatePlayersRole($attacker_id);
-        Notifications::changeRole(Players::getPlayers());
+        Notifications::changeRole(Players::getDatas());
 
         // ----- 2 -----
         $defenser_card_count = Players::getPlayerWithRole(ROLE_DEFENDER)['hand'];

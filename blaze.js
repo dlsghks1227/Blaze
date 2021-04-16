@@ -78,6 +78,9 @@ function (dojo, declare) {
             // --------- 트로피 카드 설정 ---------
             this.setupTrophyCards(this.gamedatas.trophyCards);
 
+            // --------- 버려진 카드 설정 ---------
+            this.updateDiscardCard(this.gamedatas.dicardCard);
+
             // --------- 테이블 위 공격 카드 설정 ---------
             this.setupAttackCards(this.gamedatas.attackCardsOnTable);
             
