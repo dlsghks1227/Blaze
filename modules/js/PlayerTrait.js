@@ -36,6 +36,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             this._playerBettingCardStock.image_items_per_row = 2;
             this._playerBettingCardStock.centerItems = true;
             this._playerBettingCardStock.setOverlap(60, 0);
+            this._playerBettingCardStock.setSelectionMode(0);
+            this._playerBettingCardStock.setSelectionAppearance("class");
             this._playerBettingCardStock.extraClasses = "blazeCard";
 
             for (var color = 0; color <= 4; color++) {
@@ -104,6 +106,10 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                     player.score,
                     playerPlayCardCount,
                     playerBettingCardCount);
+
+                this.updateOtherPlayerRole(player.id, player.role);
+
+                this.setupOverallCardStock(player.id);
             });
         },
 

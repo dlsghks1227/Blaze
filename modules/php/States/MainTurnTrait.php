@@ -35,9 +35,9 @@ trait MainTurnTrait
     }
 
     // 1. 덱에 있는 카드 수가 0이고 트럼프 카드가 존재하면 트럼프 카드를 덱으로 옮긴다.
-    // 2. 덱에 있는 카드 수 확인 후 카드가 없고 배팅을 하지 않았다면 배팅 진행
-    // 3. 현재 남아있는 플레이어가 1명일 때 라운드 종료
-    // 4. 위의 조건이 맞지 않다면 방어 성공 여부에 따라 플레이어 설정 후 메인 턴 시작
+    // 2. 방어 성공 여부에 따라 플레이어 설정
+    // 3. 덱에 있는 카드 수 확인 후 카드가 없고 배팅을 하지 않았다면 배팅 진행
+    // 4. 현재 남아있는 플레이어가 1명일 때 라운드 종료
     public function stEndOfMainTurn()
     {
         $is_betting = Blaze::get()->getGameStateValue('isBetting');
@@ -50,6 +50,29 @@ trait MainTurnTrait
         }
 
         // ----- 2 -----
+        $is_defensed = Blaze::get()->getGameStateValue('isDefensed');
+        $next_attacker = $is_defensed == DEFENSE_SUCCESS ? ROLE_DEFENDER : ROLE_SUPPORTER;
+
+        $alive_player_count = Players::getAlivePlayerCount();
+        if ($alive_player_count <= 2)
+        {
+            if ($next_attacker == ROLE_SUPPORTER)
+            {
+                $next_attacker = ROLE_ATTACKER;
+            }
+        }
+
+        $next_attacker_id = Players::getPlayerWithRole($next_attacker)['id'];
+        if (is_null($next_attacker_id) == false)
+        {
+            Blaze::get()->setGameStateValue('startAttackerId', $next_attacker_id);
+        }
+        else
+        {
+            Blaze::get()->setGameStateValue('startAttackerId', 0);
+        }
+
+        // ----- 3 -----
         $deck_count = Cards::getCountCards('deck');
         if ($deck_count <= 0 && $is_betting == 0)
         {
@@ -58,7 +81,7 @@ trait MainTurnTrait
             return;
         }
 
-        // ----- 3 -----
+        // ----- 4 -----
         $alive_player_count = Players::getAlivePlayerCount();
         if ($alive_player_count <= 1)
         {
@@ -66,12 +89,6 @@ trait MainTurnTrait
             $this->gamestate->nextState('endRound');
             return;
         }
-
-        // ----- 4 -----
-        $is_defensed = Blaze::get()->getGameStateValue('isDefensed');
-        $next_attacker = $is_defensed == DEFENSE_SUCCESS ? ROLE_DEFENDER : ROLE_SUPPORTER;
-        $next_attacker_id = Players::getPlayerWithRole($next_attacker)['id'];
-        Blaze::get()->setGameStateValue('startAttackerId', $next_attacker_id);
 
         // startOfMainTurn
         $this->gamestate->nextState('start');

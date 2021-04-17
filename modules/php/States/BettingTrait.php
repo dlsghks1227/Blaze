@@ -2,6 +2,7 @@
 namespace BlazeBase\States;
 
 use Blaze;
+use BlazeBase\Game\Notifications;
 use BlazeBase\Players\Players;
 use BlazeBase\Cards\Cards;
 
@@ -18,7 +19,9 @@ trait BettingTrait
     public function stEndOfBetting()
     {
         // ----- 1 -----
-        Blaze::get()->setGameStateValue('isBetting', 2);
+        Blaze::get()->setGameStateValue('isBetting', 1);
+        
+        Notifications::endBetting();
         
         // startOfMainTurn
         $this->gamestate->nextState('start');
@@ -27,11 +30,12 @@ trait BettingTrait
     // 1. 카드 배팅
     public function betting($card_id, $selected_player_id)
     {
-        self::checkAction('attack');
+        self::checkAction('betting');
         $player_id = self::getCurrentPlayerId();
 
         // ----- 1 -----
-        Cards::bettingCard($card_id, $selected_player_id);
+        $betting_card = Cards::bettingCard($card_id, $selected_player_id);
+        Players::getPlayer($player_id)->betting($betting_card, $selected_player_id);
 
         // endOfBetting
         $this->gamestate->setPlayerNonMultiactive($player_id, 'end');

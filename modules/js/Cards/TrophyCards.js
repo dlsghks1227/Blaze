@@ -2,10 +2,27 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
     return declare("blaze.trophyCards", null, {
         constructor: function() {
             this._notifications.push(
-                // ["", 1200],
+                ["drawTrophyCard", 1200],
             );
 
             this._trophyCardStock = new ebg.stock();
+        },
+        /*
+         * Notifications
+         */
+        notif_drawTrophyCard: function(notif) {
+            const playerId      = notif.args.player_id;
+            const trophyCard    = notif.args.trophy_card;
+            const trophyCards   = notif.args.trophy_cards;
+
+            if ($("trophyCardsStock_item_" + trophyCard.id)) {
+                const overallTrophyCardStock = this._overallTrophyCardStock.get(playerId);
+                overallTrophyCardStock.addToStockWithId(trophyCard.value, trophyCard.id);
+
+                this._trophyCardStock.removeFromStockById(trophyCard.id);
+            }
+
+            this.updateOverallTrophyCards(trophyCards);
         },
 
         /*

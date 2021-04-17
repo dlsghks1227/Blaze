@@ -43,7 +43,6 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
         createAttackCardStock: function() {
             this._attackCardStock.create(this, $("attackCardStock"), this._CARD_WIDTH_L, this._CARD_HEIGHT_L);
             this._attackCardStock.image_items_per_row = 10;
-            this._attackCardStock.centerItems = true;
             this._attackCardStock.setOverlap(70, 0);
             this._attackCardStock.setSelectionMode(0);
             this._attackCardStock.setSelectionAppearance("class");
@@ -54,7 +53,6 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
                     var uniqueId = this.getCardUniqueId(color, value);
                     this._attackCardStock.addItemType(uniqueId, uniqueId, g_gamethemeurl + "img/play_cards_L.png", uniqueId);
                 }
-          
             }
 
             dojo.connect(this._attackCardStock, "onChangeSelection", this, "onAttackCardSelectionChanged");
@@ -70,6 +68,7 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
                 var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
                 this._attackCardStock.addToStockWithId(uniqueId, card.id);
                 this._attackCardStock.changeItemsWeight({[uniqueId]: card.weight});
+                console.log(uniqueId + " " +Number(card.color) + " "  +Number(card.value) + " " + card.weight);
             });
         },
     });

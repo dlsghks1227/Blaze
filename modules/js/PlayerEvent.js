@@ -3,6 +3,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         constructor: function() {
             this._notifications.push(
                 ["changeRole", 500],
+                ["bettingPrivate", 1000],
+                ["endBetting", 1000],
             );
 
             this._firstAttackCardValue = -1;
@@ -24,6 +26,32 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             this.updateDeckCount(deckCount);
         },
 
+        notif_bettingPrivate: function(notif) {
+            const selectedPlayerId          = notif.args.selected_player_id;
+            const bettingCard               = notif.args.betting_card;
+            const playerBettingCardsCount   = notif.args.player_betting_cards_count;
+
+            if ($("playerBettingCardsStock_item_" + bettingCard.id)) {
+                const overallBettingCardStock = this._overallBettingCardStock.get(selectedPlayerId);
+                overallBettingCardStock.addToStockWithId(bettingCard.color, bettingCard.id, $("playerBettingCardsStock_item_" + bettingCard.id));
+                
+                this._playerBettingCardStock.removeFromStockById(bettingCard.id);
+            }
+
+            this.updateOtherPlayerBettingCardCount(this.player_id, playerBettingCardsCount);
+        },
+
+        notif_endBetting: function(notif) {
+            const players       = notif.args.players;
+            const bettingCards  = notif.args.betting_cards;
+
+            players.forEach(player => {
+                this.updateOtherPlayerBettingCardCount(player.id, player.bettingHand);
+            });
+
+            this.updateOverallBettingCards(bettingCards);
+        },
+
         /*
          * Player hand
          */
@@ -35,7 +63,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 this.resetSelectedCardsInStock(this._playerCardStock);
                 this.resetCombinedDefenseCards();
 
-                if (this._attackCardsOnTable.length > 0 && (this._activePlayerRole == "1" || this._activePlayerRole == "3")) {
+                if ((this._attackCardsOnTable.length > 0 || this._defenseCardsOnTable.length > 0) && (this._activePlayerRole == "1" || this._activePlayerRole == "3")) {
                     this._invaildPlayerCards = this.updateInvaildPlayerCard();
                 }
 
@@ -47,10 +75,17 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 return;
             }
 
+            var limit = (this._limitCardCount >= 5 ? 5 : this._limitCardCount) - this._defenseCardsOnTable.length;
             if (this._activePlayerRole == "1") {
                 if (this._attackCardsOnTable.length <= 0) {
+                    if (selectedItems.length > limit) {
+                        this._playerCardStock.unselectItem(itemId);
+                    }
                     this._invaildPlayerCards = this.playAttack(selectedItems, controlName);
                 } else {
+                    if (selectedItems.length > limit) {
+                        this._playerCardStock.unselectItem(itemId);
+                    }
                     this._invaildPlayerCards = this.updateInvaildPlayerCard();
                 }
 
@@ -69,6 +104,10 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 this._invaildAttackCardOnTable = this.updateInvalidAttackCardOnTable(itemId);
 
             } else if (this._activePlayerRole == "3") {
+                if (selectedItems.length > limit) {
+                    this._playerCardStock.unselectItem(itemId);
+                }
+
                 this._invaildPlayerCards = this.updateInvaildPlayerCard();
             }
 
@@ -159,6 +198,36 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             }
         },
 
+        onClickBettingButton: function(playerId) {
+            if (this.checkAction("betting", true)) {
+                var selectedItem = this._playerBettingCardStock.getSelectedItems();
+
+                if (selectedItem.length <= 0) {
+                    this.showMessage(_("Please select a betting card"), 'error');
+                    return;
+                } else {
+                    var requestData = {
+                        card_id : selectedItem[0].id,
+                        player_id : playerId,
+                    };
+
+                    this._playerBettingCardStock.setSelectionMode(0);
+
+                    this.gamedatas.blazePlayers.forEach(player => {
+                        this.updateOtherPlayerRole(player.id, "0");
+
+                        if (player.id != this.player_id) {
+                            this.disconnect($('otherPlayer-' + player.id), "onclick",         () => this.onClickBettingButton(player.id));
+                            this.disconnect($('otherPlayer-' + player.id), "onmouseenter",    () => this.onMouseEnter(player.id));
+                            this.disconnect($('otherPlayer-' + player.id), "onmouseleave",    () => this.onMouseLeave(player.id));
+                        }
+                    });
+
+                    this.takeAction("betting", requestData);
+                }
+            }
+        },
+
         /*
          *  Utility
          */
@@ -229,6 +298,12 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                     }
                 });
 
+                this._defenseCardsOnTable.forEach(card => {
+                    if (cardData.value == card.value) {
+                        isValid = true;
+                    }
+                });
+
                 if (isValid == false) {
                     this.setEnableCard("playerCardsStock", card.id, false);
                     invalidCards.push(card.id);
@@ -248,6 +323,13 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 if (this._combinedDefenseCards.length > 0) {
                     this._combinedDefenseCards.forEach(combinedCard => {
                         if (combinedCard.attackCardId == attackCard.id) {
+                            invalidCards.push(attackCard.id);
+                        }
+                    });
+                }
+                if (this._attackedCards.length > 0) {
+                    this._attackedCards.forEach(attackedCard => {
+                        if (attackedCard.id == attackCard.id) {
                             invalidCards.push(attackCard.id);
                         }
                     });

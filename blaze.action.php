@@ -81,12 +81,15 @@ class action_blaze extends APP_GameAction
 		self::ajaxResponse();
     }
 
-	public function batting()
+	public function betting()
 	{
 		self::setAjaxMode();
+
 		$card_id = self::getArg("card_id", AT_posint, true);
 		$player_id = self::getArg("player_id", AT_posint, true);
-		$result = $this->game->batting($card_id, $player_id);
+
+		$this->game->betting($card_id, $player_id);
+
 		self::ajaxResponse();
 	}
 }

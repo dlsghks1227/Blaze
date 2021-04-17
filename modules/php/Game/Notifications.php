@@ -2,6 +2,7 @@
 namespace BlazeBase\Game;
 
 use Blaze;
+use BlazeBase\Players\Players;
 use BlazeBase\Cards\Cards;
 
 class Notifications {
@@ -115,9 +116,51 @@ class Notifications {
             'player_name'           => $player->getName(),
             'player_id'             => $player->getId(),
             'draw_cards'            => $draw_cards,
-            'draw_cards_count'      => count($draw_cards),
+            'draw_cards_count'      => count(is_null($draw_cards) ? 0 : $draw_cards),
             'deck_count'            => Cards::getCountCards('deck'),
             'player_cards_count'    => Cards::getCountCards('hand', $player->getId()),
+        ));
+    }
+
+    public static function bettingPrivate($player, $selected_betting_card, $selected_player_id)
+    {
+        $message = clienttranslate('Bet ${betting_card_value} point on ${player_name}');
+
+        $selected_player = Players::getPlayer($selected_player_id);
+
+        self::notify($player->getId(), 'bettingPrivate', $message, array(
+            'i18n'                          => array(),
+            'player_name'                   => $selected_player->getName(),
+            'player_id'                     => $player->getId(),
+            'selected_player_id'            => $selected_player_id,
+            'betting_card'                  => $selected_betting_card->getData(),
+            'betting_card_value'            => $selected_betting_card->getValue(),
+            'player_betting_cards_count'    => Cards::getCountCards('betting_hand', $player->getId()),
+        ));
+    }
+
+    public static function endBetting()
+    {
+        $message = clienttranslate('End Betting!');
+
+        self::notifyAll('endBetting', $message, array(
+            'i18n'                  => array(),
+            'players'               => Players::getDatas(),
+            'betting_cards'         => Cards::getCardsInLocation('betting'),
+        ));
+    }
+
+    public static function drawTrophyCard($player, $card)
+    {
+        $message = clienttranslate('${player_name} got ${point} trophy card.');
+
+        self::notifyAll('drawTrophyCard', $message, array(
+            'i18n'              => array(),
+            'player_name'       => $player->getName(),
+            'player_id'         => $player->getId(),
+            'point'             => $card->getValue(),
+            'trophy_card'       => $card->getData(),
+            'trophy_cards'      => Cards::getCardsInLocation('trophy'),
         ));
     }
 }

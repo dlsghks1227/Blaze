@@ -8,11 +8,52 @@ use BlazeBase\Players\Players;
 trait PlayerActionTrait
 {
     // 1. 플레이할 플레이어가 카드가 없으면 바로 넘어간다.
-    // 2. 공격카드 및 방어카드가 5장 이상일 경우 방어 성공으로 바로 넘어간다.
+    // 2. 공격카드 및 방어카드가 제한된 카드 수 이상일 경우 방어 성공으로 바로 넘어간다.
     public function stPlayerTurn()
     {
-        // ----- 1 -----
-        // ----- 2 -----
+        // // ----- 1 -----
+        // $active_player = Players::getActivePlayer();
+        // $active_player_card_count = Cards::getCountCards('hand', $active_player->getId());
+
+        // $limit_card_count       = Blaze::get()->getGameStateValue('limitCardCount');
+        // if (is_null($limit_card_count) == false)
+        // {
+        //     $limit_card_count = $limit_card_count >= 5 ? 5 : $limit_card_count;
+        // }
+
+        // $attacked_cards_count   = Cards::getCountCards('attackedCards');
+        // $attack_cards_count     = Cards::getCountCards('attackCards');
+        // $defense_cares_count    = Cards::getCountCards('defenseCards');
+
+        // if ($active_player_card_count <= 0)
+        // {
+        //     if ($active_player->getRole() == ROLE_ATTACKER || $active_player->getRole() == ROLE_SUPPORTER)
+        //     {
+        //         $this->pass();
+        //         return;
+        //     }
+        //     else if ($active_player->getRole() == ROLE_DEFENDER)
+        //     {
+        //         Blaze::get()->setGameStateValue('isDefensed', DEFENSE_SUCCESS);
+
+        //         // nextPlayer
+        //         $this->gamestate->nextState('next');
+        //         return;
+        //     }
+        // }
+
+        // // ----- 2 -----
+        // if ($attacked_cards_count + $attack_cards_count >= $limit_card_count)
+        // {
+        //     if ($defense_cares_count >= $limit_card_count)
+        //     {
+        //         Blaze::get()->setGameStateValue('isDefensed', DEFENSE_SUCCESS);
+
+        //         // nextPlayer
+        //         $this->gamestate->nextState('next');
+        //         return;
+        //     }
+        // }
     }
 
     // 1. 다음 역할의 플레이어를 지정.
@@ -49,7 +90,9 @@ trait PlayerActionTrait
         return array(
             'attackCardOnTable'     => Cards::getAttackCardsOnTable(),
             'attackedCards'         => Cards::getCardsInLocation('attackedCards'),
+            'defenseCards'          => Cards::getCardsInLocation('defenseCards'),
             'activePlayerRole'      => Players::getActivePlayer()->getRole(),
+            'limitCardCount'        => Blaze::get()->getGameStateValue('limitCardCount'),
             'trumpCard'             => $trumpCardData
         );
     }

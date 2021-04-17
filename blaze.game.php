@@ -146,6 +146,11 @@ class Blaze extends Table
             // attack card and defense card on table
             'attackCardsOnTable'    => Cards::getAttackCardsOnTable(),
             'defenseCardsOnTable'   => Cards::getCardsInLocation('defenseCards'),
+
+            // overall Cards
+            'overallBettingCards'   => Cards::getCardsInLocation('betting'),
+            'overallBettedCards'    => Cards::getCardsInLocation('betted'),
+            'overallTrophyCards'    => Cards::getCardsInLocation('trophy'),
         );
         return $result;
     }

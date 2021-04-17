@@ -88,6 +88,20 @@ var jstpl_otherPlayer = `
 </div>
 `
 
+var jstpl_overallCards = `
+<div id="overallCards-\${playerId}" class="overallCards">
+    <div id="overallBettingCardPlace">
+        <div id="overallBettingCardStock-\${playerId}" class="overallStock"></div>
+    </div>
+    <div id="overallBettedCardPlace">
+        <div id="overallBettedCardStock-\${playerId}" class="overallStock"></div>
+    </div>
+    <div id="overallTrophyCardPlace">
+        <div id="overallTrophyCardStock-\${playerId}" class="overallStock"></div>
+    </div>
+</div>
+`
+
 </script>  
 
 {OVERALL_GAME_FOOTER}

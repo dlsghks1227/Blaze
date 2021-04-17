@@ -59,7 +59,7 @@ class Cards extends \BlazeBase\Singleton
                     'type_arg'  => $value,
                     'nbr'       => 1
                 );
-                self::getDeck()->CreateCards($cards, 'trophy_deck_' . $round);
+                self::getDeck()->CreateCards($cards, 'trophy_deck_' . $round, $value);
             }
         };
     }
@@ -199,7 +199,7 @@ class Cards extends \BlazeBase\Singleton
 
     public static function moveAttackCards($cards)
     {
-        $attack_cards_count = is_null(self::getCountCards('attackCards')) ? 0 : self::getCountCards('attackCards');
+        $attack_cards_count = is_null(self::getCountCards('attackedCards')) ? 0 : self::getCountCards('attackedCards');
         foreach($cards as $card)
         {
             $attack_cards_count += 1;
@@ -213,12 +213,19 @@ class Cards extends \BlazeBase\Singleton
     public static function moveDefenseCards($cards)
     {
         // 기존 공격 카드는 방어되었으므로 공격된 카드로 옳긴다.
-        self::moveAllCards('attackCards', 'attackedCards');
+        $attack_cards = self::getCardsInLocation('attackCards');
+        foreach($attack_cards as $card)
+        {
+            self::moveCard($card['id'], 'attackedCards', $card['weight']);
+        }
 
         foreach($cards as $card)
         {
-            self::moveCard($card, 'defenseCards', Cards::getCard($card->getWeight())->getWeight());
+            $card->setWeight(Cards::getCard($card->getWeight())->getWeight());
+            self::moveCard($card, 'defenseCards', $card->getWeight());
         }
+
+        return $cards;
     }
 
     public static function moveUsedCards($player_id, $is_defensed)
@@ -234,8 +241,15 @@ class Cards extends \BlazeBase\Singleton
             self::moveAllCards('attackCards',   'discard');
             self::moveAllCards('defenseCards',  'discard');
 
-            Blaze::get()->setGameStateValue('discardCardColor', $defense_cards[0]['color']);
-            Blaze::get()->setGameStateValue('discardCardValue', $defense_cards[0]['value']);
+            if (is_null($defense_cards) == false)
+            {
+                if (is_null($defense_cards[0]) == false)
+                {
+                    Blaze::get()->setGameStateValue('discardCardColor', $defense_cards[0]['color']);
+                    Blaze::get()->setGameStateValue('discardCardValue', $defense_cards[0]['value']);    
+                }
+
+            }
 
             // Notifications
             Notifications::defenseSuccess($player, $defense_cards, $attack_cards);
@@ -260,9 +274,9 @@ class Cards extends \BlazeBase\Singleton
     // ------------------------------------------------------
     // ----------------- Trophy Card Action -----------------
     // ------------------------------------------------------
-    public static function drawTrophyCard($round, $player_id)
+    public static function drawTrophyCard($round, $player_id) : Card
     {
-        $card = self::resToObject(self::getDeck()->pickCardForLocation('trophy_deck_' . $round, 'score', $player_id));
+        $card = self::resToObject(self::getDeck()->pickCardForLocation('trophy_deck_' . $round, 'trophy', $player_id));
         return $card;
     }
 
@@ -271,7 +285,9 @@ class Cards extends \BlazeBase\Singleton
     // -------------------------------------------------------
     public static function bettingCard($card_id, $player_id)
     {
+        $card = self::getCard($card_id);
         self::moveCard($card_id, 'betting', $player_id);
+        return $card;
     }
 
     public static function resultBettingCard($last_player_id)
@@ -286,21 +302,21 @@ class Cards extends \BlazeBase\Singleton
                 // 또는 베팅된 카드가 마지막 플레이어와 같으면 플레이어 점수에 등록한다.
                 if ($card['value'] == 0)
                 {
-                    if ($player->getNo() == ((int)$card['type'] + 1))
+                    if ($player->getNo() == ((int)$card['color'] + 1))
                     {
                         self::moveCard($card['id'], 'betting_hand', $player->getId());
                     }
                 }
-                else if ($card['location_arg'] == $last_player_id)
+                else if ($card['weight'] == $last_player_id)
                 {
-                    if ($player->getNo() == ((int)$card['type'] + 1))
+                    if ($player->getNo() == ((int)$card['color'] + 1))
                     {
-                        self::moveCard($card['id'], 'score', $player->getId());
+                        self::moveCard($card['id'], 'betted', $player->getId());
                     }
                 }
                 else
                 {
-                    self::moveCard($card['id'], 'score', $card['location_arg']);
+                    self::moveCard($card['id'], 'betted', $card['weight']);
                 }
             }
         }

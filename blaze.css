@@ -112,6 +112,36 @@
     .blazeCard[data-color="4"] {
         border: 4px #a969be solid;}
 
+.overallCards {
+    width: 100%;
+    min-height: 120px;
+    margin: auto;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr); }
+
+    .overallCards div#overallBettingCardPlace, div#overallBettedCardPlace, div#overallTrophyCardPlace {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; }
+
+    .overallCards .overallStock {
+        margin: 0; }
+
+    .overallCards div#overallBettingCardPlace {
+        grid-column: 1;
+        grid-row: 1 / span 2; }
+
+    .overallCards div#overallBettedCardPlace {
+        grid-column: 2;
+        grid-row: 1; }
+
+    .overallCards div#overallTrophyCardPlace {
+        grid-column: 2;
+        grid-row: 2; }
+
+
 div#drawCard {
     z-index: 2;
 

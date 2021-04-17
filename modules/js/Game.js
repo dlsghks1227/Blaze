@@ -9,10 +9,13 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
             this._activeStates = [];
 
             this._activePlayerRole = 0;
-            this._attackCardsOnTable = null;
-            this._attackedCards = null;
+            this._attackCardsOnTable = [];
+            this._defenseCardsOnTable = [];
+            this._attackedCards = [];
+            this._trumpCard = [];
 
-            this._trumpCard = null;
+            this._limitCardCount = 0;
+
             this._invaildPlayerCards = [];
             this._combinedDefenseCards = [];
         },
@@ -63,15 +66,15 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
                 case 'playerTurn':
                     this._activePlayerRole = args.args.activePlayerRole;
                     this._attackCardsOnTable = args.args.attackCardOnTable;
+                    this._defenseCardsOnTable = args.args.defenseCards;
                     this._attackedCards = args.args.attackedCards;
                     this._trumpCard = args.args.trumpCard;
-
-                    console.log(args.args.attackedCards);
+                    this._limitCardCount = args.args.limitCardCount;
 
                     if( this.isCurrentPlayerActive() ) {
                         if (this._activePlayerRole == "1" || this._activePlayerRole == "3") {
                             this._playerCardStock.setSelectionMode(2);
-                            if (this._attackCardsOnTable.length > 0) {
+                            if (this._attackCardsOnTable.length > 0 || this._defenseCardsOnTable.length > 0) {
                                 this._invaildPlayerCards = this.updateInvaildPlayerCard();
                             }
                         } else if (this._activePlayerRole == "2") {
@@ -86,6 +89,20 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
                     this._invaildPlayerCards = [];
                     this._combinedDefenseCards = [];
 
+                    break;
+                case 'startOfBetting':
+                    this._playerBettingCardStock.setSelectionMode(1);
+
+                    this.gamedatas.blazePlayers.forEach(player => {
+                        this.updateOtherPlayerRole(player.id, "0");
+
+
+                        if (player.id != this.player_id) {
+                            this.connect($('otherPlayer-' + player.id), "onclick",         () => this.onClickBettingButton(player.id));
+                            this.connect($('otherPlayer-' + player.id), "onmouseenter",    () => this.onMouseEnter(player.id));
+                            this.connect($('otherPlayer-' + player.id), "onmouseleave",    () => this.onMouseLeave(player.id));
+                        }
+                    });
                     break;
                 case 'dummmy':
                     break;
@@ -109,6 +126,19 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
                     this.resetSelectedCardsInStock(this._playerCardStock);
                     this.resetSelectedCardsInStock(this._attackCardStock);
 
+                    break;
+                case 'startOfBetting':
+                    this._playerBettingCardStock.setSelectionMode(0);
+
+                    this.gamedatas.blazePlayers.forEach(player => {
+                        this.updateOtherPlayerRole(player.id, "0");
+
+                        if (player.id != this.player_id) {
+                            this.disconnect($('otherPlayer-' + player.id), "onclick",         () => this.onClickBettingButton(player.id));
+                            this.disconnect($('otherPlayer-' + player.id), "onmouseenter",    () => this.onMouseEnter(player.id));
+                            this.disconnect($('otherPlayer-' + player.id), "onmouseleave",    () => this.onMouseLeave(player.id));
+                        }
+                    });
                     break;
                 case 'dummmy':
                     break;

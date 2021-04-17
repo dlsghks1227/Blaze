@@ -110,9 +110,15 @@ class Player extends \APP_GameClass
 
     public function defense($cards)
     {
-        Cards::moveDefenseCards($cards);
+        $relocation_cards = Cards::moveDefenseCards($cards);
 
         // Notifications
-        Notifications::defense($this, $cards);
+        Notifications::defense($this, $relocation_cards);
+    }
+
+    public function betting($betting_card, $selected_player_id)
+    {
+        // Notifications
+        Notifications::bettingPrivate($this, $betting_card, $selected_player_id);
     }
 }

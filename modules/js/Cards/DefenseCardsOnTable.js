@@ -109,7 +109,6 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
         createDefenseCardStock: function() {
             this._defenseCardStock.create(this, $("defenseCardStock"), this._CARD_WIDTH_L, this._CARD_HEIGHT_L);
             this._defenseCardStock.image_items_per_row = 10;
-            this._defenseCardStock.centerItems = true;
             this._defenseCardStock.setOverlap(70, 0);
             this._defenseCardStock.setSelectionMode(0);
             this._defenseCardStock.extraClasses = "blazeCard";

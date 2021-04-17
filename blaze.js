@@ -28,6 +28,7 @@ define([
 
     g_gamethemeurl + "modules/js/CardTrait.js",
     g_gamethemeurl + "modules/js/Cards/TrophyCards.js",
+    g_gamethemeurl + "modules/js/Cards/OverallCards.js",
     g_gamethemeurl + "modules/js/Cards/AttackCardsOnTable.js",
     g_gamethemeurl + "modules/js/Cards/DefenseCardsOnTable.js",
 ],
@@ -40,6 +41,7 @@ function (dojo, declare) {
         
         blaze.cardTrait,
         blaze.trophyCards,
+        blaze.overallCards,
         blaze.attackCardsOnTable,
         blaze.defenseCardsOnTable,
 
@@ -52,6 +54,9 @@ function (dojo, declare) {
             
             this._CARD_WIDTH_M  = 72;
             this._CARD_HEIGHT_M = 112;
+
+            this._CARD_WIDTH_S  = 36;
+            this._CARD_HEIGHT_S = 56;
         },
 
         setup: function( gamedatas )
@@ -60,13 +65,15 @@ function (dojo, declare) {
 
             var playerPlace = this.getPlayerPlaceReorder(this.player_id, this.gamedatas.nextPlayerTable);
             
-            // --------- 플레이어 위치 설정 ---------
+            // --------- 플레이어 설정 ---------
             this.setupPlayersPlace(this.gamedatas.blazePlayers, this.player_id, playerPlace);
 
-            // --------- 테이블 위 플레이어 설정 ---------
-            this.gamedatas.blazePlayers.forEach(player => {
-                this.updateOtherPlayerRole(player.id, player.role);
-            });
+            // --------- overall setting ---------
+            this.setupOverallCards(
+                this.gamedatas.overallBettingCards,
+                this.gamedatas.overallBettedCards,
+                this.gamedatas.overallTrophyCards,
+            );
 
             // --------- 덱 카드 수 설정 ---------
             this.updateDeckCount(this.gamedatas.deckCount);
@@ -119,6 +126,14 @@ function (dojo, declare) {
                     break;
                 }
             }
+        },
+
+        onMouseEnter: function(playerId) {
+            this.updateOtherPlayerRole(playerId, "4");
+        },
+
+        onMouseLeave: function(playerId) {
+            this.updateOtherPlayerRole(playerId, "0");
         },
 
         setupAttackerButton: function(isPassEnabled) {
