@@ -19,19 +19,40 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
             const defenseCardsCount   = notif.args.defense_cards_count;
             const playerCardsCount    = notif.args.player_cards_count;
 
+            const offset = 100;
+            const uniqueIds = [];
+            const defenseStockItems = this._defenseCardStock.getAllItems();
+            defenseStockItems.forEach(card => {
+                uniqueIds.push(card.type)
+            });
             defenseCards.forEach(card => {
                 var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
                 if (playerId == this.player_id) {
                     if ($("playerCardsStock_item_" + card.id)) {
-                        this._defenseCardStock.addToStockWithId(uniqueId, card.id, ("playerCardsStock_item_" + card.id));
-                        this._defenseCardStock.changeItemsWeight({[uniqueId]: card.weight});
+                        if (uniqueIds.includes(uniqueId) == true) {
+                            this._defenseCardStock.addItemType(uniqueId + offset, uniqueId + offset, g_gamethemeurl + "img/play_cards_L.png", uniqueId);
+                            this._defenseCardStock.addToStockWithId(uniqueId + offset, card.id, ("playerCardsStock_item_" + card.id));
+                            this._defenseCardStock.changeItemsWeight({[uniqueId + offset]: card.weight});
+                        } else {
+                            this._defenseCardStock.addToStockWithId(uniqueId, card.id, ("playerCardsStock_item_" + card.id));
+                            this._defenseCardStock.changeItemsWeight({[uniqueId]: card.weight});
+                            uniqueIds.push(uniqueId);
+                        }
 
                         this._playerCardStock.removeFromStockById(card.id);
                     }
                 } else {
                     if ($("otherPlayerCards-" + playerId)) {
-                        this._defenseCardStock.addToStockWithId(uniqueId, card.id, ("otherPlayerCards-" + playerId));
-                        this._defenseCardStock.changeItemsWeight({[uniqueId]: card.weight});
+                        if (uniqueIds.includes(uniqueId) == true) {
+                            this._defenseCardStock.addItemType(uniqueId + offset, uniqueId + offset, g_gamethemeurl + "img/play_cards_L.png", uniqueId);
+                            this._defenseCardStock.addToStockWithId(uniqueId + offset, card.id, ("otherPlayerCards-" + playerId));
+                            this._defenseCardStock.changeItemsWeight({[uniqueId + offset]: card.weight});
+    
+                        } else {
+                            this._defenseCardStock.addToStockWithId(uniqueId, card.id, ("otherPlayerCards-" + playerId));
+                            this._defenseCardStock.changeItemsWeight({[uniqueId]: card.weight});
+                            uniqueIds.push(uniqueId);
+                        }
                     }
                 }
             });

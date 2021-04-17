@@ -68,9 +68,6 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
 
         setupCurrentPlayerCards: function(currentPlayerData) {
-            this.createPlayerCardStock();
-            this.createPlayerBettingCardStock();
-
             currentPlayerData.hand.forEach(card => {
                 var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
                 this._playerCardStock.addToStockWithId(uniqueId, card.id);
@@ -82,7 +79,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             });
         },
 
-        setupPlayersPlace: function(players, currentPlayerId, playerPlace) {
+        setupPlayersPlace: function(players, currentPlayerId, playerPlace, isStockSetup = true) {
             // 모든 플레이어를 반복하면서 위치를 설정한다.
             players.forEach(player => {
                 var isCurrentPlayer = player.id == currentPlayerId;
@@ -109,7 +106,9 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
 
                 this.updateOtherPlayerRole(player.id, player.role);
 
-                this.setupOverallCardStock(player.id);
+                if (isStockSetup == true) {
+                    this.setupOverallCardStock(player.id);
+                }
             });
         },
 

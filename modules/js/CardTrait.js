@@ -16,10 +16,12 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             const playerCardsCount  = notif.args.player_cards_count;
 
             if (playerId == this.player_id) {
-                drawCards.forEach(card => {
-                    var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
-                    this._playerCardStock.addToStockWithId(uniqueId, card.id, "deck");
-                });
+                if (drawCards != null) {
+                    drawCards.forEach(card => {
+                        var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
+                        this._playerCardStock.addToStockWithId(uniqueId, card.id, "deck");
+                    });
+                }
             } else {
                 for (var count = 0; count < Number(drawCardsCount); count++) {
                     this.slideTemporaryObject('<div id="drawCard" class="blazeCard"></div>', "deck", "drawCard", "otherPlayerCards-" + playerId, 500, count * 100).play();

@@ -17,19 +17,42 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
             const attackCardsCount    = notif.args.attack_cards_count;
             const playerCardsCount    = notif.args.player_cards_count;
             
+            const offset = 100;
+            const uniqueIds = [];
+            const attackStockItems = this._attackCardStock.getAllItems();
+            attackStockItems.forEach(card => {
+                uniqueIds.push(card.type)
+            });
+
             attackCards.forEach(card => {
                 var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
+
                 if (playerId == this.player_id) {
                     if ($("playerCardsStock_item_" + card.id)) {
-                        this._attackCardStock.addToStockWithId(uniqueId, card.id, ("playerCardsStock_item_" + card.id));
-                        this._attackCardStock.changeItemsWeight({[uniqueId]: card.weight});
-
+                        if (uniqueIds.includes(uniqueId) == true) {
+                            this._attackCardStock.addItemType(uniqueId + offset, uniqueId + offset, g_gamethemeurl + "img/play_cards_L.png", uniqueId);
+                            this._attackCardStock.addToStockWithId(uniqueId + offset, card.id, ("playerCardsStock_item_" + card.id));
+                            this._attackCardStock.changeItemsWeight({[uniqueId + offset]: card.weight});
+                        } else {
+                            this._attackCardStock.addToStockWithId(uniqueId, card.id, ("playerCardsStock_item_" + card.id));
+                            this._attackCardStock.changeItemsWeight({[uniqueId]: card.weight});
+                            uniqueIds.push(uniqueId);
+                        }
+                        
                         this._playerCardStock.removeFromStockById(card.id);
                     }
                 } else {
                     if ($("otherPlayerCards-" + playerId)) {
-                        this._attackCardStock.addToStockWithId(uniqueId, card.id, ("otherPlayerCards-" + playerId));
-                        this._attackCardStock.changeItemsWeight({[uniqueId]: card.weight});
+                        if (uniqueIds.includes(uniqueId) == true) {
+                            this._attackCardStock.addItemType(uniqueId + offset, uniqueId + offset, g_gamethemeurl + "img/play_cards_L.png", uniqueId);
+                            this._attackCardStock.addToStockWithId(uniqueId + offset, card.id, ("otherPlayerCards-" + playerId));
+                            this._attackCardStock.changeItemsWeight({[uniqueId + offset]: card.weight});
+    
+                        } else {
+                            this._attackCardStock.addToStockWithId(uniqueId, card.id, ("otherPlayerCards-" + playerId));
+                            this._attackCardStock.changeItemsWeight({[uniqueId]: card.weight});
+                            uniqueIds.push(uniqueId);
+                        }
                     }
                 }
             });
@@ -64,11 +87,19 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
         setupAttackCards: function(attackCards) {
             this.createAttackCardStock();
             
+            const offset = 100;
+            const uniqueIds = [];
             attackCards.forEach(card => {
                 var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
-                this._attackCardStock.addToStockWithId(uniqueId, card.id);
-                this._attackCardStock.changeItemsWeight({[uniqueId]: card.weight});
-                console.log(uniqueId + " " +Number(card.color) + " "  +Number(card.value) + " " + card.weight);
+                if (uniqueIds.includes(uniqueId) == true) {
+                    this._attackCardStock.addItemType(uniqueId + offset, uniqueId + offset, g_gamethemeurl + "img/play_cards_L.png", uniqueId);
+                    this._attackCardStock.addToStockWithId(uniqueId + offset, card.id);
+                    this._attackCardStock.changeItemsWeight({[uniqueId + offset]: card.weight});
+                } else {
+                    this._attackCardStock.addToStockWithId(uniqueId, card.id);
+                    this._attackCardStock.changeItemsWeight({[uniqueId]: card.weight});
+                    uniqueIds.push(uniqueId);
+                }
             });
         },
     });

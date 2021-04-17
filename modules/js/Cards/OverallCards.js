@@ -72,7 +72,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             this.createOverallTrophyCardStock(playerId);
         },
 
-        setupOverallCards: function(bettingCards, bettedCards, trophyCards) {
+        updateOverallCards: function(bettingCards, bettedCards, trophyCards) {
             this.updateOverallBettingCards(bettingCards);
             this.updateOverallBettedCards(bettedCards);
             this.updateOverallTrophyCards(trophyCards);
@@ -92,6 +92,9 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
 
         updateOverallBettingCards: function(bettingCards) {
+            this._overallBettingCardStock.forEach(stock => {
+                stock.removeAll();
+            });
             bettingCards.forEach(card => {
                 const overallBettingCardStock = this._overallBettingCardStock.get(card.weight);
                 overallBettingCardStock.addToStockWithId(card.color, card.id);
@@ -99,6 +102,9 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
 
         updateOverallBettedCards: function(bettedCards) {
+            this._overallBettedCardStock.forEach(stock => {
+                stock.removeAll();
+            });
             bettedCards.forEach(card => {
                 const overallBettedCardStock = this._overallBettedCardStock.get(card.weight);
                 var uniqueId = this.getBettingCardUniqueId(Number(card.color), Number(card.value));
@@ -107,6 +113,9 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
 
         updateOverallTrophyCards: function(trophyCards) {
+            this._overallTrophyCardStock.forEach(stock => {
+                stock.removeAll();
+            });
             trophyCards.forEach(card => {
                 const overallTrophyCardStock = this._overallTrophyCardStock.get(card.weight);
                 overallTrophyCardStock.addToStockWithId(card.value, card.id);

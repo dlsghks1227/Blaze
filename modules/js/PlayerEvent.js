@@ -5,6 +5,9 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 ["changeRole", 500],
                 ["bettingPrivate", 1000],
                 ["endBetting", 1000],
+
+                ["startRoundPrivate", 2000],
+                ["endRound", 2000],
             );
 
             this._firstAttackCardValue = -1;
@@ -52,6 +55,39 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             this.updateOverallBettingCards(bettingCards);
         },
 
+        notif_startRoundPrivate: function(notif) {
+            const players       = notif.args.players;
+            const playerPlace   = this.getPlayerPlaceReorder(this.player_id, notif.args.nextPlayerTable);
+            const deckCount     = notif.args.deck_count;
+            const trumpCard     = notif.args.trump_card;
+            const trophyCards   = notif.args.trophy_cards;
+
+            this.setupPlayersPlace(players, this.player_id, playerPlace, false);
+            
+            this.updateDeckCount(deckCount);
+            
+            this.updateTrumpCard(trumpCard.color, trumpCard.value);
+
+            this._trophyCardStock.removeAll();
+            trophyCards.forEach(card => {
+                this._trophyCardStock.addToStockWithId(card.value, card.id);
+            });
+
+            this.removeDiscardCard();
+        },
+
+        notif_endRound: function(notif) {
+            const overallBettingCards   = notif.args.overall_betting_cards;
+            const overallBettedCards    = notif.args.overall_betted_cards;
+            const overallTrophyCards    = notif.args.overall_trophy_cards;
+
+            this.updateOverallCards(
+                overallBettingCards,
+                overallBettedCards,
+                overallTrophyCards,
+            );
+        },
+
         /*
          * Player hand
          */
@@ -75,7 +111,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 return;
             }
 
-            var limit = (this._limitCardCount >= 5 ? 5 : this._limitCardCount) - this._defenseCardsOnTable.length;
+            const limit = (this._limitCardCount >= 5 ? 5 : this._limitCardCount) - this._attackCardsOnTable.length;
             if (this._activePlayerRole == "1") {
                 if (this._attackCardsOnTable.length <= 0) {
                     if (selectedItems.length > limit) {

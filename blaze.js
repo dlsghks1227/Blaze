@@ -63,13 +63,15 @@ function (dojo, declare) {
         {
             console.log( "Starting game setup" );
 
-            var playerPlace = this.getPlayerPlaceReorder(this.player_id, this.gamedatas.nextPlayerTable);
+            const playerPlace = this.getPlayerPlaceReorder(this.player_id, this.gamedatas.nextPlayerTable);
             
             // --------- 플레이어 설정 ---------
+            this.createPlayerCardStock();
+            this.createPlayerBettingCardStock();
             this.setupPlayersPlace(this.gamedatas.blazePlayers, this.player_id, playerPlace);
 
             // --------- overall setting ---------
-            this.setupOverallCards(
+            this.updateOverallCards(
                 this.gamedatas.overallBettingCards,
                 this.gamedatas.overallBettedCards,
                 this.gamedatas.overallTrophyCards,

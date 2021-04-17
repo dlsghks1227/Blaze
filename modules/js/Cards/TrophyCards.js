@@ -12,16 +12,17 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
          */
         notif_drawTrophyCard: function(notif) {
             const playerId      = notif.args.player_id;
+            const playerScore   = notif.args.player_score;
             const trophyCard    = notif.args.trophy_card;
             const trophyCards   = notif.args.trophy_cards;
 
             if ($("trophyCardsStock_item_" + trophyCard.id)) {
                 const overallTrophyCardStock = this._overallTrophyCardStock.get(playerId);
-                overallTrophyCardStock.addToStockWithId(trophyCard.value, trophyCard.id);
+                overallTrophyCardStock.addToStockWithId(trophyCard.value, trophyCard.id, $("trophyCardsStock_item_" + trophyCard.id));
 
                 this._trophyCardStock.removeFromStockById(trophyCard.id);
             }
-
+            this.updateOtherPlayerScore(playerId, playerScore);
             this.updateOverallTrophyCards(trophyCards);
         },
 

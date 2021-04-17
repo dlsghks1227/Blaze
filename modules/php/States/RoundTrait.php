@@ -2,6 +2,7 @@
 namespace BlazeBase\States;
 
 use Blaze;
+use BlazeBase\Game\Notifications;
 use BlazeBase\Players\Players;
 use BlazeBase\Cards\Cards;
 
@@ -20,6 +21,8 @@ trait RoundTrait
 
         Blaze::get()->setGameStateValue('discardCardColor', BLUE);
         Blaze::get()->setGameStateValue('discardCardValue', -1);
+
+        Notifications::startRoundPrivate($current_round);
 
         // startOfMainTurn
         $this->gamestate->nextState('start');
@@ -45,6 +48,7 @@ trait RoundTrait
 
         // ----- 2 -----
         Cards::resultBettingCard($last_player_id);
+        Notifications::endRound();
 
         // ----- 3 -----
         $current_round = Blaze::get()->getGameStateValue('round');

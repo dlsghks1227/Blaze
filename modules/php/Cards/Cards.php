@@ -241,14 +241,10 @@ class Cards extends \BlazeBase\Singleton
             self::moveAllCards('attackCards',   'discard');
             self::moveAllCards('defenseCards',  'discard');
 
-            if (is_null($defense_cards) == false)
+            if (is_null($attack_cards) == false)
             {
-                if (is_null($defense_cards[0]) == false)
-                {
-                    Blaze::get()->setGameStateValue('discardCardColor', $defense_cards[0]['color']);
-                    Blaze::get()->setGameStateValue('discardCardValue', $defense_cards[0]['value']);    
-                }
-
+                Blaze::get()->setGameStateValue('discardCardColor', $attack_cards[0]['color']);
+                Blaze::get()->setGameStateValue('discardCardValue', $attack_cards[0]['value']);    
             }
 
             // Notifications

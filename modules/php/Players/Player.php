@@ -53,8 +53,13 @@ class Player extends \APP_GameClass
     public function getScore()
     {
         $total_score = 0;
-        $score_cards = Cards::getCardsInLocation('score', $this->id);
-        foreach ($score_cards as $card)
+        $betted_cards = Cards::getCardsInLocation('betted', $this->id);
+        $trophy_cards = Cards::getCardsInLocation('trophy', $this->id);
+        foreach ($betted_cards as $card)
+        {
+            $total_score += $card['value'];
+        }
+        foreach ($trophy_cards as $card)
         {
             $total_score += $card['value'];
         }

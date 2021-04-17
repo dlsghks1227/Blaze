@@ -110,13 +110,14 @@ class Notifications {
     public static function draw($player, $draw_cards)
     {
         $message = clienttranslate('');
+        $draw_cards_count = is_null($draw_cards) == true ? 0 : count($draw_cards);
 
         self::notifyAll('draw', $message, array(
             'i18n'                  => array(),
             'player_name'           => $player->getName(),
             'player_id'             => $player->getId(),
             'draw_cards'            => $draw_cards,
-            'draw_cards_count'      => count(is_null($draw_cards) ? 0 : $draw_cards),
+            'draw_cards_count'      => $draw_cards_count,
             'deck_count'            => Cards::getCountCards('deck'),
             'player_cards_count'    => Cards::getCountCards('hand', $player->getId()),
         ));
@@ -158,9 +159,47 @@ class Notifications {
             'i18n'              => array(),
             'player_name'       => $player->getName(),
             'player_id'         => $player->getId(),
+            'player_score'      => $player->getScore(),
             'point'             => $card->getValue(),
             'trophy_card'       => $card->getData(),
             'trophy_cards'      => Cards::getCardsInLocation('trophy'),
+        ));
+    }
+
+    public static function startRoundPrivate($current_round)
+    {
+        $players = Players::getPlayers();
+
+        $trump_card_data = array(
+            'color' => Blaze::get()->getGameStateValue('trumpCardColor'),
+            'value' => Blaze::get()->getGameStateValue('trumpCardValue'),
+        );
+
+        foreach ($players as $player)
+        {
+            $message = clienttranslate('');
+
+            self::notify($player->getId(), 'startRoundPrivate', $message, array(
+                'i18n'              => array(),
+                'players'           => Players::getDatas($player->getId()),
+                'nextPlayerTable'   => Blaze::get()->getNextPlayerTable(),
+
+                'deck_count'        => Cards::getCountCards('deck'),
+                'trump_card'        => $trump_card_data,
+                'trophy_cards'      => Cards::getCardsInLocation('trophy_deck_' . $current_round),
+            ));
+        }
+    }
+
+    public static function endRound()
+    {
+        $message = clienttranslate('');
+
+        self::notifyAll('endRound', $message, array(
+            'i18n'                  => array(),
+            'overall_betting_cards' => Cards::getCardsInLocation('betting'),
+            'overall_betted_cards'  => Cards::getCardsInLocation('betted'),
+            'overall_trophy_cards'  => Cards::getCardsInLocation('trophy'),
         ));
     }
 }
