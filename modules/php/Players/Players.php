@@ -138,7 +138,7 @@ class Players extends \BlazeBase\Singleton
         for ($i = 0; $i < count($next_player_table) + 1; $i++)
         {
             if (self::getPlayer($next_player_id)->isEliminated() == true ||
-                self::getPlayer($next_player_id)->getRole() != ROLE_NONE)
+                self::getPlayer($next_player_id)->getRole() > ROLE_NONE)
             {
                 $next_player_id = $next_player_table[$next_player_id];
                 continue;

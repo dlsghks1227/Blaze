@@ -16,12 +16,30 @@ trait BettingTrait
     }
 
     // 1. 배팅 여부 활성화
+    // 2. 플레이한 플레이어가 카드가 없으면 트로피 카드를 드로우한다.
     public function stEndOfBetting()
     {
         // ----- 1 -----
         Blaze::get()->setGameStateValue('isBetting', 1);
         
         Notifications::endBetting();
+
+        // ----- 2 -----
+        $players = Players::getPlayers();
+        foreach ($players as $player) {
+            $alive_player_count = Players::getAlivePlayerCount();
+            $player_hand_count = Cards::getCountCards('hand', $player->getId());
+            if ($alive_player_count >= 2 && 
+                $player_hand_count <= 0 && 
+                $player->isEliminated() == false)
+            {
+                $current_round = Blaze::get()->getGameStateValue('round');
+    
+                $player->eliminate(true);
+                $trophy_card = Cards::drawTrophyCard($current_round, $player->getId());
+                Notifications::drawTrophyCard($player, $trophy_card);
+            }
+        }
         
         // startOfMainTurn
         $this->gamestate->nextState('start');

@@ -10,8 +10,15 @@ trait RoundTrait
 {
     // 1. 라운드에 사용할 카드 및 트럼프 카드, 버려진 카드 설정
     //      - DB에 저장해서 하는 방법도 있지만 지금 만들기 늦었으니 그냥 쓴다!
+    // 2. 역할 순서 및 방어 성공 여부, 공격 여부 초기화
     public function stStartOfRound()
     {
+        $players = Players::getPlayers();
+        foreach ($players as $player)
+        {
+            $player->eliminate(false);
+        }
+
         // ----- 1 -----
         $current_round = Blaze::get()->getGameStateValue('round');
         $trump_card = Cards::roundSetting($current_round);
@@ -43,8 +50,13 @@ trait RoundTrait
             {
                 $last_player_id = $player->getId();
             }
+        }
+
+        foreach ($players as $player)
+        {
             $player->eliminate(false);
         }
+
 
         // ----- 2 -----
         Cards::resultBettingCard($last_player_id);
@@ -62,8 +74,12 @@ trait RoundTrait
 
         // ----- 4 -----
         Blaze::get()->setGameStateValue('round',            2);
-        Blaze::get()->setGameStateValue('isBetting',        0);
+        Blaze::get()->setGameStateValue('roleOrder',        ROLE_NONE);
         Blaze::get()->setGameStateValue('startAttackerId',  $last_player_id);
+        Blaze::get()->setGameStateValue('isBetting',        0);
+        Blaze::get()->setGameStateValue('isDefensed',       DEFENSE_NONE);
+        Blaze::get()->setGameStateValue('isAttacked',       0);
+
 
         // startOfRound
         $this->gamestate->nextState('start');

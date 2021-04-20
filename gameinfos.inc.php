@@ -16,10 +16,10 @@ $gameinfos = array(
 'game_name' => "Blaze",
 
 // Game designer (or game designers, separated by commas)
-'designer' => 'Mr.Park',       
+'designer' => 'HeidelBÄR Games Team',       
 
 // Game artist (or game artists, separated by commas)
-'artist' => 'Mr.Park',         
+'artist' => 'Nadezhda Mikryukova',         
 
 // Year of FIRST publication of this game. Can be negative.
 'year' => 2021,                 

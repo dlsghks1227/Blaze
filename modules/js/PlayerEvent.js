@@ -6,8 +6,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 ["bettingPrivate", 1000],
                 ["endBetting", 1000],
 
-                ["startRoundPrivate", 2000],
-                ["endRound", 2000],
+                ["startRoundPrivate", 3000],
+                ["endRound", 3000],
             );
 
             this._firstAttackCardValue = -1;
@@ -99,6 +99,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 this.resetSelectedCardsInStock(this._playerCardStock);
                 this.resetCombinedDefenseCards();
 
+                this._invaildAttackCardOnTable = [];
+
                 if ((this._attackCardsOnTable.length > 0 || this._defenseCardsOnTable.length > 0) && (this._activePlayerRole == "1" || this._activePlayerRole == "3")) {
                     this._invaildPlayerCards = this.updateInvaildPlayerCard();
                 }
@@ -137,6 +139,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                     }
                 }
 
+                // this.updateInvalidAttackCardOnTable(itemId);
                 this._invaildAttackCardOnTable = this.updateInvalidAttackCardOnTable(itemId);
 
             } else if (this._activePlayerRole == "3") {
@@ -209,6 +212,10 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
 
         onClickDefenseButton: function() {
             if (this.checkAction("defense", true)) {
+                if (this._combinedDefenseCards.length + this._defenseCardsOnTable.length < this._attackCardsOnTable.length) {
+                    this.showMessage(_("Not enough cards."), 'error');
+                    return;
+                }
                 if (this._combinedDefenseCards.length > 0) {
                     var defenseCardsId = [];
                     var attackCardsId = [];
@@ -373,7 +380,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
 
                 if (this.isCombineValidated(selectedDefenseCardId, attackCard.id) == false) {
                     if (invalidCards.includes(attackCard.id) == false) {
-                        invalidCards.push(attackCard.id);
+                         invalidCards.push(attackCard.id);
                     }
                 }
             });
@@ -401,11 +408,11 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
 
         isCombineValidated: function(defenseCardId, attackCardId) {
-            var defenseCardType = this._playerCardStock.getItemById(defenseCardId).type;
-            var attackCardType = this._attackCardStock.getItemById(attackCardId).type;
+            const defenseCardType = this._playerCardStock.getItemById(defenseCardId).type;
+            const attackCardType = this._attackCardStock.getItemById(attackCardId).type;
             
-            var defenseCardData = this.getCardDataWithType(defenseCardType);
-            var attackCardData = this.getCardDataWithType(attackCardType);
+            const defenseCardData = this.getCardDataWithType(defenseCardType);
+            const attackCardData = this.getCardDataWithType(attackCardType);
 
             if (attackCardData.color != defenseCardData.color) {
                 if (defenseCardData.color != this._trumpCard.color) {

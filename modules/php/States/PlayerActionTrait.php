@@ -70,7 +70,7 @@ trait PlayerActionTrait
         {
             if ($next_role_order == ROLE_SUPPORTER)
             {
-                $next_role_order = Players::getNextRole($current_role_order);
+                $next_role_order = Players::getNextRole($next_role_order);
             }
         }
 

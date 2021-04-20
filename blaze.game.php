@@ -57,17 +57,18 @@ class Blaze extends Table
         self::$instance = $this;
         
         self::initGameStateLabels( array(
-            'round'             => 10,
-            'roleOrder'         => 11,
-            'startAttackerId'   => 12,
-            'limitCardCount'    => 13,
-            'isBetting'         => 14,
-            'isDefensed'        => 15,
-            'isAttacked'        => 16,
-            'trumpCardColor'    => 17,
-            'trumpCardValue'    => 18,
-            'discardCardColor'  => 19,
-            'discardCardValue'  => 20,
+            'round'                 => 10,
+            'roleOrder'             => 11,
+            'startAttackerId'       => 12,
+            'limitCardCount'        => 13,
+            'isBetting'             => 14,
+            'isDefensed'            => 15,
+            'isAttacked'            => 16,
+            'trumpCardColor'        => 17,
+            'trumpCardValue'        => 18,
+            'discardCardColor'      => 19,
+            'discardCardValue'      => 20,
+            'previousAlivePlayer'   => 21,
         ) );
 	}
 
@@ -98,17 +99,18 @@ class Blaze extends Table
         $this->activeNextPlayer();
         
         /************ End of the game initialization *****/
-        self::setGameStateInitialValue('round',             1);
-        self::setGameStateInitialValue('roleOrder',         ROLE_NONE);
-        self::setGameStateInitialValue('startAttackerId',   Players::getActivePlayer()->getId());
-        self::setGameStateInitialValue('limitCardCount',    0);
-        self::setGameStateInitialValue('isBetting',         0);
-        self::setGameStateInitialValue('isDefensed',        DEFENSE_NONE);
-        self::setGameStateInitialValue('isAttacked',        0);
-        self::setGameStateInitialValue('trumpCardColor',    BLUE);
-        self::setGameStateInitialValue('trumpCardValue',    1);
-        self::setGameStateInitialValue('discardCardColor',  BLUE);
-        self::setGameStateInitialValue('discardCardValue',  -1);
+        self::setGameStateInitialValue('round',                 1);
+        self::setGameStateInitialValue('roleOrder',             ROLE_NONE);
+        self::setGameStateInitialValue('startAttackerId',       Players::getActivePlayer()->getId());
+        self::setGameStateInitialValue('limitCardCount',        0);
+        self::setGameStateInitialValue('isBetting',             0);
+        self::setGameStateInitialValue('isDefensed',            DEFENSE_NONE);
+        self::setGameStateInitialValue('isAttacked',            0);
+        self::setGameStateInitialValue('trumpCardColor',        BLUE);
+        self::setGameStateInitialValue('trumpCardValue',        1);
+        self::setGameStateInitialValue('discardCardColor',      BLUE);
+        self::setGameStateInitialValue('discardCardValue',      -1);
+        self::setGameStateInitialValue('previousAlivePlayer',   0);
     }
 
     /*

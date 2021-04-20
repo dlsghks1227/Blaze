@@ -193,7 +193,7 @@ class Notifications {
 
     public static function endRound()
     {
-        $message = clienttranslate('');
+        $message = clienttranslate('End round');
 
         self::notifyAll('endRound', $message, array(
             'i18n'                  => array(),

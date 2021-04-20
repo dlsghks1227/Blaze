@@ -68,11 +68,13 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
 
         setupCurrentPlayerCards: function(currentPlayerData) {
+            this._playerCardStock.removeAll();
             currentPlayerData.hand.forEach(card => {
                 var uniqueId = this.getCardUniqueId(Number(card.color), Number(card.value));
                 this._playerCardStock.addToStockWithId(uniqueId, card.id);
             });
 
+            this._playerBettingCardStock.removeAll();
             currentPlayerData.bettingHand.forEach(card => {
                 var uniqueId = this.getBettingCardUniqueId(Number(card.color), Number(card.value));
                 this._playerBettingCardStock.addToStockWithId(uniqueId, card.id);

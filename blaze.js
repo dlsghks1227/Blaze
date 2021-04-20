@@ -47,8 +47,6 @@ function (dojo, declare) {
 
     ], {
         constructor: function() {
-            console.log('blaze constructor');
-            
             this._CARD_WIDTH_L  = 108;
             this._CARD_HEIGHT_L = 168;
             
@@ -61,7 +59,7 @@ function (dojo, declare) {
 
         setup: function( gamedatas )
         {
-            console.log( "Starting game setup" );
+            dojo.destroy("debug_output");
 
             const playerPlace = this.getPlayerPlaceReorder(this.player_id, this.gamedatas.nextPlayerTable);
             
@@ -100,13 +98,10 @@ function (dojo, declare) {
             dojo.attr("board", "data-players", this.gamedatas.blazePlayers.length);
 
             this.inherited(arguments);
-            console.log( "Ending game setup" );
         }, 
 
         onUpdateActionButtons: function( stateName, args )
         {
-            console.log( 'onUpdateActionButtons: '+stateName );
-
             if( this.isCurrentPlayerActive() )
             {            
                 switch( stateName )
@@ -114,15 +109,21 @@ function (dojo, declare) {
                 case 'playerTurn':
                     var activePlayerRole = args.activePlayerRole;
                     var attackCardsOnTable = args.attackCardOnTable;
+                    var limitCardCount = (args.limitCardCount > 5 ? 5 : args.limitCardCount);
 
                     if (activePlayerRole == "1") {          // attacker
-
+                        if (limitCardCount == attackCardsOnTable.length) {
+                            this.takeAction('pass');
+                        }
                         var isPassEnabled = (attackCardsOnTable.length > 0);
                         this.setupAttackerButton(isPassEnabled);
 
                     } else if (activePlayerRole == "2") {   // defender
                         this.setupDefenderButton();
                     } else if (activePlayerRole == "3") {   // supporter
+                        if (limitCardCount == attackCardsOnTable.length) {
+                            this.takeAction('pass');
+                        }
                         this.setupSupporterButton();
                     }
                     break;

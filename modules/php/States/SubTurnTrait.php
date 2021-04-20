@@ -39,6 +39,8 @@ trait SubTurnTrait
         $alive_player_count = Players::getAlivePlayerCount();
         $active_player_card_count = $active_player->getData()['hand'];
 
+        Blaze::get()->setGameStateValue('previousAlivePlayer', $alive_player_count);
+
         // ----- 1 -----
         if ($is_betting == 1 && 
             $alive_player_count >= 2 && 

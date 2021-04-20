@@ -53,7 +53,7 @@ trait MainTurnTrait
         $is_defensed = Blaze::get()->getGameStateValue('isDefensed');
         $next_attacker = $is_defensed == DEFENSE_SUCCESS ? ROLE_DEFENDER : ROLE_SUPPORTER;
 
-        $alive_player_count = Players::getAlivePlayerCount();
+        $alive_player_count = Blaze::get()->getGameStateValue('previousAlivePlayer');
         if ($alive_player_count <= 2)
         {
             if ($next_attacker == ROLE_SUPPORTER)

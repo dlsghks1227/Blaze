@@ -179,6 +179,10 @@ class Cards extends \BlazeBase\Singleton
         }
         else if ($round == 2)
         {
+            self::moveAllCards('attackedCards', 'deck');
+            self::moveAllCards('attackCards',   'deck');
+            self::moveAllCards('defenseCards',  'deck');
+
             self::moveAllCards('discard', 'deck');
             self::moveAllCards('hand', 'deck');
             

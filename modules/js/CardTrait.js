@@ -81,18 +81,18 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
          *  Utility
          */
         getCardUniqueId: function(color, value) {
-            return (color * 10) + (value - 1);
+            return (Number(color) * 10) + (Number(value) - 1);
         },
 
         getCardDataWithType: function(cardType) {
             return {
-                color: Math.floor(cardType / 10),
-                value: (cardType % 10) + 1
+                color: Math.floor((Number(cardType) % 100) / 10),
+                value: (Number(cardType) % 10) + 1
             }
         },
 
         getBettingCardUniqueId: function(color, value) {
-          return (color * 2) + value; 
+          return (Number(color) * 2) + Number(value); 
         },
     });
 });
