@@ -2,7 +2,7 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
     return declare("blaze.defenseCardsOnTable", null, {
         constructor: function() {
             this._notifications.push(
-                ["defense", 1200],
+                ["defense", 1500],
                 ["defenseSuccess", 2000],
                 ["defenseFailure", 2000],
             );
@@ -57,6 +57,7 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
                 }
             });
 
+            this.updatePlayerCardStockOverlap();
             this.updateOtherPlayerPlayCardCount(playerId, playerCardsCount);
         },
 
@@ -80,6 +81,8 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
                     this._attackCardStock.removeFromStockById(card.id);
                 }
             });
+
+            this.updatePlayerCardStockOverlap();
 
             this.updateDiscardCard(discardCards);
             this.updateOtherPlayerPlayCardCount(playerId, playerCardsCount);
@@ -120,6 +123,8 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
                     }
                 }
             });
+
+            this.updatePlayerCardStockOverlap();
 
             this.updateOtherPlayerPlayCardCount(playerId, playerCardsCount);
         },

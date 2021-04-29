@@ -2,9 +2,9 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
     return declare("blaze.playerEvent", null, {
         constructor: function() {
             this._notifications.push(
-                ["changeRole", 500],
-                ["bettingPrivate", 1000],
-                ["endBetting", 1000],
+                ["changeRole", 1000],
+                ["bettingPrivate", 1500],
+                ["endBetting", 1500],
 
                 ["startRoundPrivate", 3000],
                 ["endRound", 3000],

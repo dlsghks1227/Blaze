@@ -2,7 +2,7 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
     return declare("blaze.trophyCards", null, {
         constructor: function() {
             this._notifications.push(
-                ["drawTrophyCard", 1200],
+                ["drawTrophyCard", 1500],
             );
 
             this._trophyCardStock = new ebg.stock();

@@ -156,7 +156,8 @@ div#drawCard {
     opacity: 0.7 !important; }
 
 div#board {
-    width: 1300px;
+    width: 100%;
+    min-width: 1300px;
     height: 950px;
     margin: auto;
     position: relative;

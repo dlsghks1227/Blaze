@@ -2,7 +2,7 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
     return declare("blaze.attackCardsOnTable", null, {
         constructor: function() {
             this._notifications.push(
-                ["attack", 1200],
+                ["attack", 1500],
             );
 
             this._attackCardStock = new ebg.stock();
@@ -56,7 +56,8 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
                     }
                 }
             });
-
+            
+            this.updatePlayerCardStockOverlap();
             this.updateOtherPlayerPlayCardCount(playerId, playerCardsCount);
         },
 

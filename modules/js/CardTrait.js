@@ -2,7 +2,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
     return declare("blaze.cardTrait", null, {
         constructor: function() {
             this._notifications.push(
-                ["draw", 1200],
+                ["draw", 1500],
             );
         },
         /*
@@ -27,6 +27,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                     this.slideTemporaryObject('<div id="drawCard" class="blazeCard"></div>', "deck", "drawCard", "otherPlayerCards-" + playerId, 500, count * 100).play();
                 }
             }
+
+            this.updatePlayerCardStockOverlap();
 
             this.updateDeckCount(deckCount);
             this.updateOtherPlayerPlayCardCount(playerId, playerCardsCount);

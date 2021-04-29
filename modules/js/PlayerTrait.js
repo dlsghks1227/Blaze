@@ -48,6 +48,15 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             }
         },
 
+        updatePlayerCardStockOverlap: function() {
+            const allItems = this._playerCardStock.getAllItems();
+            if (allItems.length >= 10) {
+                this._playerCardStock.setOverlap(50, 0);
+            } else {
+                this._playerCardStock.setOverlap(70, 0);
+            }
+        },
+
         /*
          *  Setup player
          */
@@ -79,6 +88,8 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 var uniqueId = this.getBettingCardUniqueId(Number(card.color), Number(card.value));
                 this._playerBettingCardStock.addToStockWithId(uniqueId, card.id);
             });
+
+            this.updatePlayerCardStockOverlap();
         },
 
         setupPlayersPlace: function(players, currentPlayerId, playerPlace, isStockSetup = true) {
