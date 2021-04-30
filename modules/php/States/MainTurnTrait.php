@@ -16,7 +16,6 @@ trait MainTurnTrait
         // ----- 1 -----
         $attacker_id = Blaze::get()->getGameStateValue('startAttackerId');
         Players::updatePlayersRole($attacker_id);
-        Notifications::changeRole(Players::getDatas());
 
         // ----- 2 -----
         $defenser_card_count = Players::getPlayerWithRole(ROLE_DEFENDER)['hand'];
@@ -29,6 +28,8 @@ trait MainTurnTrait
         Blaze::get()->setGameStateValue('roleOrder',    ROLE_NONE);
         Blaze::get()->setGameStateValue('isDefensed',   DEFENSE_NONE);
         Blaze::get()->setGameStateValue('isAttacked',   0);
+
+        Notifications::changeRole(Players::getDatas());
 
         // startOfSubTurn
         $this->gamestate->nextState('start');
@@ -53,12 +54,24 @@ trait MainTurnTrait
         $is_defensed = Blaze::get()->getGameStateValue('isDefensed');
         $next_attacker = $is_defensed == DEFENSE_SUCCESS ? ROLE_DEFENDER : ROLE_SUPPORTER;
 
-        $alive_player_count = Blaze::get()->getGameStateValue('previousAlivePlayer');
+        // $alive_player_count = Blaze::get()->getGameStateValue('previousAlivePlayer');
+        $alive_player_count = Players::getAlivePlayerCount();
         if ($alive_player_count <= 2)
         {
-            if ($next_attacker == ROLE_SUPPORTER)
+            $attacker_player = Players::getPlayerWithRole(ROLE_ATTACKER);
+            if (is_null($attacker_player) == false)
             {
-                $next_attacker = ROLE_ATTACKER;
+                if ($attacker_player['eliminated'] == true)
+                {
+                    $next_attacker = ROLE_SUPPORTER;
+                }
+                else
+                {
+                    if ($next_attacker == ROLE_SUPPORTER)
+                    {
+                        $next_attacker = ROLE_ATTACKER;
+                    }
+                }
             }
         }
 
@@ -82,7 +95,6 @@ trait MainTurnTrait
         }
 
         // ----- 4 -----
-        $alive_player_count = Players::getAlivePlayerCount();
         if ($alive_player_count <= 1)
         {
             // endOfRound

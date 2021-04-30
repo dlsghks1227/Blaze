@@ -110,9 +110,13 @@ function (dojo, declare) {
                     var activePlayerRole = args.activePlayerRole;
                     var attackCardsOnTable = args.attackCardOnTable;
                     var limitCardCount = (args.limitCardCount > 5 ? 5 : args.limitCardCount);
+                    const allItems = this._playerCardStock.getAllItems();
 
                     if (activePlayerRole == "1") {          // attacker
-                        if (limitCardCount == attackCardsOnTable.length) {
+                        // if (limitCardCount == attackCardsOnTable.length) {
+                        //     this.takeAction('pass');
+                        // }
+                        if (allItems.length <= 0) {
                             this.takeAction('pass');
                         }
                         var isPassEnabled = (attackCardsOnTable.length > 0);
@@ -121,7 +125,10 @@ function (dojo, declare) {
                     } else if (activePlayerRole == "2") {   // defender
                         this.setupDefenderButton();
                     } else if (activePlayerRole == "3") {   // supporter
-                        if (limitCardCount == attackCardsOnTable.length) {
+                        // if (limitCardCount == attackCardsOnTable.length) {
+                        //     this.takeAction('pass');
+                        // }
+                        if (allItems.length <= 0) {
                             this.takeAction('pass');
                         }
                         this.setupSupporterButton();

@@ -13,6 +13,16 @@ trait SubTurnTrait
     {
         // ----- 1 -----
         $current_role_order = Blaze::get()->getGameStateValue('roleOrder');
+
+        $attacker_player = Players::getPlayerWithRole(ROLE_ATTACKER);
+        if (is_null($attacker_player) == false && $current_role_order == ROLE_ATTACKER)
+        {
+            if ($attacker_player['eliminated'] == true)
+            {
+                $current_role_order = ROLE_SUPPORTER;
+            }
+        }
+
         Players::changeActivePlayerWithRole($current_role_order == ROLE_NONE ? ROLE_ATTACKER : $current_role_order);
         
         // playerTurn
@@ -37,6 +47,7 @@ trait SubTurnTrait
         $is_defensed = Blaze::get()->getGameStateValue("isDefensed");
 
         $alive_player_count = Players::getAlivePlayerCount();
+        $previous_alive_player_count = $alive_player_count;
         $active_player_card_count = $active_player->getData()['hand'];
 
         Blaze::get()->setGameStateValue('previousAlivePlayer', $alive_player_count);
@@ -83,31 +94,32 @@ trait SubTurnTrait
         }
 
         // ---- 4 ----
-        $next_role_order = Blaze::get()->getGameStateValue('roleOrder');
-        if ($next_role_order == ROLE_ATTACKER && $is_betting == 1)
-        {
-            $attacker_card_count = Players::getPlayerWithRole(ROLE_ATTACKER)['hand'];
-            if (is_null($attacker_card_count) == false)
-            {
-                if ($attacker_card_count <= 0)
-                {
-                    if ($is_defensed != DEFENSE_FAILURE) {
-                        Blaze::get()->setGameStateValue('isDefensed', DEFENSE_SUCCESS);
-                    }
-                    // drawCard
-                    $this->gamestate->nextState('end');
-                    return;
-                }
-            }
-        }
+        // $next_role_order = Blaze::get()->getGameStateValue('roleOrder');
+        // if ($next_role_order == ROLE_ATTACKER && $is_betting == 1)
+        // {
+        //     $attacker_card_count = Players::getPlayerWithRole(ROLE_ATTACKER)['hand'];
+
+        //     if (is_null($attacker_card_count) == false)
+        //     {
+        //         if ($attacker_card_count <= 0 && $previous_alive_player_count <= 2)
+        //         {
+        //             if ($is_defensed != DEFENSE_FAILURE) {
+        //                 Blaze::get()->setGameStateValue('isDefensed', DEFENSE_SUCCESS);
+        //             }
+        //             // drawCard
+        //             $this->gamestate->nextState('end');
+        //             return;
+        //         }
+        //     }
+        // }
 
         // ----- 5 -----
         if ($is_defensed == DEFENSE_FAILURE)
         {
             if ($active_player->getRole() == ROLE_DEFENDER)
             {
-                $alive_player_count = Players::getAlivePlayerCount();
-                if ($alive_player_count <= 2 && $is_betting == 1)
+                $support_player = Players::getPlayerWithRole(ROLE_SUPPORTER);
+                if (is_null($support_player) == true)
                 {
                     // drawCard
                     $this->gamestate->nextState('end');
@@ -127,7 +139,7 @@ trait SubTurnTrait
         }
 
         // ----- 6 -----
-        if ($is_defensed == DEFENSE_SUCCESS || ($is_defensed == DEFENSE_FAILURE && $alive_player_count <= 2))
+        if ($is_defensed == DEFENSE_SUCCESS)
         {
             // drawCard
             $this->gamestate->nextState('end');

@@ -140,7 +140,7 @@ class Blaze extends Table
             'nextPlayerTable'   => self::getNextPlayerTable(),
 
             // card on table
-            'deckCount'         => Cards::getCountCards('deck'),
+            'deckCount'         => Cards::getDeckCardsCount(),
             'trumpCard'         => $trump_card_data,
             'dicardCard'        => $discard_card_data,
             'trophyCards'       => Cards::getCardsInLocation('trophy_deck_' . $current_round),

@@ -38,13 +38,13 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
          *  Card update
          */
         updateDeckCount: function(count) {
-            if ($("deck")) {
-                dojo.destroy("deck");
+            this.removeDeck();
+            
+            if (Number(count) > 0) {
+                dojo.place(this.format_block("jstpl_deck", {
+                    count: count,
+                }), "playCardOnTable");  
             }
-
-            dojo.place(this.format_block("jstpl_deck", {
-                count: count,
-            }), "playCardOnTable");
         },
 
         updateTrumpCard: function(color, value) {
@@ -70,6 +70,12 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 }), "discardCardOnTable");
             } else {
                 this.removeDiscardCard();
+            }
+        },
+
+        removeDeck: function() {
+            if ($("deck")) {
+                dojo.destroy("deck");
             }
         },
 

@@ -271,6 +271,12 @@ class Cards extends \BlazeBase\Singleton
         return self::formatCards(array_merge($attackedCards, $attackCards));
     }
 
+    public static function getDeckCardsCount() {
+        $deck_count = self::getCountCards('deck');
+        $trump_card_count = self::getCountCards('trumpCard');
+        return ($deck_count + $trump_card_count);
+    }
+
     // ------------------------------------------------------
     // ----------------- Trophy Card Action -----------------
     // ------------------------------------------------------

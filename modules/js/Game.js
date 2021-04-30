@@ -92,6 +92,7 @@ define(["dojo", "dojo/_base/declare", "ebg/core/gamegui"], (dojo, declare) => {
                     break;
                 case 'startOfBetting':
                     this._playerBettingCardStock.setSelectionMode(1);
+                    this.updateBettingCardPlace("activated");
 
                     this.gamedatas.blazePlayers.forEach(player => {
                         this.updateOtherPlayerRole(player.id, "0");

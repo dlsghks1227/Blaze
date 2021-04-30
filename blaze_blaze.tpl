@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <div id="playerBettingCardsPlace" class="blackPanel">
+    <div id="playerBettingCardsPlace" class="blackPanel" data-state="none">
         <div id="playerBettingCardsStock"></div>
     </div>
     <div id="playerCardsPlace" class="blackPanel">

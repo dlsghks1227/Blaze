@@ -125,6 +125,10 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             });
         },
 
+        updateBettingCardPlace: function(state) {
+            dojo.query("#playerBettingCardsPlace").attr("data-state", state);
+        },
+
         /*
          *  Other player update
          */

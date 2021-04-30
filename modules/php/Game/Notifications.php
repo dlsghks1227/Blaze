@@ -21,7 +21,7 @@ class Notifications {
         self::notifyAll('changeRole', $message, array(
             'i18n'          => array(),
             'players'       => $players,
-            'deck_count'    => Cards::getCountCards('deck'),
+            'deck_count'    => Cards::getDeckCardsCount(),
         ));
     }
 
@@ -118,7 +118,7 @@ class Notifications {
             'player_id'             => $player->getId(),
             'draw_cards'            => $draw_cards,
             'draw_cards_count'      => $draw_cards_count,
-            'deck_count'            => Cards::getCountCards('deck'),
+            'deck_count'            => Cards::getDeckCardsCount(),
             'player_cards_count'    => Cards::getCountCards('hand', $player->getId()),
         ));
     }
@@ -184,7 +184,7 @@ class Notifications {
                 'players'           => Players::getDatas($player->getId()),
                 'nextPlayerTable'   => Blaze::get()->getNextPlayerTable(),
 
-                'deck_count'        => Cards::getCountCards('deck'),
+                'deck_count'        => Cards::getDeckCardsCount(),
                 'trump_card'        => $trump_card_data,
                 'trophy_cards'      => Cards::getCardsInLocation('trophy_deck_' . $current_round),
             ));

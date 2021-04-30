@@ -2,7 +2,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
     return declare("blaze.playerEvent", null, {
         constructor: function() {
             this._notifications.push(
-                ["changeRole", 1000],
+                ["changeRole", 1500],
                 ["bettingPrivate", 1500],
                 ["endBetting", 1500],
 
@@ -140,7 +140,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                 }
 
                 // this.updateInvalidAttackCardOnTable(itemId);
-                this._invaildAttackCardOnTable = this.updateInvalidAttackCardOnTable(itemId);
+               this._invaildAttackCardOnTable = this.updateInvalidAttackCardOnTable(itemId);
 
             } else if (this._activePlayerRole == "3") {
                 if (selectedItems.length > limit) {
@@ -213,7 +213,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         onClickDefenseButton: function() {
             if (this.checkAction("defense", true)) {
                 if (this._combinedDefenseCards.length + this._defenseCardsOnTable.length < this._attackCardsOnTable.length) {
-                    this.showMessage(_("Not enough cards."), 'error');
+                    this.showMessage(_("Click card which should be defended."), 'error');
                     return;
                 }
                 if (this._combinedDefenseCards.length > 0) {
@@ -255,6 +255,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                     };
 
                     this._playerBettingCardStock.setSelectionMode(0);
+                    this.updateBettingCardPlace("none");
 
                     this.gamedatas.blazePlayers.forEach(player => {
                         this.updateOtherPlayerRole(player.id, "0");

@@ -12,7 +12,7 @@ class Players extends \BlazeBase\Singleton
         self::DbQuery('DELETE FROM player');
         $sql = 'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar, player_role) VALUE';
         
-        $default_colors = array( "ff0000", "008000", "0000ff", "ffa500", "773300" );
+        $default_colors = array( "d1ab83", "ea7e24", "f96c98", "0fbbc1", "a969be" );
         foreach ($players as $player_id => $player) {
             $color      = array_shift( $default_colors );           // 색상
             $canal      = $player['player_canal'];
@@ -25,7 +25,7 @@ class Players extends \BlazeBase\Singleton
         
         // reattributeColorsBasedOnPreferences
         // 플레이어의 색상 기본 설정과 사용 가능한 색상을 고려해 모든 색상을 다시 지정
-        Blaze::get()->reattributeColorsBasedOnPreferences($players, array( "ff0000", "008000", "0000ff", "ffa500", "773300" ));
+        Blaze::get()->reattributeColorsBasedOnPreferences($players, array( "d1ab83", "ea7e24", "f96c98", "0fbbc1", "a969be" ));
         Blaze::get()->reloadPlayersBasicInfos();
     }
 
@@ -109,7 +109,7 @@ class Players extends \BlazeBase\Singleton
     public static function updatePlayersRole($active_player_id)
     {
         $next_player_table = Blaze::get()->getNextPlayerTable();
-
+        
         // 모든 플레이어의 역할 초기화
         $players = self::getPlayers();
         foreach ($players as $player)

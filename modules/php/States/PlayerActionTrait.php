@@ -162,8 +162,9 @@ trait PlayerActionTrait
         if ($active_player_role == ROLE_ATTACKER)
         {
             $alive_player_count = Players::getAlivePlayerCount();
+            $is_defensed = Blaze::get()->getGameStateValue("isDefensed");
 
-            if ($alive_player_count <= 2)
+            if ($alive_player_count <= 2 && $is_defensed == DEFENSE_NONE)
             {
                 Blaze::get()->setGameStateValue('isDefensed', DEFENSE_SUCCESS);
             }
@@ -175,7 +176,9 @@ trait PlayerActionTrait
         else if($active_player_role == ROLE_SUPPORTER)
         {
             $is_attacked = Blaze::get()->getGameStateValue('isAttacked');
-            if ($is_attacked == 0)
+            $is_defensed = Blaze::get()->getGameStateValue("isDefensed");
+
+            if ($is_attacked == 0 && $is_defensed == DEFENSE_NONE)
             {
                 Blaze::get()->setGameStateValue('isDefensed', DEFENSE_SUCCESS);
             }
