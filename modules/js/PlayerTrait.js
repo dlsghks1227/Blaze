@@ -32,7 +32,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
         },
         
         createPlayerBettingCardStock: function() {
-            this._playerBettingCardStock.create(this, $("playerBettingCardsStock"), this._CARD_WIDTH_L, this._CARD_HEIGHT_L);
+            this._playerBettingCardStock.create(this, $("playerBettingCardsStock"), this._CARD_WIDTH_M, this._CARD_HEIGHT_M);
             this._playerBettingCardStock.image_items_per_row = 2;
             this._playerBettingCardStock.centerItems = true;
             this._playerBettingCardStock.setOverlap(60, 0);
@@ -43,7 +43,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             for (var color = 0; color <= 4; color++) {
                 for (var value = 0; value <= 1; value++) {
                     var uniqueId = this.getBettingCardUniqueId(color, value);
-                    this._playerBettingCardStock.addItemType(uniqueId, uniqueId, g_gamethemeurl + "img/betting_cards_L.png", uniqueId);
+                    this._playerBettingCardStock.addItemType(uniqueId, uniqueId, g_gamethemeurl + "img/betting_cards_M.png", uniqueId);
                 }        
             }
         },

@@ -209,6 +209,7 @@ div#board {
 
         div#board div#table div#attackCardsText, div#defenseCardsText, div#playCardText, div#discardCardText {
             width: 100%;
+            font-size: 1rem;
             margin: auto;
             border-bottom: 1px solid rgba(255, 255, 255, 255);
             color: aliceblue; }
@@ -407,3 +408,81 @@ div#board[data-players="5"] div.otherPlayer[data-pos="4"] {
 div#board[data-players="5"] div.otherPlayer[data-pos="5"] {
     grid-column: 7 / span 2;
     grid-row: 4; }
+
+@media only screen and (max-width: 1300px) {
+    div#board {
+        width: 100%;
+        min-width: 740px;
+        height: auto;
+        margin: auto;
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(8, 1fr); }
+    
+    div#board div#playerBettingCardsPlace {
+        grid-column: 1 / span 2;
+        grid-row: 7; }
+    
+    div#board div#playerCardsPlace {
+        grid-column: 1 / span 4;
+        grid-row: 8; }
+
+    div#board div#trophyCardsPlace {
+        grid-column: 2 / span 2;
+        grid-row: 3; }
+
+    div#board div#table {
+        grid-column: 1 / span 4;
+        grid-row: 4 / span 3; }
+
+    div#board[data-players="3"] div.otherPlayer[data-pos="1"] {
+        grid-column: 3 / span 2;
+        grid-row: 7; }
+    
+    div#board[data-players="3"] div.otherPlayer[data-pos="2"] {
+        grid-column: 1 / span 2;
+        grid-row: 1; }
+            
+    div#board[data-players="3"] div.otherPlayer[data-pos="3"] {
+        grid-column: 3 / span 2;
+        grid-row: 1; }
+    
+    
+    div#board[data-players="4"] div.otherPlayer[data-pos="1"] {
+        grid-column: 3 / span 2;
+        grid-row: 7; }
+    
+    div#board[data-players="4"] div.otherPlayer[data-pos="2"] {
+        grid-column: 1 / span 2;
+        grid-row: 1; }
+            
+    div#board[data-players="4"] div.otherPlayer[data-pos="3"] {
+        grid-column: 3 / span 2;
+        grid-row: 1; }
+    
+    div#board[data-players="4"] div.otherPlayer[data-pos="4"] {
+        grid-column: 1 / span 2;
+        grid-row: 2; }
+    
+    
+    div#board[data-players="5"] div.otherPlayer[data-pos="1"] {
+        grid-column: 3 / span 2;
+        grid-row: 7; }
+    
+    div#board[data-players="5"] div.otherPlayer[data-pos="2"] {
+        grid-column: 1 / span 2;
+        grid-row: 1; }
+            
+    div#board[data-players="5"] div.otherPlayer[data-pos="3"] {
+        grid-column: 3 / span 2;
+        grid-row: 1; }
+    
+    div#board[data-players="5"] div.otherPlayer[data-pos="4"] {
+        grid-column: 1 / span 2;
+        grid-row: 2; }
+    
+    div#board[data-players="5"] div.otherPlayer[data-pos="5"] {
+        grid-column: 3 / span 2;
+        grid-row: 2; }
+}
