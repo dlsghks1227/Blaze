@@ -2,7 +2,7 @@ define(["dojo", "dojo/_base/declare", "ebg/stock"], (dojo, declare) => {
     return declare("blaze.defenseCardsOnTable", null, {
         constructor: function() {
             this._notifications.push(
-                ["defense", 1500],
+                ["defense", 1700],
                 ["defenseSuccess", 2000],
                 ["defenseFailure", 2000],
             );

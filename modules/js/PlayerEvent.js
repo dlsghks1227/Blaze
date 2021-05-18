@@ -2,9 +2,9 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
     return declare("blaze.playerEvent", null, {
         constructor: function() {
             this._notifications.push(
-                ["changeRole", 1500],
-                ["bettingPrivate", 1500],
-                ["endBetting", 1500],
+                ["changeRole", 2000],
+                ["bettingPrivate", 1700],
+                ["endBetting", 1700],
 
                 ["startRoundPrivate", 3000],
                 ["endRound", 3000],
@@ -139,8 +139,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
                     }
                 }
 
-                // this.updateInvalidAttackCardOnTable(itemId);
-               this._invaildAttackCardOnTable = this.updateInvalidAttackCardOnTable(itemId);
+                this._invaildAttackCardOnTable = this.updateInvalidAttackCardOnTable(itemId);
 
             } else if (this._activePlayerRole == "3") {
                 if (selectedItems.length > limit) {

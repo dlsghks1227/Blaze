@@ -12,7 +12,7 @@ class Player extends \APP_GameClass
     protected $name;
     protected $color;
     protected $role;
-    protected $eliminated   = false;
+    protected $no_card      = false;
     protected $zombie       = false;
 
     public function __construct($row) {
@@ -22,7 +22,7 @@ class Player extends \APP_GameClass
             $this->name         = $row['player_name'];
             $this->color        = $row['player_color'];
             $this->role         = $row['player_role'];
-            $this->eliminated   = $row['player_eliminated'] == 1;
+            $this->no_card      = $row['player_no_card'];
             $this->zombie       = $row['player_zombie'] == 1;
         }
     }
@@ -32,7 +32,7 @@ class Player extends \APP_GameClass
     public function getName()       { return $this->name; }
     public function getColor()      { return $this->color; }
     public function getRole()       { return $this->role; }
-    public function isEliminated()  { return $this->eliminated;}
+    public function isEliminated()  { return $this->no_card;}
     public function isZombie()      { return $this->zombie; }
 
     public function getData($current_player_id = null) {
@@ -43,7 +43,7 @@ class Player extends \APP_GameClass
             'name'          => $this->name,
             'color'         => $this->color,
             'role'          => $this->role,
-            'eliminated'    => $this->eliminated,
+            'eliminated'    => $this->no_card,
             'hand'          => ($current) ? array_values(Cards::getCardsInLocation('hand', $this->id))          : Cards::getCountCards('hand', $this->id),
             'bettingHand'   => ($current) ? array_values(Cards::getCardsInLocation('betting_hand', $this->id))  : Cards::getCountCards('betting_hand', $this->id),
             'score'         => $this->getScore(),
@@ -73,13 +73,13 @@ class Player extends \APP_GameClass
 
     private function save()
     {
-        $eliminated = ($this->eliminated) ? 1 : 0;
-        self::DbQuery("UPDATE player SET `player_eliminated` = $eliminated, `player_role` = {$this->role} WHERE `player_id` = {$this->id}");
+        $no_card = ($this->no_card) ? 1 : 0;
+        self::DbQuery("UPDATE player SET `player_no_card` = $no_card, `player_role` = {$this->role} WHERE `player_id` = {$this->id}");
     }
 
     public function eliminate($is_eliminated)
     {
-        $this->eliminated = $is_eliminated;
+        $this->no_card = $is_eliminated;
         $this->save();
     }
 

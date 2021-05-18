@@ -18,10 +18,10 @@ trait MainTurnTrait
         Players::updatePlayersRole($attacker_id);
 
         // ----- 2 -----
-        $defenser_card_count = Players::getPlayerWithRole(ROLE_DEFENDER)['hand'];
+        $defenser_card_count = Players::getPlayerWithRole(ROLE_DEFENDER);
         if (is_null($defenser_card_count) == false)
         {
-            Blaze::get()->setGameStateValue('limitCardCount', $defenser_card_count);
+            Blaze::get()->setGameStateValue('limitCardCount', $defenser_card_count['hand']);
         }
 
         // ----- 3 -----
@@ -56,7 +56,7 @@ trait MainTurnTrait
 
         // $alive_player_count = Blaze::get()->getGameStateValue('previousAlivePlayer');
         $alive_player_count = Players::getAlivePlayerCount();
-        if ($alive_player_count <= 2)
+        if ($alive_player_count <= 2 && $is_defensed == DEFENSE_FAILURE)
         {
             $attacker_player = Players::getPlayerWithRole(ROLE_ATTACKER);
             if (is_null($attacker_player) == false)
@@ -75,14 +75,10 @@ trait MainTurnTrait
             }
         }
 
-        $next_attacker_id = Players::getPlayerWithRole($next_attacker)['id'];
+        $next_attacker_id = Players::getPlayerWithRole($next_attacker);
         if (is_null($next_attacker_id) == false)
         {
-            Blaze::get()->setGameStateValue('startAttackerId', $next_attacker_id);
-        }
-        else
-        {
-            Blaze::get()->setGameStateValue('startAttackerId', 0);
+            Blaze::get()->setGameStateValue('startAttackerId', $next_attacker_id['id']);
         }
 
         // ----- 3 -----

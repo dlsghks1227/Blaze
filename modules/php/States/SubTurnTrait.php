@@ -82,7 +82,7 @@ trait SubTurnTrait
             $defender_card_count = Players::getPlayerWithRole(ROLE_DEFENDER)['hand'];
             if (is_null($defender_card_count) == false)
             {
-                if ($defender_card_count <= 0)
+                if ($defender_card_count['hand'] <= 0)
                 {
                     Blaze::get()->setGameStateValue('isDefensed', DEFENSE_SUCCESS);
 

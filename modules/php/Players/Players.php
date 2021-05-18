@@ -31,7 +31,7 @@ class Players extends \BlazeBase\Singleton
 
     public static function getPlayers($players_id = null) : array
     {
-        $columns = array("id", "no", "name", "eliminated", "role", "color", "score", "zombie");
+        $columns = array("id", "no", "name", "no_card", "role", "color", "score", "zombie");
         $sql_columns = array();
         foreach($columns as $col) $sql_columns[] = "player_$col";
         $sql = "SELECT " . implode(", ", $sql_columns) . " FROM player";
