@@ -309,6 +309,9 @@ class Blaze extends Table
     
     function upgradeTableDb( $from_version )
     {
+        if ($from_version <= 2105182229) {
+            self::DbQuery("ALTER TABLE `player` ADD `player_no_card` BOOL NOT NULL");
+        }
         // $from_version is the current version of this game database, in numerical form.
         // For example, if the game was running with a release of your game named "140430-1345",
         // $from_version is equal to 1404301345

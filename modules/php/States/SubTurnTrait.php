@@ -79,7 +79,7 @@ trait SubTurnTrait
         // ---- 3 ----
         if ($active_player->getRole() == ROLE_DEFENDER && $is_betting == 1)
         {
-            $defender_card_count = Players::getPlayerWithRole(ROLE_DEFENDER)['hand'];
+            $defender_card_count = Players::getPlayerWithRole(ROLE_DEFENDER);
             if (is_null($defender_card_count) == false)
             {
                 if ($defender_card_count['hand'] <= 0)
