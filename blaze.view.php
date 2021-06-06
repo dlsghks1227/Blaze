@@ -40,7 +40,6 @@
         /*********** Place your code below:  ************/
 
         // My Hand 텍스트를 번역할 수 있다.
-        $this->tpl['Deck_text']             = self::_("Deck");
         $this->tpl['Discard_text']          = self::_("Discard");
         $this->tpl['Attack_Cards_text']     = self::_("Attack Cards");
         $this->tpl['Defense_Cards_text']    = self::_("Defense Cards");

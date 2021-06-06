@@ -39,12 +39,29 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
          */
         updateDeckCount: function(count) {
             this.removeDeck();
+            this.updateDeckText(_("Deck"));
+            this._TRUMP_CARD_OPACITY = 1.0;
             
             if (Number(count) > 0) {
                 dojo.place(this.format_block("jstpl_deck", {
                     count: count,
                 }), "playCardOnTable");  
+            } else {
+                // 카드 수가 0 일 떄 트럼프 카드 투명 및 글씨표기
+                this.updateDeckText(_("Trump Card"));
+                this._TRUMP_CARD_OPACITY = 0.5;
+                this.updateTrumpCard(this._TRUMP_CARD_VALUE, this._TRUMP_CARD_COLOR);
             }
+        },
+
+        updateDeckText: function(text) {
+            if ($("playCardText")) {
+                dojo.destroy("playCardText");
+            }
+
+            dojo.place(this.format_block("jstpl_deckText", {
+                text: text
+            }), "table");
         },
 
         updateTrumpCard: function(color, value) {
@@ -55,6 +72,7 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             dojo.place(this.format_block("jstpl_trump", {
                 x: this._CARD_WIDTH_L   * (value - 1),
                 y: this._CARD_HEIGHT_L  * color,
+                opacity: this._TRUMP_CARD_OPACITY,
             }), "playCardOnTable");
         },
 

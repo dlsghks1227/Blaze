@@ -27,7 +27,7 @@
 
 <div id="board">
     <div id="table" class="blackPanel">
-        <div id="playCardText" class="text">{Deck_text}</div>
+        <!-- <div id="playCardText" class="text">{Deck_text}</div> -->
         <div id="discardCardText" class="text">{Discard_text}</div>
 
         <div id="playCardOnTable"></div>
@@ -56,6 +56,10 @@
 </div>
 
 <script type="text/javascript">
+var jstpl_deckText = `
+    <div id="playCardText" class="text">\${text}</div>
+`
+
 var jstpl_deck = `
 <div id="deck" class="blazeCard">
     <div id="cardCount" class="text">x\${count}</div>
@@ -63,7 +67,7 @@ var jstpl_deck = `
 `
 
 var jstpl_trump = `
-<div id="trump" class="blazeCard" style="background-position:-\${x}px -\${y}px;">
+<div id="trump" class="blazeCard" style="background-position:-\${x}px -\${y}px; opacity: \${opacity};">
 </div>
 `
 var jstpl_discard = `

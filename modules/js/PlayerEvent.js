@@ -65,7 +65,9 @@ define(["dojo", "dojo/_base/declare"], (dojo, declare) => {
             this.setupPlayersPlace(players, this.player_id, playerPlace, false);
             
             this.updateDeckCount(deckCount);
-            
+
+            this._TRUMP_CARD_VALUE = trumpCard.color;
+            this._TRUMP_CARD_COLOR = trumpCard.value;
             this.updateTrumpCard(trumpCard.color, trumpCard.value);
 
             this._trophyCardStock.removeAll();

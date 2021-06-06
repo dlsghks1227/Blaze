@@ -55,6 +55,10 @@ function (dojo, declare) {
 
             this._CARD_WIDTH_S  = 36;
             this._CARD_HEIGHT_S = 56;
+
+            this._TRUMP_CARD_VALUE = 0;
+            this._TRUMP_CARD_COLOR = 0;
+            this._TRUMP_CARD_OPACITY = 1.0;
         },
 
         setup: function( gamedatas )
@@ -74,12 +78,15 @@ function (dojo, declare) {
                 this.gamedatas.overallBettedCards,
                 this.gamedatas.overallTrophyCards,
             );
+            // 트럼프 카드 
+            var trumpCard = this.gamedatas.trumpCard;
+            this._TRUMP_CARD_VALUE = trumpCard.color;
+            this._TRUMP_CARD_COLOR = trumpCard.value;
 
             // --------- 덱 카드 수 설정 ---------
             this.updateDeckCount(this.gamedatas.deckCount);
 
             // --------- 트럼프 카드 설정 ---------
-            var trumpCard = this.gamedatas.trumpCard;
             this.updateTrumpCard(trumpCard.color, trumpCard.value);
 
             // --------- 트로피 카드 설정 ---------
@@ -116,7 +123,7 @@ function (dojo, declare) {
                         // if (limitCardCount == attackCardsOnTable.length) {
                         //     this.takeAction('pass');
                         // }
-                        if (allItems.length <= 0) {
+                        if (allItems.length <= 0 || attackCardsOnTable.length >= Number(limitCardCount)) {
                             this.takeAction('pass');
                         }
                         var isPassEnabled = (attackCardsOnTable.length > 0);
@@ -128,7 +135,7 @@ function (dojo, declare) {
                         // if (limitCardCount == attackCardsOnTable.length) {
                         //     this.takeAction('pass');
                         // }
-                        if (allItems.length <= 0) {
+                        if (allItems.length <= 0 || attackCardsOnTable.length >= Number(limitCardCount)) {
                             this.takeAction('pass');
                         }
                         this.setupSupporterButton();
